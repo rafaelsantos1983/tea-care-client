@@ -33,11 +33,9 @@ function Dashboard_Pais() {
                 <BlueButton text="Geral" />
             </div>
             </div>
-
           
         </div>
         
-
         <div className="bg-white w-[900px] h-[450px] rounded-[50px] flex flex-col items-center pt-6 mb-8 mr-8">
           <h1 className="font-bold text-3xl">Evolução</h1>
           <Grafico_linha/>

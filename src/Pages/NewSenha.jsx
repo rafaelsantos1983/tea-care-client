@@ -35,7 +35,7 @@ function NewSenha(){
           {/*Input de Nova Senha*/}
           <div className='m-10'>
           <InputLabel htmlFor="outlined-password-input" className='font-bold text-gray-950'>
-            Nova Senha
+          <p className='font-bold text-gray-950'>Nova Senha</p>
           </InputLabel>
           <TextField
             id="outlined-password-input"
@@ -62,7 +62,7 @@ function NewSenha(){
            {/*Input de Confirmar Nova Senha*/}
           <div className='m-10'>
           <InputLabel htmlFor="outlined-password-input" className='font-bold text-gray-950'>
-            Confirme Nova Senha
+          <p className='font-bold text-gray-950'>Confirme Nova Senha</p>
           </InputLabel>
           <TextField
                 id="outlined-password-input"

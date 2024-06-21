@@ -1,21 +1,20 @@
 import Button from '@mui/material/Button';
+import { styled } from '@mui/system';
 
-const customButtonStyle = {
-  backgroundColor: '#66D168', // Cor verde clara
+const GreenButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#66D168',
   width: '250px',
-  height: '50px', // Altura aumentada para 40px para melhorar a legibilidade
-  color: '#ffffff', // Texto branco
+  height: '50px',
+  color: '#ffffff',
   '&:hover': {
-    backgroundColor: '#689f38', // Cor mais escura ao passar o mouse
+    backgroundColor: '#689f38',
   },
-};
+}));
 
-function CustomButton() {
+export default function CustomButton({ children, ...props }) {
   return (
-    <Button variant="contained" style={customButtonStyle}>
-      Enviar
-    </Button>
+    <GreenButton {...props}>
+      {children || 'Enviar'}
+    </GreenButton>
   );
 }
-
-export default CustomButton;

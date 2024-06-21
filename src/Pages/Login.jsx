@@ -13,9 +13,22 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 
 function Login() {
-  {/*Estados da Senha*/}
+  // Estado do ID
+  const [idPerson, setIdPerson] = useState('');
+  const [password, setPassword] = useState('');
+  
+  // Função que tem evento ao enviar
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log("Dados Enviados");
+    alert('Dados Enviados!!' + idPerson + password);
+
+  };
+
+  // Estados da Senha
   const [showPassword, setShowPassword] = useState(false);
-  {/*Mostra/Esconde Senha*/} 
+  
+  // Mostra/Esconde Senha
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -23,20 +36,21 @@ function Login() {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-blue-500 bg-cover bg-center'>
-      {/*Fundo secundário*/}
-      <div className='bg-white w-[480px] h-[600px] rounded-[50px]'>
-        {/*Logo e Slogan*/}
+      {/* Fundo secundário */}
+      <form className='bg-white w-[480px] h-[600px] rounded-[50px]' onSubmit={handleSubmit}>
+        {/* Logo e Slogan */}
         <div className='bg-yellow-400 w-[440px] h-[150px] mt-5 ml-5 mr-5 rounded-[50px] flex items-center'>
           <img src={Logo} className='w-[220px] h-[170px] ml-5' alt='Logo' />
           <h1 className='font-bold text-2xl text-center mr-10'>CUIDADO A CADA MOMENTO</h1>
         </div>
-        {/*Input do ID*/}
+        {/* Input do ID */}
         <div className='m-10'>
           <InputLabel htmlFor="input-with-icon-adornment">
             <p className='font-bold text-gray-950'>ID Responsável</p>
           </InputLabel>
           <TextField 
             id="outlined-basic" 
+            name="idPerson"
             placeholder='Insira seu ID...'
             variant="outlined" 
             className='bg-gray-200 w-full'
@@ -48,17 +62,17 @@ function Login() {
               ),
               style: { borderRadius: '10px' }
             }}
+            onChange={(e) => setIdPerson(e.target.value)}
           />
         </div>
-        {/*Input da Senha e Link de Esqueceu a Senha*/}
+        {/* Input da Senha e Link de Esqueceu a Senha */}
         <div className='m-10'>
-          <InputLabel htmlFor="outlined-password-input" 
-          InputLabelProps={{ style: { fontWeight: 'bold', color: 'black' } }}
-          >
-            Senha
+          <InputLabel htmlFor="outlined-password-input">
+            <p className='font-bold text-gray-950'>Senha</p>
           </InputLabel>
           <TextField
             id="outlined-password-input"
+            name="password"
             type={showPassword ? 'text' : 'password'}
             placeholder='Insira sua senha...'
             variant="outlined"
@@ -78,20 +92,22 @@ function Login() {
               style: { borderRadius: '10px' }
             }}
             InputLabelProps={{ style: { fontWeight: 'bold', color: 'black' } }}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <p className='text-end'>
             <Link href="/NewSenha">Esqueceu a Senha?</Link>
           </p>
         </div>
-        {/*Botão de enviar*/}
+        {/* Botão de enviar */}
         <div className="text-center">
-          <GreenButton />
+          
+          <GreenButton type="submit" />
         </div>
-        {/*Lembrar de mim*/}
+        {/* Lembrar de mim */}
         <div className='text-center'>
           <FormControlLabel control={<Checkbox />} label="Lembre de mim" />
         </div>
-      </div>
+      </form>
     </div>
   );
 }
