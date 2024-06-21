@@ -1,9 +1,5 @@
-import * as React from 'react';
 import PropTypes from 'prop-types';
-import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 
 import userImage from '../Imagens/Ft_perfil.jpg';
 import Logo from '../Imagens/LOGO_TEACARE.png'
