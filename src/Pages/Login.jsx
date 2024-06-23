@@ -13,21 +13,37 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 
 function Login() {
-  // Estado do ID e da Senha
+  // Estado do ID, da Senha e dos erros
   const [idPerson, setIdPerson] = useState('');
   const [password, setPassword] = useState('');
-  
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+
   // Função que tem evento ao enviar
   const handleSubmit = (event) => {
     event.preventDefault();
-    alert('Bem-Vindo: ' + idPerson + "!");
     
-    //Leva para o Dashboard dos pais
+    
+    const newErrors = {};//Lista de Campos vazios
+    //Verificação de Preenchimento dos campos
+    if (idPerson== '') {
+      newErrors.idPerson = "ID é obrigatório";
+      alert("Preencha Campos Obrigatórios!");
+    }
+    if (password== '') {
+      newErrors.password = "Senha é obrigatória";
+      alert("Preencha Campos Obrigatórios!");
+    }
+     //Verifica se campos vazios contêm itens
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    
+    alert('Bem-Vindo: ' + idPerson + "!");
+    // Leva para o Dashboard dos pais
     window.location.href = '/Dashboard_Pais';
   };
-
-  // Estados da Senha
-  const [showPassword, setShowPassword] = useState(false);
   
   // Mostra/Esconde Senha
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -38,7 +54,7 @@ function Login() {
   return (
     <div className='min-h-screen flex items-center justify-center bg-blue-500 bg-cover bg-center'>
       {/* Fundo secundário */}
-      <form className='bg-white w-[480px] h-[600px] rounded-[50px]' onSubmit={handleSubmit}>
+      <form className='bg-white w-[480px] h-[620px] rounded-[50px]' onSubmit={handleSubmit}>
         {/* Logo e Slogan */}
         <div className='bg-yellow-400 w-[440px] h-[150px] mt-5 ml-5 mr-5 rounded-[50px] flex items-center'>
           <img src={Logo} className='w-[220px] h-[170px] ml-5' alt='Logo' />
@@ -50,11 +66,11 @@ function Login() {
             <p className='font-bold text-gray-950'>ID Responsável</p>
           </InputLabel>
           <TextField 
-            id="outlined-basic" 
+            id="input-with-icon-adornment" 
             name="idPerson"
             placeholder='Insira seu ID...'
             variant="outlined" 
-            className='bg-gray-200 w-full'
+            className={`w-full rounded-[10px] ${errors.password ? 'bg-red-200' : 'bg-gray-200'}`}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -63,21 +79,28 @@ function Login() {
               ),
               style: { borderRadius: '10px' }
             }}
-            onChange={(e) => setIdPerson(e.target.value)}
+            error={!!errors.idPerson}
+            helperText={errors.idPerson}
+            onChange={(e) => {
+              setIdPerson(e.target.value);
+              if (errors.idPerson) {
+                setErrors((prev) => ({ ...prev, idPerson: '' }));
+              }
+            }}
           />
         </div>
         {/* Input da Senha e Link de Esqueceu a Senha */}
         <div className='m-10'>
-          <InputLabel htmlFor="outlined-password-input">
+          <InputLabel htmlFor="password-input">
             <p className='font-bold text-gray-950'>Senha</p>
           </InputLabel>
           <TextField
-            id="outlined-password-input"
+            id="password-input"
             name="password"
             type={showPassword ? 'text' : 'password'}
             placeholder='Insira sua senha...'
             variant="outlined"
-            className='bg-gray-200 w-full'           
+            className={`w-full rounded-[10px] ${errors.password ? 'bg-red-200' : 'bg-gray-200'}`}          
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -92,8 +115,15 @@ function Login() {
               ),
               style: { borderRadius: '10px' }
             }}
+            error={!!errors.password}
+            helperText={errors.password}
             InputLabelProps={{ style: { fontWeight: 'bold', color: 'black' } }}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (errors.password) {
+                setErrors((prev) => ({ ...prev, password: '' }));
+              }
+            }}
           />
           <p className='text-end'>
             <Link href="/NewSenha">Esqueceu a Senha?</Link>
@@ -101,7 +131,6 @@ function Login() {
         </div>
         {/* Botão de enviar */}
         <div className="text-center">
-          
           <GreenButton type="submit" />
         </div>
         {/* Lembrar de mim */}

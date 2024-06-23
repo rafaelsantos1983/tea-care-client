@@ -9,19 +9,38 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GreenButton from '../Components/Button_Green'; // Certifique-se de que o caminho esteja correto
 
 function NewSenha() {
+  // Variáveis de Estado
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordAgain, setNewPasswordAgain] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({}); // Adiciona estado para erros
 
+  // Função que tem evento ao enviar
   const handleSubmit = (event) => {
     event.preventDefault();
-    //Verifica se as senhas são iguais
-    if (newPassword !== newPasswordAgain) {
-      alert('As senhas não coincidem. Por favor, tente novamente.');
+    const newErrors = {};
+
+    if (newPassword === '') {
+      newErrors.newPassword = "É obrigatório";
+    }
+    if (newPasswordAgain === '') {
+      newErrors.newPasswordAgain = "É obrigatório";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      alert("Preencha Campos Obrigatórios!");
       return;
     }
-    alert('Senha alterada com Sucesso!' + newPassword);
-    // Leva para o Dashboard dos pais
+
+    if (newPassword !== newPasswordAgain) {
+      alert('As senhas não coincidem. Por favor, tente novamente.');
+      setNewPassword('');
+      setNewPasswordAgain('');
+      return;
+    }
+
+    alert('Senha alterada com Sucesso!');
     window.location.href = '/Dashboard_Pais';
   };
 
@@ -49,7 +68,7 @@ function NewSenha() {
             type={showPassword ? 'text' : 'password'}
             placeholder='Digite nova senha...'
             variant="outlined"
-            className='bg-gray-200 w-full'
+            className={`w-full rounded-[10px] ${errors.newPassword ? 'bg-red-200' : 'bg-gray-200'}`}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -64,7 +83,16 @@ function NewSenha() {
               ),
               style: { borderRadius: '10px' }
             }}
-            onChange={(e) => setNewPassword(e.target.value)}
+            error={!!errors.newPassword}
+            helperText={errors.newPassword}
+            InputLabelProps={{ style: { fontWeight: 'bold', color: 'black' } }}
+            onChange={(e) => {
+              setNewPassword(e.target.value);
+              if (errors.newPassword) {
+                setErrors((prev) => ({ ...prev, newPassword: '' }));
+              }
+            }}
+            value={newPassword}
           />
         </div>
         {/* Input de Confirmar Nova Senha */}
@@ -77,7 +105,7 @@ function NewSenha() {
             type={showPassword ? 'text' : 'password'}
             placeholder='Digite novamente a senha...'
             variant="outlined"
-            className='bg-gray-200 w-full'
+            className={`w-full rounded-[10px] ${errors.newPasswordAgain ? 'bg-red-200' : 'bg-gray-200'}`}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -92,7 +120,15 @@ function NewSenha() {
               ),
               style: { borderRadius: '10px' }
             }}
-            onChange={(e) => setNewPasswordAgain(e.target.value)}
+            error={!!errors.newPasswordAgain}
+            helperText={errors.newPasswordAgain}
+            onChange={(e) => {
+              setNewPasswordAgain(e.target.value);
+              if (errors.newPasswordAgain) {
+                setErrors((prev) => ({ ...prev, newPasswordAgain: '' }));
+              }
+            }}
+            value={newPasswordAgain}
           />
         </div>
         {/* Botão de enviar */}
