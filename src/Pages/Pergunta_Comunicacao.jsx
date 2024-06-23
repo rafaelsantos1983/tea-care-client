@@ -39,7 +39,7 @@ let comunicacao = {
 
 function Pergunta_Comunicacao() {
   return (
-    <div>
+    <div className=" bg-blue-500 h-screen">
       <Banner name="teste" description={"teste"} skill={"COMUNICAÇÃO"} />
       <Formulario questions={comunicacao} />
     </div>

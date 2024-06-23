@@ -4,6 +4,10 @@ import Dashboard_Pais from "./Dashboard_Pais.jsx";
 import NewSenha from "./NewSenha";
 import Cadastro from "./Cadastro";
 import Pergunta_Comunicacao from "./Pergunta_Comunicacao.jsx";
+import Pergunta_Comportamento from "./Pergunta_Comportamento.jsx";
+import Pergunta_Alimentacao from "./Pergutna_Alimentacao.jsx";
+import Pergunta_HabilidadesSociais from "./Pergunta_HabSocial.jsx";
+import Pergunta_AutonomiaAutorregulacao from "./Pergunta_Autonomia.jsx";
 
 function App() {
   return (
@@ -23,7 +27,32 @@ function App() {
         </Routes>
         <Routes>
           <Route
-            path="/Pergunta_Comunicacao" element={<Pergunta_Comunicacao />}
+            path="/Pergunta_Comunicacao"
+            element={<Pergunta_Comunicacao />}
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/Pergunta_Comportamento"
+            element={<Pergunta_Comportamento />}
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/Pergunta_Alimentacao"
+            element={<Pergunta_Alimentacao />}
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/Pergunta_HabSocial"
+            element={<Pergunta_HabilidadesSociais />}
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/Pergunta_Autonomia"
+            element={<Pergunta_AutonomiaAutorregulacao />}
           />
         </Routes>
       </Router>
