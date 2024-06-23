@@ -21,10 +21,10 @@ function NewSenha() {
     const newErrors = {};
 
     if (newPassword === '') {
-      newErrors.newPassword = "É obrigatório";
+      newErrors.newPassword = "Campo obrigatório";
     }
     if (newPasswordAgain === '') {
-      newErrors.newPasswordAgain = "É obrigatório";
+      newErrors.newPasswordAgain = "Campo obrigatório";
     }
 
     if (Object.keys(newErrors).length > 0) {
