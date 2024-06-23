@@ -2,11 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Login.jsx";
 import Dashboard_Pais from "./Dashboard_Pais.jsx";
 import NewSenha from "./NewSenha";
-import Tela_Perguntas from "./Tela_Perguntas";
 import Cadastro from "./Cadastro";
+import Pergunta_Comunicacao from "./Pergunta_Comunicacao.jsx";
 
 function App() {
-  
   return (
     <div>
       <Router>
@@ -23,7 +22,10 @@ function App() {
           <Route path="/Cadastro" element={<Cadastro />} />
         </Routes>
         <Routes>
-          <Route path="/Tela_Perguntas" element={<Tela_Perguntas />} />
+          <Route
+            path="/Pergunta_Comunicacao"
+            element={<Pergunta_Comunicacao />}
+          />
         </Routes>
       </Router>
     </div>
