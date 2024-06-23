@@ -23,8 +23,7 @@ function App() {
         </Routes>
         <Routes>
           <Route
-            path="/Pergunta_Comunicacao"
-            element={<Pergunta_Comunicacao />}
+            path="/Pergunta_Comunicacao" element={<Pergunta_Comunicacao />}
           />
         </Routes>
       </Router>

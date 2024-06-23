@@ -11,6 +11,24 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
 function Cadastro(){
+  //Declaração de váriaveis de Estado
+  const [cliente, setCliente] = useState('');
+  const [cPFCnpj, setCPFCnpj] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordAgain, setPasswordAgain] = useState('');
+
+  // Função que tem evento ao enviar
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    //Verifica se as Senhas são Iguais
+    if (password !== passwordAgain) {
+      alert('As senhas não coincidem. Por favor, tente novamente.');
+      return;
+    }
+    alert('Cadastro feito com Sucesso: ' + cliente + "!");
+    
+  };
+
 
   {/*Estados e eventos de Plano*/} 
   const [plano, setPlano] = useState('');
@@ -33,7 +51,7 @@ function Cadastro(){
     return(
         <div className='min-h-screen flex items-center justify-center bg-blue-500 bg-cover bg-center'>
         {/*Fundo secundário*/}
-        <div className='bg-white w-[480px] h-[740px] rounded-[50px]'>
+        <form className='bg-white w-[480px] h-[740px] rounded-[50px]' onSubmit={handleSubmit}>
           {/*Logo e Slogan*/}
           <div className='bg-yellow-400 w-[440px] h-[150px] mt-5 ml-5 mr-5 rounded-[50px] flex items-center'>
             <img src={Logo} className='w-[220px] h-[170px] ml-5' alt='Logo' />
@@ -49,6 +67,7 @@ function Cadastro(){
               placeholder='Insira o nome...'
               variant="outlined" 
               className='bg-gray-200 w-full'
+              onChange={(e) => setCliente(e.target.value)}
             />
           </div>
 
@@ -62,6 +81,7 @@ function Cadastro(){
               placeholder='Insira o CPF/CNPFJ...'
               variant="outlined" 
               className='bg-gray-200 w-full'
+              onChange={(e) => setCPFCnpj(e.target.value)}
             />
           </div>
 
@@ -111,7 +131,7 @@ function Cadastro(){
                 ),
                 style: { borderRadius: '10px' }
               }}
-              InputLabelProps={{ style: { fontWeight: 'bold', color: 'black' } }}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           {/*Input de Confirmar Senha*/}
@@ -140,14 +160,14 @@ function Cadastro(){
                 ),
                 style: { borderRadius: '10px' }
               }}
-              InputLabelProps={{ style: { fontWeight: 'bold', color: 'black' } }}
+              onChange={(e) => setPasswordAgain(e.target.value)}
             />
           </div>
           {/*Botão de enviar*/}
           <div className="text-center">
-            <GreenButton />
+            <GreenButton type="submit"/>
           </div>
-        </div>
+        </form>
       </div>
     );
 }

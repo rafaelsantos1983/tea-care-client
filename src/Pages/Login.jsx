@@ -13,16 +13,17 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 
 function Login() {
-  // Estado do ID
+  // Estado do ID e da Senha
   const [idPerson, setIdPerson] = useState('');
   const [password, setPassword] = useState('');
   
   // Função que tem evento ao enviar
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Dados Enviados");
-    alert('Dados Enviados!!' + idPerson + password);
-
+    alert('Bem-Vindo: ' + idPerson + "!");
+    
+    //Leva para o Dashboard dos pais
+    window.location.href = '/Dashboard_Pais';
   };
 
   // Estados da Senha
