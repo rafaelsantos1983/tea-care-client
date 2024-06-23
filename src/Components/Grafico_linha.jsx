@@ -1,57 +1,60 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-// npm install react-apexcharts
-
 class Grafico_linha extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-          
-      series: [{
-          name: "Nível",
-          data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-      }],
       options: {
         chart: {
           toolbar: {
-            show: false, 
+            show: false,
           },
           height: 350,
           type: 'line',
           zoom: {
-            enabled: false
-          }
+            enabled: false,
+          },
         },
+        colors: ['#043058', '#FF3547'],
         dataLabels: {
-          enabled: false
+          enabled: false,
         },
         stroke: {
-          curve: 'straight'
+          width: [5, 3],
+          curve: 'straight',
+          dashArray: [0, 5],
         },
         grid: {
           row: {
-            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-            opacity: 0.5
+            colors: ['#f3f3f3', 'transparent'],
+            opacity: 0.5,
           },
         },
         xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-        }
+          categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set'],
+        },
       },
-    
-    
+      series: []
     };
   }
 
-
+  //pegando os dados para formar o gráfico
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.data.series !== prevState.series) {
+      return {
+        series: nextProps.data.series
+      };
+    }
+    return null;
+  }
 
   render() {
     return (
       <div>
         <div id="chart">
-          <ReactApexChart options={this.state.options} series={this.state.series} type="line" height={350} width={650}/>
+          <ReactApexChart options={this.state.options} series={this.state.series} type="line" height={350} width={650} />
         </div>
         <div id="html-dist"></div>
       </div>

@@ -34,11 +34,11 @@ class Radar extends React.Component {
             }
           }
         },
-        colors: ['#FF4560'],
+        colors: ['#043058'],
         markers: {
           size: 4,
-          colors: ['#fff'],
-          strokeColor: '#FF4560',
+          colors: ['#043058'],
+          strokeColor: '#043058',
           strokeWidth: 2,
         },
         tooltip: {

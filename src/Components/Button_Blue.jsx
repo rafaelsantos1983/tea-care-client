@@ -1,25 +1,24 @@
 import Button from "@mui/material/Button";
-
 import PropTypes from "prop-types";
 
 const customButtonStyle = {
-  backgroundColor: "#043058", // Cor verde clara
-  width: "250px",
-  height: "50px", // Altura aumentada para 40px para melhorar a legibilidade
-  color: "#FFE01D", // Texto branco
+  backgroundColor: "#034287", 
+  width: "200px",
+  height: "50px", 
+  color: "#ffffff", 
   "&:hover": {
-    backgroundColor: "#689f38", // Cor mais escura ao passar o mouse
+    backgroundColor: "#043058", 
   },
 };
 
 BlueButton.propTypes = {
   text: PropTypes.string,
-  tipo: PropTypes.string,
+  onClick: PropTypes.func
 };
 
-function BlueButton({ text, tipo }) {
+function BlueButton({text, onClick}) {
   return (
-    <Button variant="contained" style={customButtonStyle} type={tipo}>
+    <Button onClick={onClick} variant="contained" sx={customButtonStyle}>
       {text}
     </Button>
   );
