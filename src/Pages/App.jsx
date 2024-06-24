@@ -8,6 +8,7 @@ import Pergunta_Comportamento from "./Pergunta_Comportamento.jsx";
 import Pergunta_Alimentacao from "./Pergutna_Alimentacao.jsx";
 import Pergunta_HabilidadesSociais from "./Pergunta_HabSocial.jsx";
 import Pergunta_AutonomiaAutorregulacao from "./Pergunta_Autonomia.jsx";
+import Dashboard_PsicoPedagogo from "./Dashboard_PsicoPedagogo.jsx";
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/Dashboard_Pais" element={<Dashboard_Pais />} />
+        </Routes>
+        <Routes>
+          <Route path="/Dashboard_PsicoPedagogo" element={<Dashboard_PsicoPedagogo />} />
         </Routes>
         <Routes>
           <Route path="/NewSenha" element={<NewSenha />} />
