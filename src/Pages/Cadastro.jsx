@@ -10,6 +10,8 @@ import IconButton from '@mui/material/IconButton';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
+
+
 function Cadastro() {
   //Declaração de váriaveis de Estado
   const [cliente, setCliente] = useState('');

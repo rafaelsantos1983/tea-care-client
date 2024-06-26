@@ -19,33 +19,79 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // Função que tem evento ao enviar
-  const handleSubmit = (event) => {
+  // Função que trata o envio do formulário
+  const handleSubmit = async (event) => {
     event.preventDefault();
     
+    const newErrors = {};
     
-    const newErrors = {};//Lista de Campos vazios
-    //Verificação de Preenchimento dos campos
-    if (idPerson== '') {
+    // Verificação de preenchimento dos campos
+    if (idPerson === '') {
       newErrors.idPerson = "ID é obrigatório";
       alert("Preencha Campos Obrigatórios!");
     }
-    if (password== '') {
+    if (password === '') {
       newErrors.password = "Senha é obrigatória";
       alert("Preencha Campos Obrigatórios!");
     }
-     //Verifica se campos vazios contêm itens
+    
+    // Verifica se há erros nos campos
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
     
-    alert('Bem-Vindo: ' + idPerson + "!");
-    // Leva para o Dashboard dos pais
-    window.location.href = '/Dashboard_Pais';
+    /*let person;  
+    // Simulação de autenticação local
+    if (idPerson === '12345' && password === '123') {
+      person = { userType: 'Pai' }; // Simulação de usuário Pai
+    } else {
+      person = { userType: 'Profissional' }; // Simulação de usuário Profissional
+    }
+
+    if (person.userType === 'Pai') {
+      alert('Bem-Vindo, Pai: ' + idPerson + "!");
+      // Redirecionamento para o Dashboard dos pais
+      window.location.href = '/Dashboard_Pais';
+    } else if (person.userType === 'Profissional') {
+      alert('Bem-Vindo, Profissional: ' + idPerson + "!");
+      // Redirecionamento para o Dashboard dos profissionais
+      window.location.href = '/Dashboard_PsicoPedagogo';
+    }*/
+
+    
+    try {
+      // Código para fazer a requisição POST com fetch
+      const response = await fetch('http://localhost:5173/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idPerson, password }), //Resultado da requisição eh uma string com esses dados
+      });
+    
+      const data = await response.json();// Espera a resposta
+        //Faz a verificação da resposta
+      if (response.ok) {
+        alert('Bem-Vindo, ' + idPerson + "!");
+        //Faz verificação do tipo de Usuário
+        if (data.userType === 'Pai') {
+          window.location.href = '/Dashboard_Pais'; //Leva para o dash dos pais
+        } else if (data.userType === 'Profissional') {
+          window.location.href = '/Dashboard_PsicoPedagogo'; //Leva para o dash dos profissionais
+        } else {
+          alert(data.message);
+
+        }
+      }
+    } catch (error) {
+      console.error('Erro:', error);
+      alert('Dados Inválidos!');
+    }
+    
   };
   
-  // Mostra/Esconde Senha
+  // Função para mostrar/esconder senha
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -100,7 +146,7 @@ function Login() {
             type={showPassword ? 'text' : 'password'}
             placeholder='Insira sua senha...'
             variant="outlined"
-            className={`w-full rounded-[10px] ${errors.password ? 'bg-red-200' : 'bg-gray-200'}`}          
+            className={`w-full rounded-[10px] ${errors.password ? 'bg-red-200' : 'bg-gray-200'} `}          
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
