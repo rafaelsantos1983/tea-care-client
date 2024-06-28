@@ -106,15 +106,15 @@ function Login() {
           <img src={Logo} className='w-[220px] h-[170px] ml-5' alt='Logo' />
           <h1 className='font-bold text-2xl text-center mr-10'>CUIDADO A CADA MOMENTO</h1>
         </div>
-        {/* Input do ID */}
+        {/* Input do Email */}
         <div className='m-10'>
           <InputLabel htmlFor="input-with-icon-adornment">
-            <p className='font-bold text-gray-950'>ID Responsável</p>
+            <p className='font-bold text-gray-950'>Email</p>
           </InputLabel>
           <TextField 
             id="input-with-icon-adornment" 
             name="idPerson"
-            placeholder='Insira seu ID...'
+            placeholder='Insira seu Email...'
             variant="outlined" 
             className={`w-full rounded-[10px] ${errors.password ? 'bg-red-200' : 'bg-gray-200'}`}
             InputProps={{
