@@ -41,25 +41,9 @@ function Login() {
       return;
     }
     
-    /*let person;  
-    // Simulação de autenticação local
-    if (idPerson === '12345' && password === '123') {
-      person = { userType: 'Pai' }; // Simulação de usuário Pai
-    } else {
-      person = { userType: 'Profissional' }; // Simulação de usuário Profissional
-    }
 
-    if (person.userType === 'Pai') {
-      alert('Bem-Vindo, Pai: ' + idPerson + "!");
-      // Redirecionamento para o Dashboard dos pais
-      window.location.href = '/Dashboard_Pais';
-    } else if (person.userType === 'Profissional') {
-      alert('Bem-Vindo, Profissional: ' + idPerson + "!");
-      // Redirecionamento para o Dashboard dos profissionais
-      window.location.href = '/Dashboard_PsicoPedagogo';
-    }*/
+    //Rota pra listar pacientes
 
-    
     try {
       // Código para fazer a requisição POST com fetch
       const response = await fetch('http://localhost:5173/login', {

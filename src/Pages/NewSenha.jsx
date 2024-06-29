@@ -3,50 +3,28 @@ import Logo from '../Imagens/LOGO_TEACARE.png';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GreenButton from '../Components/Button_Green'; // Certifique-se de que o caminho esteja correto
 
 function NewSenha() {
   // Variáveis de Estado
-  const [newPassword, setNewPassword] = useState('');
-  const [newPasswordAgain, setNewPasswordAgain] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({}); // Adiciona estado para erros
+  const [email, setEmail] = useState('');
+  const [errors, setErrors] = useState({});
 
   // Função que tem evento ao enviar
   const handleSubmit = (event) => {
     event.preventDefault();
     const newErrors = {};
 
-    if (newPassword === '') {
-      newErrors.newPassword = "Campo obrigatório";
-    }
-    if (newPasswordAgain === '') {
-      newErrors.newPasswordAgain = "Campo obrigatório";
+    if (email === '') {
+      newErrors.email = "Campo obrigatório";
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      alert("Preencha Campos Obrigatórios!");
-      return;
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      alert('Email enviado com sucesso!');
     }
 
-    if (newPassword !== newPasswordAgain) {
-      alert('As senhas não coincidem. Por favor, tente novamente.');
-      setNewPassword('');
-      setNewPasswordAgain('');
-      return;
-    }
-
-    alert('Senha alterada com Sucesso!');
-    window.location.href = '/Dashboard_Pais';
-  };
-
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
   };
 
   return (
@@ -58,79 +36,29 @@ function NewSenha() {
           <img src={Logo} className='w-[220px] h-[170px] ml-5' alt='Logo' />
           <h1 className='font-bold text-2xl text-center mr-10'>CUIDADO A CADA MOMENTO</h1>
         </div>
-        {/* Input de Nova Senha */}
+        {/* Input de Email */}
         <div className='m-10'>
-          <InputLabel htmlFor="new-password-input" className='font-bold text-gray-950'>
-            <p className='font-bold text-gray-950'>Nova Senha</p>
+          <InputLabel htmlFor="email-input" className='font-bold text-gray-950'>
+            <p className='font-bold text-gray-950'>Email de Recuperação</p>
           </InputLabel>
           <TextField
-            id="new-password-input"
-            type={showPassword ? 'text' : 'password'}
-            placeholder='Digite nova senha...'
+            id="email-input"
+            type='email'
+            placeholder='Digite email...'
             variant="outlined"
-            className={`w-full rounded-[10px] ${errors.newPassword ? 'bg-red-200' : 'bg-gray-200'}`}
+            className={`w-full rounded-[10px] ${errors.email ? 'bg-red-200' : 'bg-gray-200'}`}
             InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
               style: { borderRadius: '10px' }
             }}
-            error={!!errors.newPassword}
-            helperText={errors.newPassword}
             InputLabelProps={{ style: { fontWeight: 'bold', color: 'black' } }}
             onChange={(e) => {
-              setNewPassword(e.target.value);
-              if (errors.newPassword) {
-                setErrors((prev) => ({ ...prev, newPassword: '' }));
-              }
+              setEmail(e.target.value);
             }}
-            value={newPassword}
+            value={email}
           />
+          {errors.email && <p className="text-red-500">{errors.email}</p>}
         </div>
-        {/* Input de Confirmar Nova Senha */}
-        <div className='m-10'>
-          <InputLabel htmlFor="confirm-new-password-input" className='font-bold text-gray-950'>
-            <p className='font-bold text-gray-950'>Confirme Nova Senha</p>
-          </InputLabel>
-          <TextField
-            id="confirm-new-password-input"
-            type={showPassword ? 'text' : 'password'}
-            placeholder='Digite novamente a senha...'
-            variant="outlined"
-            className={`w-full rounded-[10px] ${errors.newPasswordAgain ? 'bg-red-200' : 'bg-gray-200'}`}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-              style: { borderRadius: '10px' }
-            }}
-            error={!!errors.newPasswordAgain}
-            helperText={errors.newPasswordAgain}
-            onChange={(e) => {
-              setNewPasswordAgain(e.target.value);
-              if (errors.newPasswordAgain) {
-                setErrors((prev) => ({ ...prev, newPasswordAgain: '' }));
-              }
-            }}
-            value={newPasswordAgain}
-          />
-        </div>
+
         {/* Botão de enviar */}
         <div className="text-center">
           <GreenButton type="submit" />
