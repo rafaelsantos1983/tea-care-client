@@ -13,11 +13,12 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 
 function Login() {
-  // Estado do ID, da Senha e dos erros
-  const [idPerson, setIdPerson] = useState('');
+  // Estado do email, senha, erros e mensagens de alerta
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [alertMessage, setAlertMessage] = useState('');
 
   // Função que trata o envio do formulário
   const handleSubmit = async (event) => {
@@ -26,53 +27,57 @@ function Login() {
     const newErrors = {};
     
     // Verificação de preenchimento dos campos
-    if (idPerson === '') {
-      newErrors.idPerson = "ID é obrigatório";
-      alert("Preencha Campos Obrigatórios!");
+    if (email === '') {
+      newErrors.email = "Campo obrigatório";
     }
     if (password === '') {
-      newErrors.password = "Senha é obrigatória";
-      alert("Preencha Campos Obrigatórios!");
+      newErrors.password = "Campo obrigatório";
     }
     
     // Verifica se há erros nos campos
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setAlertMessage("Preencha Campos Obrigatórios!");
       return;
     }
-    
-
-    //Rota pra listar pacientes
 
     try {
       // Código para fazer a requisição POST com fetch
-      const response = await fetch('http://localhost:5173/login', {
+      const response = await fetch('http://localhost:5173/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ idPerson, password }), //Resultado da requisição eh uma string com esses dados
+        body: JSON.stringify({ email, password }),
       });
-    
-      const data = await response.json();// Espera a resposta
-        //Faz a verificação da resposta
-      if (response.ok) {
-        alert('Bem-Vindo, ' + idPerson + "!");
-        //Faz verificação do tipo de Usuário
-        if (data.userType === 'Pai') {
-          window.location.href = '/Dashboard_Pais'; //Leva para o dash dos pais
-        } else if (data.userType === 'Profissional') {
-          window.location.href = '/Dashboard_PsicoPedagogo'; //Leva para o dash dos profissionais
-        } else {
-          alert(data.message);
 
-        }
+      setAccessToken(response?.accesToken || ''); //TENHO Q FZR A DROGA DO ACCESTOKEN DPS
+
+      // Check if response is OK
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Dados Inválidos');
+      }
+
+      // Check if response is valid JSON
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        throw new Error('Resposta do servidor não é JSON válida.');
+      }
+
+      // Faz a verificação da resposta
+      if (data.accesToken) { // Supondo que a resposta tem um campo de sucesso
+        alert('Bem-Vindo, ' + email + "!");
+        window.location.href = '/Pacientes'; // Leva para home(pacientes)
+      } else {
+        setAlertMessage(data.message || 'Dados Inválidos!');
       }
     } catch (error) {
       console.error('Erro:', error);
-      alert('Dados Inválidos!');
+      setAlertMessage(error.message || 'Dados Inválidos!');
     }
-    
   };
   
   // Função para mostrar/esconder senha
@@ -91,16 +96,16 @@ function Login() {
           <h1 className='font-bold text-2xl text-center mr-10'>CUIDADO A CADA MOMENTO</h1>
         </div>
         {/* Input do Email */}
-        <div className='m-10'>
+        <div className='m-8'>
           <InputLabel htmlFor="input-with-icon-adornment">
             <p className='font-bold text-gray-950'>Email</p>
           </InputLabel>
           <TextField 
             id="input-with-icon-adornment" 
-            name="idPerson"
+            name="email"
             placeholder='Insira seu Email...'
             variant="outlined" 
-            className={`w-full rounded-[10px] ${errors.password ? 'bg-red-200' : 'bg-gray-200'}`}
+            className={`w-full rounded-[10px] ${errors.email ? 'bg-red-200' : 'bg-gray-200'}`}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -109,18 +114,18 @@ function Login() {
               ),
               style: { borderRadius: '10px' }
             }}
-            error={!!errors.idPerson}
-            helperText={errors.idPerson}
+            error={!!errors.email}
+            helperText={errors.email}
             onChange={(e) => {
-              setIdPerson(e.target.value);
-              if (errors.idPerson) {
-                setErrors((prev) => ({ ...prev, idPerson: '' }));
+              setEmail(e.target.value);
+              if (errors.email) {
+                setErrors((prev) => ({ ...prev, email: '' }));
               }
             }}
           />
         </div>
         {/* Input da Senha e Link de Esqueceu a Senha */}
-        <div className='m-10'>
+        <div className='m-8'>
           <InputLabel htmlFor="password-input">
             <p className='font-bold text-gray-950'>Senha</p>
           </InputLabel>
@@ -130,7 +135,7 @@ function Login() {
             type={showPassword ? 'text' : 'password'}
             placeholder='Insira sua senha...'
             variant="outlined"
-            className={`w-full rounded-[10px] ${errors.password ? 'bg-red-200' : 'bg-gray-200'} `}          
+            className={`w-full rounded-[10px] ${errors.password ? 'bg-red-200' : 'bg-gray-200'}`}          
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -159,6 +164,12 @@ function Login() {
             <Link href="/NewSenha">Esqueceu a Senha?</Link>
           </p>
         </div>
+        {/* Alert message */}
+        {alertMessage && (
+          <div className="text-red-500 text-center mb-4">
+            {alertMessage}
+          </div>
+        )}
         {/* Botão de enviar */}
         <div className="text-center">
           <GreenButton type="submit" />
