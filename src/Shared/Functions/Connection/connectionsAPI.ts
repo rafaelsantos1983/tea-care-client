@@ -2,6 +2,8 @@ import axios from "axios";
 import { MethodsEnum } from "../../enums/methods.enum";
 import { ERROR_ACCESS_DENIED, ERROR_CONNECTION } from "../../Constants/errosStatus";
 
+
+//Metodos de conexão da API
 export default class ConnectionAPI {
     static async call<T>(url: string, method: MethodsEnum, body?: Object): Promise<T> {
         switch (method) {
@@ -38,7 +40,7 @@ export default class ConnectionAPI {
     }
 }
 
-//Funções para tratar erros
+//EXPORTANDO AS FUNÇÕES DA API
 
 export const connectionAPIGet = async <T>(url: string): Promise<T> => {
     return ConnectionAPI.connect<T>(url, MethodsEnum.GET);

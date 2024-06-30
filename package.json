@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "react-scripts start",
+    "backend":"json-server --watch db.json --port 5174", //porta do servidor
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",

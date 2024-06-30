@@ -1,3 +1,4 @@
+//Funções da API
 export enum MethodsEnum {
     GET = 'GET',
     POST = 'POST',

@@ -1,7 +1,7 @@
 
 //Função para salvar diretamente no localstorage
 //funções de manipulação de armazenamento local do módulo localStorageProxy.
-export const setItemStorage = (key: string, value: string) => localStorage.setItem(key, value);
+export const setItemStorage = (key: string, value: string) => localStorage.setItem(key, value); //coloca algo no local storage
 
 export const removeItemStorage = (key: string) => localStorage.removeItem(key); // remove algo do local storage
 

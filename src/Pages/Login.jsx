@@ -15,24 +15,26 @@ import { setItemStorage } from '../Shared/Functions/Connection/localStorageProxy
 import { connectionAPIPost } from '../Shared/Functions/Connection/connectionsAPI';
 
 function Login() {
+  //Vars de estado
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [alertMessage, setAlertMessage] = useState('');
-
+  // Função que ativa evento ao enviar
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Evita que a pag recarregue
     
-    const newErrors = {};
+    const newErrors = {}; //Lista para guardar erros
     
+    // Verifica se os campos estão vazios
     if (email === '') {
         newErrors.email = "Campo obrigatório";
     }
     if (password === '') {
         newErrors.password = "Campo obrigatório";
     }
-    
+    // Verifica se a lista tem objetos
     if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
         setAlertMessage("Preencha Campos Obrigatórios!");
@@ -40,24 +42,27 @@ function Login() {
     }
 
     try {
-        // Ajuste o endpoint e a estrutura para o JSON Server
-        const response = await connectionAPIPost('http://localhost:5173/users', { email, password });
+        //pega a resposta do endpoint
+        const response = await connectionAPIPost('http://localhost:5174/users', { email, password });
         
-        // Verifique a resposta e ajuste conforme necessário
+        // Verifica a resposta
         if (response && response.id) {
-            // Supondo que a resposta tem um ID se o login for bem-sucedido
+            // Se a respsota for OK
             setItemStorage('accessToken', response.accessToken); 
             alert('Bem-Vindo, ' + email + "!");
             window.location.href = '/Pacientes'; 
         } else {
+          //dados inválidos
             setAlertMessage('Usuário ou senha incorretos!');
         }
     } catch (error) {
+      // ERRO DE CONEXÃO :(
         console.error('Erro:', error);
         setAlertMessage(error.message || 'Erro de conexão!');
     }
   };
 
+  //Para esconder a senha
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -65,11 +70,14 @@ function Login() {
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-blue-500 bg-cover bg-center'>
+      {/*Fundo branco*/}
       <form className='bg-white w-[480px] h-[620px] rounded-[50px]' onSubmit={handleSubmit}>
+        {/*Fundo amarelo com Logo*/}
         <div className='bg-yellow-400 w-[440px] h-[150px] mt-5 ml-5 mr-5 rounded-[50px] flex items-center'>
           <img src={Logo} className='w-[220px] h-[170px] ml-5' alt='Logo' />
           <h1 className='font-bold text-2xl text-center mr-10'>CUIDADO A CADA MOMENTO</h1>
         </div>
+        {/*Input Email*/}
         <div className='m-8'>
           <InputLabel htmlFor="input-with-icon-adornment">
             <p className='font-bold text-gray-950'>Email</p>
@@ -98,6 +106,7 @@ function Login() {
             }}
           />
         </div>
+        {/*Input Senha e Esqueci senha*/}
         <div className='m-8'>
           <InputLabel htmlFor="password-input">
             <p className='font-bold text-gray-950'>Senha</p>
@@ -137,14 +146,17 @@ function Login() {
             <Link href="/NewSenha">Esqueceu a Senha?</Link>
           </p>
         </div>
+        {/*MENSAGEM VERMELHA DE ERRO!!!!*/}
         {alertMessage && (
           <div className="text-red-500 text-center mb-4">
             {alertMessage}
           </div>
         )}
+        {/*bOTÃO DE ENVIAR*/}
         <div className="text-center">
           <GreenButton type="submit" />
         </div>
+        {/*lEMBR DE MIM*/}
         <div className='text-center'>
           <FormControlLabel control={<Checkbox />} label="Lembre de mim" />
         </div>
