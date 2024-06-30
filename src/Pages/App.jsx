@@ -14,64 +14,22 @@ import Tela_Geral from "./Visao_Geral.jsx";
 
 function App() {
   return (
-    <div>
-      <Router>
-        <Routes>
-          <Route exact path="/" element={<Login />} />
-        </Routes>
-        <Routes>
-          <Route path="/Dashboard_Pais" element={<Dashboard_Pais />} />
-        </Routes>
-        <Routes>
-          <Route
-            path="/Dashboard_PsicoPedagogo"
-            element={<Dashboard_PsicoPedagogo />}
-          />
-        </Routes>
-        <Routes>
-          <Route path="/NewSenha" element={<NewSenha />} />
-        </Routes>
-        <Routes>
-          <Route path="/Pacientes" element={<Pacientes />} />
-        </Routes>
-        <Routes>
-          <Route path="/Cadastro" element={<Cadastro />} />
-        </Routes>
-        <Routes>
-          <Route
-            path="/Pergunta_Comunicacao"
-            element={<Pergunta_Comunicacao />}
-          />
-        </Routes>
-        <Routes>
-          <Route
-            path="/Pergunta_Comportamento"
-            element={<Pergunta_Comportamento />}
-          />
-        </Routes>
-        <Routes>
-          <Route
-            path="/Pergunta_Alimentacao"
-            element={<Pergunta_Alimentacao />}
-          />
-        </Routes>
-        <Routes>
-          <Route
-            path="/Pergunta_HabSocial"
-            element={<Pergunta_HabilidadesSociais />}
-          />
-        </Routes>
-        <Routes>
-          <Route
-            path="/Pergunta_Autonomia"
-            element={<Pergunta_AutonomiaAutorregulacao />}
-          />
-        </Routes>
-        <Routes>
-          <Route path="/visao_geral" element={<Tela_Geral />} />
-        </Routes>
-      </Router>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/Dashboard_Pais" element={<Dashboard_Pais />} />
+        <Route path="/Dashboard_PsicoPedagogo" element={<Dashboard_PsicoPedagogo />} />
+        <Route path="/NewSenha" element={<NewSenha />} />
+        <Route path="/Pacientes" element={<Pacientes />} />
+        <Route path="/Cadastro" element={<Cadastro />} />
+        <Route path="/Pergunta_Comunicacao" element={<Pergunta_Comunicacao />} />
+        <Route path="/Pergunta_Comportamento" element={<Pergunta_Comportamento />} />
+        <Route path="/Pergunta_Alimentacao" element={<Pergunta_Alimentacao />} />
+        <Route path="/Pergunta_HabilidadesSociais" element={<Pergunta_HabilidadesSociais />} />
+        <Route path="/Pergunta_Autonomia" element={<Pergunta_AutonomiaAutorregulacao />} />
+        <Route path="/visao_geral" element={<Tela_Geral />} />
+      </Routes>
+    </Router>
   );
 }
 

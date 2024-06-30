@@ -1,0 +1,12 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "email": "test@example.com",
+        "password": "123",
+        "accessToken": "mocked_access_token"
+      }
+      
+    ]
+  }
+  
