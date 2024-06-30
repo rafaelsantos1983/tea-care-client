@@ -81,7 +81,7 @@ function Dashboard_Pais() {
        
         
         <div className="flex flex-row w-[1300px] justify-center items-center mb-8">
-          <div className="bg-white w-[900px] h-[450px] rounded-[50px] flex flex-col items-center pt-6 mb-8 ml-8">
+          <div className="bg-white w-[900px] h-[450px] rounded-[50px] flex flex-col items-center justify-center pt-6 pr-6 mb-8 ml-8">
             <h1 className="font-bold text-3xl">{skillTitles[selectedSkill]}</h1>
             <Grafico_linha data={skillData[selectedSkill]}/>
           </div>
