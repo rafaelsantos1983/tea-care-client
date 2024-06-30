@@ -26,13 +26,13 @@ export default function Formulario({ questions }) {
 
   return (
     <div className="grid justify-items-center py-4">
-      <div className="px-2 bg-slate-200 w-11/12 border-x border-y rounded border-slate-800 grid ">
+      <div className="px-2 bg-white w-11/12 border-x border-y rounded grid ">
         <form onSubmit={handleSubmit}>
           {questions.perguntas.map((pergunta, questionIndex) => {
             const numOptions = pergunta.alternativas.length;
             return (
               <div key={questionIndex} className="mt-2">
-                <p className="font-semibold">{`Pergunta ${questionIndex + 1}: ${
+                <p className="font-semibold">{`${
                   pergunta.pergunta
                 }`}</p>
                 {pergunta.alternativas.map((alternativa, optionIndex) => {

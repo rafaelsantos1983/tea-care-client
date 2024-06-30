@@ -10,7 +10,7 @@ import Pergunta_HabilidadesSociais from "./Pergunta_HabSocial.jsx";
 import Pergunta_AutonomiaAutorregulacao from "./Pergunta_Autonomia.jsx";
 import Dashboard_PsicoPedagogo from "./Dashboard_PsicoPedagogo.jsx";
 import Pacientes from "./Pacientes.jsx";
-import Tela_Geral from "./Tela_Geral.jsx";
+import Tela_Geral from "./Visao_Geral.jsx";
 
 function App() {
   return (
@@ -68,7 +68,7 @@ function App() {
           />
         </Routes>
         <Routes>
-          <Route path="/telageral" element={<Tela_Geral />} />
+          <Route path="/visao_geral" element={<Tela_Geral />} />
         </Routes>
       </Router>
     </div>
