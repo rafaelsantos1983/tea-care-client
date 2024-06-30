@@ -9,12 +9,13 @@ function NewSenha() {
   // Variáveis de Estado
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState({});
+  const [alertMessage, setAlertMessage] = useState('');
 
   // Função que tem evento ao enviar
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const newErrors = {};
-
+    
     if (email === '') {
       newErrors.email = "Campo obrigatório";
     }
@@ -22,12 +23,28 @@ function NewSenha() {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      alert('Email enviado com sucesso!');
-      window.location.href = '/';
+      try {
+        const response = await fetch('https://localhost:4005/api/recover-password', { // ROTA PARA RECUPERAR SENHA!!!!!
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Origin': 'praxis',
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        if (response.ok) {
+          alert('Email enviado com sucesso!');
+          window.location.href = '/';
+        } else {
+          setAlertMessage('Erro ao enviar o email.');
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        setAlertMessage('Erro ao enviar o email.');
+      }
     }
-
   };
-
   return (
     <div className='min-h-screen flex items-center justify-center bg-blue-500 bg-cover bg-center'>
       {/* Fundo secundário */}
@@ -59,7 +76,12 @@ function NewSenha() {
           />
           {errors.email && <p className="text-red-500">{errors.email}</p>}
         </div>
-
+        {/*MENSAGEM VERMELHA DE ERRO!!!!*/}
+        {alertMessage && (
+          <div className="text-red-500 text-center mb-4">
+            {alertMessage}
+          </div>
+        )}
         {/* Botão de enviar */}
         <div className="text-center ">
           <GreenButton type="submit" />
@@ -67,6 +89,10 @@ function NewSenha() {
       </form>
     </div>
   );
-}
+
+
+  };
+
+  
 
 export default NewSenha;
