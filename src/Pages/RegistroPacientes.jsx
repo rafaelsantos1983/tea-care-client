@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import Banner from "../Components/Banner";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const PatientRegistration = () => {
   const [patients, setPatients] = useState([]);
   const [newPatientName, setNewPatientName] = useState("");
   const [editingPatient, setEditingPatient] = useState(null);
   const [editingName, setEditingName] = useState("");
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleAddPatient = () => {
     if (newPatientName.trim()) {
@@ -43,7 +43,7 @@ const PatientRegistration = () => {
 
   const handleViewPatients = () => {
     // Navega para a página Pacientes.jsx, passando o array de pacientes como state
-    history.push("/Pacientes", { patients });
+    navigate("/Pacientes", { state: { patients } });
   };
 
   return (
