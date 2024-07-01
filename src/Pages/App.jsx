@@ -11,6 +11,7 @@ import Pergunta_AutonomiaAutorregulacao from "./Pergunta_Autonomia.jsx";
 import Dashboard_PsicoPedagogo from "./Dashboard_PsicoPedagogo.jsx";
 import Pacientes from "./Pacientes.jsx";
 import Tela_Geral from "./Visao_Geral.jsx";
+import PatientRegistration from "./RegistroPacientes.jsx";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/Dashboard_PsicoPedagogo" element={<Dashboard_PsicoPedagogo />} />
         <Route path="/NewSenha" element={<NewSenha />} />
         <Route path="/Pacientes" element={<Pacientes />} />
+        <Route path="/RegistroPacientes" element={<PatientRegistration />} />
         <Route path="/Cadastro" element={<Cadastro />} />
         <Route path="/Pergunta_Comunicacao" element={<Pergunta_Comunicacao />} />
         <Route path="/Pergunta_Comportamento" element={<Pergunta_Comportamento />} />
