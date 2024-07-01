@@ -1,26 +1,25 @@
 import PropTypes from "prop-types";
-import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import PersonIcon from '@mui/icons-material/Person';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogTitle from '@mui/material/DialogTitle';
-import Button from '@mui/material/Button';
+import * as React from "react";
+import { useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import Avatar from "@mui/material/Avatar";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import PersonIcon from "@mui/icons-material/Person";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
 
 import Logo from "../Imagens/LOGO_TEACARE.png";
 
 //Deixando todas as opções no menu inicialmente, mas irá ter verificação de permissão por funcionalidade
-const settings = ['Perfil', 'Pacientes', 'Configurações', 'Logout'];
+const settings = ["Perfil", "Pacientes", "Configurações", "Logout"];
 
 function Banner({ name, description, skill }) {
-
   const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -36,18 +35,17 @@ function Banner({ name, description, skill }) {
   //redireciona dependendo do botão clicado
   const handleMenuClick = (setting) => {
     handleCloseUserMenu();
-    if (setting === 'Perfil') {
+    if (setting === "Perfil") {
       //tela perfil ainda não criada
       //navigate('/perfil');
-    } else if (setting === 'Pacientes') {
-      navigate('/pacientes');
-    } else if (setting === 'Configurações') {
+    } else if (setting === "Pacientes") {
+      navigate("/pacientes");
+    } else if (setting === "Configurações") {
       //tela de configurações ainda não criada
       //navigate('/configuracoes');
-    } else if (setting === 'Logout') {
+    } else if (setting === "Logout") {
       // abre a janela de confirmação
       setOpenDialog(true);
-      
     }
   };
 
@@ -56,44 +54,45 @@ function Banner({ name, description, skill }) {
     localStorage.clear();
     setOpenDialog(false);
     //leva de volta para o login
-    navigate('/');
+    navigate("/");
   };
 
   return (
     <div className="bg-[#FFE01D] rounded-b-[30px] overflow-hidden h-[90px] flex items-center justify-between px-4">
       <div className="flex items-center">
-      <Box sx={{ flexGrow: 0 }}>
-            <Tooltip>
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar sx={{ width: 60, height: 60, backgroundColor: '#034287' }}>
-                <PersonIcon sx={{ color: '#ffffff'}}/>
+        <Box sx={{ flexGrow: 0 }}>
+          <Tooltip>
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <Avatar
+                sx={{ width: 60, height: 60, backgroundColor: "#034287" }}
+              >
+                <PersonIcon sx={{ color: "#ffffff" }} />
               </Avatar>
-              
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={() => handleMenuClick(setting)}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+            </IconButton>
+          </Tooltip>
+          <Menu
+            sx={{ mt: "45px" }}
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
+          >
+            {settings.map((setting) => (
+              <MenuItem key={setting} onClick={() => handleMenuClick(setting)}>
+                <Typography textAlign="center">{setting}</Typography>
+              </MenuItem>
+            ))}
+          </Menu>
+        </Box>
         {/* Ajuste o tamanho conforme necessário */}
         <div className="flex flex-col ml-5">
           <div className="text-black text-xl font-bold">{name}</div>{" "}
@@ -113,7 +112,9 @@ function Banner({ name, description, skill }) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Tem certeza que deseja sair?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {"Tem certeza que deseja sair?"}
+        </DialogTitle>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)} color="error">
             Não

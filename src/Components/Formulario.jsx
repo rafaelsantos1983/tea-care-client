@@ -32,9 +32,7 @@ export default function Formulario({ questions }) {
             const numOptions = pergunta.alternativas.length;
             return (
               <div key={questionIndex} className="mt-2">
-                <p className="font-semibold">{`${
-                  pergunta.pergunta
-                }`}</p>
+                <p className="font-semibold">{`${pergunta.pergunta}`}</p>
                 {pergunta.alternativas.map((alternativa, optionIndex) => {
                   const optionValue = numOptions - optionIndex;
                   return (
