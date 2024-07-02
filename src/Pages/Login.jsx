@@ -44,20 +44,25 @@ function Login() {
 
     try {
         // Pega a resposta do endpoint
+        console.log(JSON.stringify({ email, password }))
         const response = await fetch('http://localhost:3005/api/signin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Origin': 'http://localhost:5173', // Certifique-se de que a origem está correta
+          },
+          body: JSON.stringify({ email, password })
         });
+        
         
         const data = await response.json();
 
+        console.log(data)
+
         // Verifica a resposta
-        if (response.ok && data.id) {
+        if (response.ok && data.token) {
             // Se a resposta for OK
-            setItemStorage('accessToken', data.accessToken);
+            setItemStorage('accessToken', data.token);
             alert('Bem-Vindo, ' + email + "!");
             window.location.href = '/Pacientes';
         } else {
