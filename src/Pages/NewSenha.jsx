@@ -24,7 +24,7 @@ function NewSenha() {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        const response = await fetch('https://localhost:4005/api/recover-password', { // ROTA PARA RECUPERAR SENHA!!!!!
+        const response = await fetch('http://localhost:3005/api/recover-password', { // ROTA PARA RECUPERAR SENHA!!!!!
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

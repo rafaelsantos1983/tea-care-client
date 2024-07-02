@@ -23,9 +23,9 @@ function Login() {
   const [alertMessage, setAlertMessage] = useState('');
   // Função que ativa evento ao enviar
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Evita que a pag recarregue
+    event.preventDefault(); // Evita que a página recarregue
     
-    const newErrors = {}; //Lista para guardar erros
+    const newErrors = {}; // Lista para guardar erros
     
     // Verifica se os campos estão vazios
     if (email === '') {
@@ -34,6 +34,7 @@ function Login() {
     if (password === '') {
         newErrors.password = "Campo obrigatório";
     }
+    
     // Verifica se a lista tem objetos
     if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
@@ -42,25 +43,34 @@ function Login() {
     }
 
     try {
-        //pega a resposta do endpoint
-        const response = await connectionAPIPost('http://localhost:5174/users', { email, password });
+        // Pega a resposta do endpoint
+        const response = await fetch('http://localhost:3005/api/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
         
+        const data = await response.json();
+
         // Verifica a resposta
-        if (response && response.id) {
-            // Se a respsota for OK
-            setItemStorage('accessToken', response.accessToken); 
+        if (response.ok && data.id) {
+            // Se a resposta for OK
+            setItemStorage('accessToken', data.accessToken);
             alert('Bem-Vindo, ' + email + "!");
-            window.location.href = '/Pacientes'; 
+            window.location.href = '/Pacientes';
         } else {
-          //dados inválidos
+            // Dados inválidos
             setAlertMessage('Usuário ou senha incorretos!');
         }
     } catch (error) {
-      // ERRO DE CONEXÃO :(
+        // Erro de conexão
         console.error('Erro:', error);
         setAlertMessage(error.message || 'Erro de conexão!');
     }
-  };
+};
+
 
   //Para esconder a senha
   const handleClickShowPassword = () => setShowPassword(!showPassword);
