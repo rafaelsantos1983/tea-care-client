@@ -47,7 +47,9 @@ function Login() {
         const response = await fetch('http://localhost:3005/api/signin', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Origin': 'Praxis',
             },
             body: JSON.stringify({ email, password })
         });
