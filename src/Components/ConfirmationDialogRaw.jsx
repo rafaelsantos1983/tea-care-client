@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 const habilidades = [
     'Comunicação',
-    'Alimentacao',
+    'Alimentação',
     'Comportamento',
     'Socialização(sem pag por enquanto)',
     'Autonomia',
