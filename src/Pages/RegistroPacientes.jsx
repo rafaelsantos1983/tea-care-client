@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Banner from "../Components/Banner";
 import axios from "axios";
 import PopUpConfirmation from "../Components/PopUpConfirmation";
+import PopUpEdition from "../Components/PopUpEdition";
+import PopUpAdd from "../Components/PopUpAdd";
 
 const api = axios.create({
   baseURL: "http://localhost:3002",
@@ -12,9 +14,10 @@ const PatientRegistration = () => {
   const [patients, setPatients] = useState([]);
   const [newPatientName, setNewPatientName] = useState("");
   const [editingPatient, setEditingPatient] = useState(null);
-  const [editingName, setEditingName] = useState("");
-  const [popupVisible, setPopupVisible] = useState(false); // Estado para controlar a visibilidade do pop-up
-  const [patientToDelete, setPatientToDelete] = useState(null); // Estado para armazenar o paciente a ser deletado
+  const [popUpConfirm, setPopUpConfirm] = useState(false);
+  const [popUpEdit, setPopUpEdit] = useState(false);
+  const [popUpAdd, setPopUpAdd] = useState(false);
+  const [patientToDelete, setPatientToDelete] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,38 +31,46 @@ const PatientRegistration = () => {
     fetchData();
   }, []);
 
-  const handleAddPatient = () => {
-    if (newPatientName.trim()) {
-      const newPatient = {
-        id: (patients.length + 1).toString(),
-        nome: newPatientName,
-      };
-      setPatients([...patients, newPatient]);
-      setNewPatientName("");
-    }
+
+  const handleAddPatient = async () => {
+
+    setPopUpAdd(false);
+
+    //carregando os pacientes atualizados após a edição
+    try {
+      const response = await api.get("/api/therapeutic-activity/patients");
+      setPatients(response.data);
+  } catch (error) {
+      console.error("Erro ao carregar pacientes:", error);
+  }
   };
 
-  const handleEditPatient = (patient) => {
-    setEditingPatient(patient);
-    setEditingName(patient.nome);
+  const handleEditPatient = (id) => {
+    const patientToEdit = patients.find((patient) => patient.id === id);
+    setEditingPatient(patientToEdit);
+    setPopUpEdit(true);
   };
 
-  const handleSaveEdit = () => {
-    setPatients(
-      patients.map((patient) =>
-        patient.id === editingPatient.id
-          ? { ...patient, nome: editingName }
-          : patient
-      )
-    );
+  
+  const handleSaveEdit = async () => {
     setEditingPatient(null);
-    setEditingName("");
-  };
+    setPopUpEdit(false);
+
+    //carregando os pacientes atualizados após a edição
+    try {
+        const response = await api.get("/api/therapeutic-activity/patients");
+        setPatients(response.data);
+    } catch (error) {
+        console.error("Erro ao carregar pacientes:", error);
+    }
+};
+
 
   const handleDeletePatient = async (id) => {
     try {
       await api.delete(`/api/therapeutic-activity/patients/${id}`);
-      setPatients(patients.filter((patient) => patient.id !== id));
+      const response = await api.get("/api/therapeutic-activity/patients");
+      setPatients(response.data);
     } catch (error) {
       console.error("Erro ao deletar paciente:", error);
     }
@@ -67,18 +78,21 @@ const PatientRegistration = () => {
 
   const confirmDeletion = (id) => {
     setPatientToDelete(id);
-    setPopupVisible(true);
+    setPopUpConfirm(true);
   };
 
   const handleConfirmDelete = () => {
     handleDeletePatient(patientToDelete);
-    setPopupVisible(false);
+    setPopUpConfirm(false);
     setPatientToDelete(null);
   };
 
-  const handleCancelDelete = () => {
-    setPopupVisible(false);
+  const handleCancel = () => {
+    setPopUpConfirm(false);
+    setPopUpEdit(false);
+    setPopUpAdd(false);
     setPatientToDelete(null);
+    setEditingPatient(null);
   };
 
   return (
@@ -102,24 +116,12 @@ const PatientRegistration = () => {
             maxWidth: "800px",
           }}
         >
-          <h1 className="font-bold text-center text-3xl mb-2">
+          <h1 className="font-bold text-center text-3xl mb-5">
             Registro de Pacientes
           </h1>
           <div style={{ marginBottom: "20px", textAlign: "center" }}>
-            <input
-              type="text"
-              value={newPatientName}
-              onChange={(e) => setNewPatientName(e.target.value)}
-              placeholder="Nome do novo paciente"
-              style={{
-                backgroundColor: "#DCDCDC",
-                marginRight: "10px",
-                padding: "10px",
-                borderRadius: "5px",
-              }}
-            />
             <button
-              onClick={handleAddPatient}
+              onClick={() => {setPopUpAdd(true);}}
               style={{
                 padding: "10px 20px",
                 fontSize: "16px",
@@ -145,16 +147,6 @@ const PatientRegistration = () => {
             >
               {editingPatient && editingPatient.id === patient.id ? (
                 <>
-                  <input
-                    type="text"
-                    value={editingName}
-                    onChange={(e) => setEditingName(e.target.value)}
-                    style={{
-                      marginRight: "10px",
-                      padding: "10px",
-                      borderRadius: "5px",
-                    }}
-                  />
                   <button
                     onClick={handleSaveEdit}
                     style={{
@@ -177,7 +169,7 @@ const PatientRegistration = () => {
                   </span>
                   <div>
                     <button
-                      onClick={() => handleEditPatient(patient)}
+                      onClick={() => handleEditPatient(patient.id)}
                       style={{
                         marginRight: "10px",
                         padding: "10px 20px",
@@ -212,11 +204,24 @@ const PatientRegistration = () => {
           ))}
         </div>
       </div>
-      {popupVisible && (
+      {popUpConfirm && (
         <PopUpConfirmation
           message="Tem certeza que deseja deletar este paciente?"
           onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
+          onCancel={handleCancel}
+        />
+      )}
+      {popUpEdit && editingPatient && (
+        <PopUpEdition
+          patientId={editingPatient.id}
+          onConfirm={handleSaveEdit}
+          onCancel={handleCancel}
+        />
+      )}
+      {popUpAdd &&(
+        <PopUpAdd
+          onConfirm={handleAddPatient}
+          onCancel={handleCancel}
         />
       )}
     </div>
