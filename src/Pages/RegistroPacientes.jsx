@@ -1,13 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Banner from "../Components/Banner";
-import { useNavigate } from "react-router-dom";
+
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:3002",
+  timeout: 1000,
+});
 
 const PatientRegistration = () => {
   const [patients, setPatients] = useState([]);
   const [newPatientName, setNewPatientName] = useState("");
   const [editingPatient, setEditingPatient] = useState(null);
   const [editingName, setEditingName] = useState("");
-  const navigate = useNavigate();
+
+  //AQUI HÁ O CARREGAMENTO DE TODOS OS PACIENTE
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get("/api/therapeutic-activity/patients");
+        setPatients(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleAddPatient = () => {
     if (newPatientName.trim()) {
@@ -39,11 +57,6 @@ const PatientRegistration = () => {
 
   const handleDeletePatient = (id) => {
     setPatients(patients.filter((patient) => patient.id !== id));
-  };
-
-  const handleViewPatients = () => {
-    // Navega para a página Pacientes.jsx, passando o array de pacientes como state
-    navigate("/Pacientes", { state: { patients } });
   };
 
   return (
@@ -138,7 +151,7 @@ const PatientRegistration = () => {
               ) : (
                 <>
                   <span>
-                    {patient.nome} (ID: {patient.id})
+                    {patient.name} (CPF: {patient.cpf})
                   </span>
                   <div>
                     <button
