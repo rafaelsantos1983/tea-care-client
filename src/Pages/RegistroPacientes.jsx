@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Banner from "../Components/Banner";
-
 import axios from "axios";
+import PopUpConfirmation from "../Components/PopUpConfirmation";
 
 const api = axios.create({
   baseURL: "http://localhost:3002",
@@ -13,8 +13,9 @@ const PatientRegistration = () => {
   const [newPatientName, setNewPatientName] = useState("");
   const [editingPatient, setEditingPatient] = useState(null);
   const [editingName, setEditingName] = useState("");
+  const [popupVisible, setPopupVisible] = useState(false); // Estado para controlar a visibilidade do pop-up
+  const [patientToDelete, setPatientToDelete] = useState(null); // Estado para armazenar o paciente a ser deletado
 
-  //AQUI HÁ O CARREGAMENTO DE TODOS OS PACIENTE
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -55,8 +56,29 @@ const PatientRegistration = () => {
     setEditingName("");
   };
 
-  const handleDeletePatient = (id) => {
-    setPatients(patients.filter((patient) => patient.id !== id));
+  const handleDeletePatient = async (id) => {
+    try {
+      await api.delete(`/api/therapeutic-activity/patients/${id}`);
+      setPatients(patients.filter((patient) => patient.id !== id));
+    } catch (error) {
+      console.error("Erro ao deletar paciente:", error);
+    }
+  };
+
+  const confirmDeletion = (id) => {
+    setPatientToDelete(id);
+    setPopupVisible(true);
+  };
+
+  const handleConfirmDelete = () => {
+    handleDeletePatient(patientToDelete);
+    setPopupVisible(false);
+    setPatientToDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    setPopupVisible(false);
+    setPatientToDelete(null);
   };
 
   return (
@@ -170,7 +192,7 @@ const PatientRegistration = () => {
                       Editar
                     </button>
                     <button
-                      onClick={() => handleDeletePatient(patient.id)}
+                      onClick={() => confirmDeletion(patient.id)}
                       style={{
                         padding: "10px 20px",
                         fontSize: "16px",
@@ -190,6 +212,13 @@ const PatientRegistration = () => {
           ))}
         </div>
       </div>
+      {popupVisible && (
+        <PopUpConfirmation
+          message="Tem certeza que deseja deletar este paciente?"
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
     </div>
   );
 };
