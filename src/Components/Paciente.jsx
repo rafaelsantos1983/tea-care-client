@@ -4,43 +4,43 @@ import Button from "@mui/material/Button";
 import { styled } from "@mui/system";
 import InputAdornment from "@mui/material/InputAdornment";
 
-// Classe Criança com Id e Nome
-class Kid {
-  constructor(id, name) {
+// Classe Criança com cpf e Nome
+class Kcpf {
+  constructor(cpf, name) {
     this.name = name;
-    this.id = id;
+    this.cpf = cpf;
   }
 }
 
 // Cria o botão com as informações da criança
-const KidField = styled(Button)(({ theme, selected }) => ({
+const KcpfField = styled(Button)(({ theme, selected }) => ({
   backgroundColor: selected ? "#9DE0FD" : "inherit",
-  width: "full",
+  wcpfth: "full",
   height: "50px",
   borderRadius: "10px",
   color: "#000000",
   fontSize: "14px",
-  border: selected ? "2px solid black" : "none",
+  border: selected ? "2px solcpf black" : "none",
   "&:hover": {
     backgroundColor: "#9DE0FD",
   },
 }));
 
-export default function Paciente({ id, name, selected, onClick }) {
+export default function Paciente({ cpf, name, selected, onClick }) {
   // Cria o obj criança
-  const paciente = new Kid(id, name);
+  const paciente = new Kcpf(cpf, name);
 
   return (
     <div>
-      <KidField selected={selected} onClick={() => onClick(id)}>
+      <KcpfField selected={selected} onClick={() => onClick(cpf)}>
         <InputAdornment position="start">
           <SentimentSatisfiedAltIcon />
         </InputAdornment>
         <span>
-          ID: {paciente.id} | Nome: {paciente.name}
+          cpf: {paciente.cpf} | Nome: {paciente.name}
         </span>
         <span></span>
-      </KidField>
+      </KcpfField>
     </div>
   );
 }
