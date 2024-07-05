@@ -86,10 +86,10 @@ function Pacientes() {
     try {
       console.log('Fetching user data...');
       const response = await fetch('http://localhost:3002/api/therapeutic-activity/patients', {
-        method: 'GET', // Use GET if the API is supposed to fetch data
+        method: 'GET', 
         headers: { 
           'Content-Type': 'application/json',
-          'Origin': 'http://localhost:5173', // Certifique-se de que a origem está correta
+          'Origin': 'http://localhost:5173', 
         }
       });
       //TRATAMENTO DE ERROS
