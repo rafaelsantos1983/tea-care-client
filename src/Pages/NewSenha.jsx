@@ -28,7 +28,7 @@ function NewSenha() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Origin': 'praxis',
+            'Origin': 'http://localhost:5173',
           },
           body: JSON.stringify({ email }),
         });
