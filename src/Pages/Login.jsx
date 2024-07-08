@@ -156,9 +156,17 @@ function Login() {
               }
             }}
           />
-          <p className='text-end'>
-            <Link href="/NewSenha">Esqueceu a Senha?</Link>
-          </p>
+
+  <div className='LoginOptions' style={{ width: '50%', whiteSpace: 'nowrap', marginTop: '20px' }}>
+    <p className='new-user text-end' style={{ display: 'inline-block', width: '50%', marginRight: '50px' }}>
+      <Link href="/NewUser">Criar novo usuario</Link>
+    </p>
+    <p className='new-password text-end' style={{ display: 'inline-block', width: '50%' }}>
+      <Link href="/NewSenha">Esqueceu a Senha?</Link>
+    </p>
+  </div>
+
+
         </div>
         {/*MENSAGEM VERMELHA DE ERRO!!!!*/}
         {alertMessage && (
