@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Banner from "../Components/Banner";
 import axios from "axios";
 import PopUpConfirmation from "../Components/PopUpConfirmation";
-import PopUpEdition from "../Components/PopUpEdition";
+import PopUpEditionPatient from "../Components/PopUpEditionPatient";
 import PopUpAdd from "../Components/PopUpAdd";
 
 const api = axios.create({
@@ -212,7 +212,7 @@ const PatientRegistration = () => {
         />
       )}
       {popUpEdit && editingPatient && (
-        <PopUpEdition
+        <PopUpEditionPatient
           patientId={editingPatient.id}
           onConfirm={handleSaveEdit}
           onCancel={handleCancel}
