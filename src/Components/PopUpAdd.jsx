@@ -9,6 +9,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br'; // Importe a localização em português do Brasil de Day.js
 import { ptBR } from '@mui/x-date-pickers/locales';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 import axios from 'axios';
 
 dayjs.locale('pt-br'); // Defina o local de Day.js para pt-BR
@@ -125,11 +128,13 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
                             dateAdapter={AdapterDayjs}
                             locale={ptBR}
                             localeText={ptBR.components.MuiLocalizationProvider.defaultProps.localeText}
+                            className="bg-gray-200"
                         >
                             <DatePicker
                                 value={birthday}
                                 onChange={(newDate) => setBirthday(newDate)}
                                 format="DD/MM/YYYY"
+                                className="bg-gray-200"
                                 textField={(props) => (
                                     <TextField
                                         {...props}
@@ -150,39 +155,29 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
 
                 <div className="flex gap-6 justify-between items-center mb-10">
                     <div className="flex-1">
-                        <InputLabel htmlFor="name-input">
+                        <InputLabel htmlFor="responsavel-select">
                             <p className="font-bold text-gray-950 text-sm">Nome</p>
                         </InputLabel>
-                        <TextField
-                            id="name-input"
-                            name="name-responsavel"
-                            placeholder="Insira o nome do responsável..."
-                            variant="outlined"
-                            className="w-full bg-gray-200 rounded-[10px]"
-                            InputProps={{
-                                style: { borderRadius: '10px' }
-                            }}
-                            value={nameResponsavel}
-                            onChange={(e) => setNameResponsavel(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="flex-1">
-                        <InputLabel htmlFor="cpf-input">
-                            <p className="font-bold text-gray-950 text-sm">CPF</p>
-                        </InputLabel>
-                        <TextField
-                            id="cpf-input"
-                            name="cpf-responsavel"
-                            placeholder="Insira o CPF do responsável..."
-                            variant="outlined"
-                            className="w-full bg-gray-200 rounded-[10px]"
-                            InputProps={{
-                                style: { borderRadius: '10px' }
-                            }}
-                            value={cpfResponsavel}
-                            onChange={(e) => handleCpfChange(e, setCpfResponsavel)}
-                        />
+                        <FormControl variant="outlined" className="w-full bg-gray-200">
+                            <Select
+                                id="responsavel-select"
+                                value={nameResponsavel}
+                                onChange={(e) => setNameResponsavel(e.target.value)}
+                                displayEmpty
+                                disablePortal
+                                inputProps={{
+                                    style: { borderRadius: '10px' }
+                                }}
+                                MenuProps={{
+                                    disableScrollLock: true
+                                }}
+                            >
+                                <MenuItem value="">
+                                    <em>Selecione o responsável...</em>
+                                </MenuItem>
+                                {/* colocar os responsaveis depois*/}
+                            </Select>
+                        </FormControl>
                     </div>
                 </div>
 
