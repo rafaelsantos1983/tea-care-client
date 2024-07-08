@@ -9,6 +9,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br'; // Importe a localização em português do Brasil de Day.js
 import { ptBR } from '@mui/x-date-pickers/locales';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 import axios from 'axios';
 
 dayjs.locale('pt-br'); // Defina o local de Day.js para pt-BR
@@ -18,29 +21,41 @@ const api = axios.create({
     timeout: 1000,
 });
 
-const PopUpEdition = ({ patientId, onConfirm, onCancel }) => {
+const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
     const [name, setName] = useState('');
     const [cpf, setCpf] = useState('');
     const [birthday, setBirthday] = useState(null);
     const [nameResponsavel, setNameResponsavel] = useState('');
     const [cpfResponsavel, setCpfResponsavel] = useState('');
+    const [responsaveis, setResponsaveis] = useState([]);
 
     // Função para buscar dados do paciente pelo ID
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await api.get(`/api/therapeutic-activity/patients/${patientId}`);
-                const { name, cpf, birthday } = response.data; // Supondo que a API retorna nome, cpf e birthday
+                const { name, cpf, birthday, nameResponsavel } = response.data; // Supondo que a API retorna nome, cpf e birthday
                 setName(name);
                 setCpf(formatCPF(cpf)); // Formata o CPF ao setar o estado
                 setBirthday(dayjs(birthday)); // Convertendo a data para o formato do DatePicker
+                setNameResponsavel(nameResponsavel);
             } catch (error) {
                 console.error('Erro ao buscar dados do paciente:', error);
             }
         };
 
+        const fetchResponsaveis = async () => {
+            try {
+                const response = await api.get('/api/responsaveis'); // Substitua pela URL correta da sua API
+                setResponsaveis(response.data);
+            } catch (error) {
+                console.error('Erro ao buscar responsáveis:', error);
+            }
+        };
+
         if (patientId) {
             fetchData();
+            fetchResponsaveis();
         }
     }, [patientId]);
 
@@ -50,8 +65,8 @@ const PopUpEdition = ({ patientId, onConfirm, onCancel }) => {
             const response = await api.post(`/api/therapeutic-activity/patients/${patientId}`, {
                 name: name,
                 cpf: cpf,
-                birthday: birthday
-                // nameResponsavel: nameResponsavel,
+                birthday: birthday,
+                nameResponsavel: nameResponsavel,
                 // cpfResponsavel: cpfResponsavel
             });
             console.log('Dados enviados com sucesso:', response.data);
@@ -142,11 +157,13 @@ const PopUpEdition = ({ patientId, onConfirm, onCancel }) => {
                             dateAdapter={AdapterDayjs}
                             locale={ptBR}
                             localeText={ptBR.components.MuiLocalizationProvider.defaultProps.localeText}
+                            className="bg-gray-200"
                         >
                             <DatePicker
                                 value={birthday}
                                 onChange={(newDate) => setBirthday(newDate)}
                                 format="DD/MM/YYYY"
+                                className="bg-gray-200"
                                 textField={(props) => (
                                     <TextField
                                         {...props}
@@ -157,7 +174,6 @@ const PopUpEdition = ({ patientId, onConfirm, onCancel }) => {
                                     />
                                 )}
                             />
-
                         </LocalizationProvider>
                     </div>
                 </div>
@@ -167,39 +183,29 @@ const PopUpEdition = ({ patientId, onConfirm, onCancel }) => {
 
                 <div className="flex gap-6 justify-between items-center mb-10">
                     <div className="flex-1">
-                        <InputLabel htmlFor="name-input">
+                        <InputLabel htmlFor="responsavel-select">
                             <p className="font-bold text-gray-950 text-sm">Nome</p>
                         </InputLabel>
-                        <TextField
-                            id="name-input"
-                            name="name-responsavel"
-                            placeholder="Insira o nome do responsável..."
-                            variant="outlined"
-                            className="w-full bg-gray-200 rounded-[10px]"
-                            InputProps={{
-                                style: { borderRadius: '10px' }
-                            }}
-                            value={nameResponsavel}
-                            onChange={(e) => setNameResponsavel(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="flex-1">
-                        <InputLabel htmlFor="cpf-input">
-                            <p className="font-bold text-gray-950 text-sm">CPF</p>
-                        </InputLabel>
-                        <TextField
-                            id="cpf-input"
-                            name="cpf-responsavel"
-                            placeholder="Insira o CPF do responsável..."
-                            variant="outlined"
-                            className="w-full bg-gray-200 rounded-[10px]"
-                            InputProps={{
-                                style: { borderRadius: '10px' }
-                            }}
-                            value={cpfResponsavel}
-                            onChange={(e) => handleCpfChange(e, setCpfResponsavel)}
-                        />
+                        <FormControl variant="outlined" className="w-full bg-gray-200">
+                            <Select
+                                id="responsavel-select"
+                                value={nameResponsavel}
+                                onChange={(e) => setNameResponsavel(e.target.value)}
+                                displayEmpty
+                                disablePortal
+                                inputProps={{
+                                    style: { borderRadius: '10px' }
+                                }}
+                                MenuProps={{
+                                    disableScrollLock: true
+                                }}
+                            >
+                                <MenuItem value="">
+                                    <em>Selecione o responsável...</em>
+                                </MenuItem>
+                                {/* colocar os responsaveis depois*/}
+                            </Select>
+                        </FormControl>
                     </div>
                 </div>
 
@@ -218,10 +224,11 @@ const PopUpEdition = ({ patientId, onConfirm, onCancel }) => {
     );
 };
 
-PopUpEdition.propTypes = {
+PopUpEditionPatient.propTypes = {
     patientId: PropTypes.string.isRequired,
     onConfirm: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
 };
 
-export default PopUpEdition;
+export default PopUpEditionPatient;
+
