@@ -12,6 +12,7 @@ import Dashboard_PsicoPedagogo from "./Dashboard_PsicoPedagogo.jsx";
 import Pacientes from "./Pacientes.jsx";
 import Tela_Geral from "./Visao_Geral.jsx";
 import PatientRegistration from "./RegistroPacientes.jsx";
+import UserRegistration from "./RegistroUser.jsx";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/NewSenha" element={<NewSenha />} />
         <Route path="/Pacientes" element={<Pacientes />} />
         <Route path="/RegistroPacientes" element={<PatientRegistration />} />
+        <Route path="/UserRegistration" element={<UserRegistration />} />
         <Route path="/Cadastro" element={<Cadastro />} />
         <Route
           path="/Pergunta_Comunicacao"
