@@ -1,39 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from "prop-types";
-import ClearIcon from "@mui/icons-material/Clear";
+import PropTypes from 'prop-types';
+import ClearIcon from '@mui/icons-material/Clear';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import 'dayjs/locale/pt-br'; // Importe a localização em português do Brasil de Day.js
-import { ptBR } from '@mui/x-date-pickers/locales';
+import 'dayjs/locale/pt-br';
 import axios from 'axios';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
-dayjs.locale('pt-br'); // Defina o local de Day.js para pt-BR
+dayjs.locale('pt-br');
 
 const api = axios.create({
-    baseURL: "http://localhost:3001", 
+    baseURL: 'http://localhost:3001',
     timeout: 1000,
 });
 
 const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
     const [name, setName] = useState('');
     const [cpf, setCpf] = useState('');
-    const [birthday, setBirthday] = useState(null);
-    const [nameResponsavel, setNameResponsavel] = useState('');
-    const [cpfResponsavel, setCpfResponsavel] = useState('');
-
-    // Função para buscar dados do user pelo ID
+    const [ocupation, setOcupation] = useState('');
+    const [telefone, setTelefone] = useState('');
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await api.get(`/api/config/users/${userId}`);
-                const { name, cpf, birthday } = response.data; // Supondo que a API retorna nome, cpf e birthday
+                const { name, cpf, birthday } = response.data;
                 setName(name);
-                setCpf(formatCPF(cpf)); // Formata o CPF ao setar o estado
-                setBirthday(dayjs(birthday)); // Convertendo a data para o formato do DatePicker
+                setCpf(formatCPF(cpf));
+                setBirthday(dayjs(birthday));
             } catch (error) {
                 console.error('Erro ao buscar dados do user:', error);
             }
@@ -44,28 +42,23 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
         }
     }, [userId]);
 
-    // Função para enviar os dados para a API
     const handleSave = async () => {
         try {
             const response = await api.post(`/api/config/users/${userId}`, {
-                name: name,
-                cpf: cpf,
-                birthday: birthday
-                // nameResponsavel: nameResponsavel,
-                // cpfResponsavel: cpfResponsavel
+                name,
+                cpf,
+                ocupation,
             });
             console.log('Dados enviados com sucesso:', response.data);
-            // Executa a função de confirmação
             onConfirm();
         } catch (error) {
             console.error('Erro ao enviar dados:', error);
         }
     };
 
-    // Função para formatar o CPF
     const formatCPF = (value) => {
         if (!value) return '';
-        const numericValue = value.replace(/\D/g, ""); // Remove caracteres não numéricos
+        const numericValue = value.replace(/\D/g, '');
         const match = numericValue.match(/^(\d{3})(\d{3})(\d{3})(\d{2})$/);
         if (match) {
             return `${match[1]}.${match[2]}.${match[3]}-${match[4]}`;
@@ -73,14 +66,18 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
         return value;
     };
 
-    // Função para manipular a mudança no campo CPF
-    const handleCpfChange = (event, setCpfValue) => {
+    const handleCpfChange = (event) => {
         let { value } = event.target;
-        // Limita o tamanho do CPF para no máximo 14 caracteres (com formatação)
         value = value.slice(0, 14);
-        // Remove caracteres não numéricos
-        const numericValue = value.replace(/\D/g, "");
-        setCpfValue(formatCPF(numericValue)); // Formata o CPF ao digitar
+        const numericValue = value.replace(/\D/g, '');
+        setCpf(formatCPF(numericValue));
+    };
+        // Função para manipular a mudança no campo telefone
+    const handleTelefoneChange = (event, setTelefoneValue) => {
+            let { value } = event.target;
+            value = value.slice(0, 15);
+            const numericValue = value.replace(/\D/g, '');
+            setTelefoneValue(formatTelefone(numericValue));
     };
 
     return (
@@ -93,8 +90,8 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
                     <ClearIcon />
                 </button>
                 <h1 className="font-bold text-center text-3xl mb-5">Atualizar Dados</h1>
-                
-                <hr className="border-t border-gray-300"/>
+
+                <hr className="border-t border-gray-300" />
                 <p className="text-gray-700 text-sm mb-4">Usuário</p>
 
                 <div className="flex gap-6 justify-between items-center mb-10">
@@ -109,7 +106,7 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
                             variant="outlined"
                             className="w-full bg-gray-200 rounded-[10px]"
                             InputProps={{
-                                style: { borderRadius: '10px' }
+                                style: { borderRadius: '10px' },
                             }}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
@@ -127,21 +124,49 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
                             variant="outlined"
                             className="w-full bg-gray-200 rounded-[10px]"
                             InputProps={{
-                                style: { borderRadius: '10px' }
+                                style: { borderRadius: '10px' },
                             }}
                             value={cpf}
-                            onChange={(e) => handleCpfChange(e, setCpf)}
+                            onChange={handleCpfChange}
                         />
                     </div>
-
                 </div>
 
-                <hr className="border-t border-gray-300"/>
+                <div className='text-start'>
+                    <FormControlLabel control={<Checkbox />} label="Funcionário da PRAXIS?" />
+                </div>
+
+                <hr className="border-t border-gray-300" />
                 <p className="text-gray-700 text-sm mb-4">Profissional</p>
 
+                <div className="flex gap-6 justify-between items-center mb-10">
+                    <div className="flex-1">
+                        <InputLabel htmlFor="ocupation-select">
+                            <p className="font-bold text-gray-950 text-sm">Ocupação</p>
+                        </InputLabel>
+                        <FormControl variant="outlined" className="w-full bg-gray-200">
+                            <Select
+                                id="ocupation-select"
+                                value={ocupation}
+                                onChange={(e) => setOcupation(e.target.value)}
+                                displayEmpty
+                                inputProps={{
+                                    style: { borderRadius: '10px' },
+                                }}
+                                MenuProps={{
+                                    disableScrollLock: true,
+                                }}
+                            >
+                                <MenuItem value="">
+                                    <em>Selecione a ocupação...</em>
+                                </MenuItem>
+                                {/* Adicione opções de ocupação aqui */}
+                            </Select>
+                        </FormControl>
+                    </div>
+                </div>
 
-
-                <hr className="border-t border-gray-300"/>
+                <hr className="border-t border-gray-300" />
 
                 <div className="flex justify-end space-x-4 mt-4">
                     <button
