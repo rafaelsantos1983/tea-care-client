@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import Logo from '../Imagens/LOGO_TEACARE.png';
-import InputLabel from '@mui/material/InputLabel';
 import Fieldbase from './Base/Fieldbase';
 
-import TextField from '@mui/material/TextField';
 import GreenButton from '../Components/Button_Green';
 
 function NewUser() {

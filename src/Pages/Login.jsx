@@ -12,7 +12,6 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import { setItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
-import { connectionAPIPost } from '../Shared/Functions/Connection/connectionsAPI';
 
 function Login() {
   //Vars de estado
