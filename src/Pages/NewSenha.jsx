@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Logo from '../Imagens/LOGO_TEACARE.png';
 import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import GreenButton from '../Components/Button_Green';
 

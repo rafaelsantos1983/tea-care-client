@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Login.jsx";
 import Dashboard_Pais from "./Dashboard_Pais.jsx";
+import NewUser from "./NewUser";
 import NewSenha from "./NewSenha";
 import Cadastro from "./Cadastro";
 import Pergunta_Comunicacao from "./Pergunta_Comunicacao.jsx";
@@ -25,6 +26,7 @@ function App() {
           element={<Dashboard_PsicoPedagogo />}
         />
         <Route path="/NewSenha" element={<NewSenha />} />
+        <Route path="/NewUser" element={<NewUser />} />
         <Route path="/Pacientes" element={<Pacientes />} />
         <Route path="/RegistroPacientes" element={<PatientRegistration />} />
         <Route path="/UserRegistration" element={<UserRegistration />} />
