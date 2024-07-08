@@ -2,28 +2,30 @@ import React, { useEffect, useState } from "react";
 import Banner from "../Components/Banner";
 import axios from "axios";
 import PopUpConfirmation from "../Components/PopUpConfirmation";
-import PopUpEditionPatient from "../Components/PopUpEditionPatient";
-import PopUpAdd from "../Components/PopUpAdd";
+import User_PopUpEdition from "../Components/User_PopUpEdition";
+import User_PopUpAdd from "../Components/User_PopUpAdd";
 
+// Configuração do Axios para a API
 const api = axios.create({
-  baseURL: "http://localhost:3002",
+  baseURL: "http://localhost:3001", // Trocar para a porta correta do serviço de usuários
   timeout: 1000,
 });
 
-const PatientRegistration = () => {
-  const [patients, setPatients] = useState([]);
-  const [newPatientName, setNewPatientName] = useState("");
-  const [editingPatient, setEditingPatient] = useState(null);
+const UserRegistration = () => {
+  // Estados do componente
+  const [Users, setUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
   const [popUpConfirm, setPopUpConfirm] = useState(false);
   const [popUpEdit, setPopUpEdit] = useState(false);
-  const [popUpAdd, setPopUpAdd] = useState(false);
-  const [patientToDelete, setPatientToDelete] = useState(null);
+  const [userPopUpAdd, setUserPopUpAdd] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
+  // Faz o GET no backend para carregar os usuários
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get("/api/therapeutic-activity/patients");
-        setPatients(response.data);
+        const response = await api.get("/api/config/users"); // Trocar para a rota correta de usuários
+        setUsers(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -31,72 +33,73 @@ const PatientRegistration = () => {
     fetchData();
   }, []);
 
-
-  const handleAddPatient = async () => {
-
-    setPopUpAdd(false);
-
-    //carregando os pacientes atualizados após a edição
+  // Função para adicionar um novo usuário
+  const handleAddUser = async () => {
+    setUserPopUpAdd(false);
     try {
-      const response = await api.get("/api/therapeutic-activity/patients");
-      setPatients(response.data);
-  } catch (error) {
-      console.error("Erro ao carregar pacientes:", error);
-  }
+      const response = await api.get("/api/config/users"); 
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Erro ao carregar usuários:", error);
+    }
   };
 
-  const handleEditPatient = (id) => {
-    const patientToEdit = patients.find((patient) => patient.id === id);
-    setEditingPatient(patientToEdit);
+  // Função para iniciar a edição de um usuário
+  const handleEditUser = (id) => {
+    const userToEdit = Users.find((User) => User.id === id);
+    setEditingUser(userToEdit);
     setPopUpEdit(true);
   };
 
-  
+  // Função para salvar a edição de um usuário
   const handleSaveEdit = async () => {
-    setEditingPatient(null);
+    setEditingUser(null);
     setPopUpEdit(false);
-
-    //carregando os pacientes atualizados após a edição
     try {
-        const response = await api.get("/api/therapeutic-activity/patients");
-        setPatients(response.data);
+      const response = await api.get("/api/config/users");
+      setUsers(response.data);
     } catch (error) {
-        console.error("Erro ao carregar pacientes:", error);
-    }
-};
-
-
-  const handleDeletePatient = async (id) => {
-    try {
-      await api.delete(`/api/therapeutic-activity/patients/${id}`);
-      const response = await api.get("/api/therapeutic-activity/patients");
-      setPatients(response.data);
-    } catch (error) {
-      console.error("Erro ao deletar paciente:", error);
+      console.error("Erro ao carregar usuários:", error);
     }
   };
 
+  // Função para deletar um usuário
+  const handleDeleteUser = async (id) => {
+    try {
+      await api.delete(`/api/config/users/${id}`);
+      const response = await api.get("/api/config/users");
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Erro ao deletar usuário:", error);
+    }
+  };
+
+  // Função para confirmar a deleção de um usuário
   const confirmDeletion = (id) => {
-    setPatientToDelete(id);
+    setUserToDelete(id);
     setPopUpConfirm(true);
   };
 
+  // Função para confirmar a deleção após confirmação
   const handleConfirmDelete = () => {
-    handleDeletePatient(patientToDelete);
+    handleDeleteUser(userToDelete);
     setPopUpConfirm(false);
-    setPatientToDelete(null);
+    setUserToDelete(null);
   };
 
+  // Função para cancelar qualquer ação de pop-up
   const handleCancel = () => {
     setPopUpConfirm(false);
     setPopUpEdit(false);
-    setPopUpAdd(false);
-    setPatientToDelete(null);
-    setEditingPatient(null);
+    setUserPopUpAdd(false);
+    setUserToDelete(null);
+    setEditingUser(null);
   };
 
   return (
+    // Fundo azul
     <div className="min-h-screen bg-blue-500">
+      {/* Banner amarelo */}
       <Banner name="Erick Saraiva" description="Psicopedagogo" />
       <div
         style={{
@@ -116,12 +119,14 @@ const PatientRegistration = () => {
             maxWidth: "800px",
           }}
         >
+          {/* Título */}
           <h1 className="font-bold text-center text-3xl mb-5">
-            Registro de Pacientes
+            Registro de usuários
           </h1>
+          {/* Botão de Registrar */}
           <div style={{ marginBottom: "20px", textAlign: "center" }}>
             <button
-              onClick={() => {setPopUpAdd(true);}}
+              onClick={() => setUserPopUpAdd(true)}
               style={{
                 padding: "10px 20px",
                 fontSize: "16px",
@@ -132,12 +137,13 @@ const PatientRegistration = () => {
                 cursor: "pointer",
               }}
             >
-              Registrar Paciente
+              Registrar usuário
             </button>
           </div>
-          {patients.map((patient) => (
+          {/* Lista de usuários */}
+          {Users.map((User) => (
             <div
-              key={patient.id}
+              key={User.id}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -145,31 +151,29 @@ const PatientRegistration = () => {
                 marginBottom: "10px",
               }}
             >
-              {editingPatient && editingPatient.id === patient.id ? (
-                <>
-                  <button
-                    onClick={handleSaveEdit}
-                    style={{
-                      padding: "10px 20px",
-                      fontSize: "16px",
-                      backgroundColor: "#4CAF50",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Salvar
-                  </button>
-                </>
+              {editingUser && editingUser.id === User.id ? (
+                <button
+                  onClick={handleSaveEdit}
+                  style={{
+                    padding: "10px 20px",
+                    fontSize: "16px",
+                    backgroundColor: "#4CAF50",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Salvar
+                </button>
               ) : (
                 <>
                   <span>
-                    {patient.name} (CPF: {patient.cpf})
+                    {User.name} (CPF: {User.cpf})
                   </span>
                   <div>
                     <button
-                      onClick={() => handleEditPatient(patient.id)}
+                      onClick={() => handleEditUser(User.id)}
                       style={{
                         marginRight: "10px",
                         padding: "10px 20px",
@@ -184,7 +188,7 @@ const PatientRegistration = () => {
                       Editar
                     </button>
                     <button
-                      onClick={() => confirmDeletion(patient.id)}
+                      onClick={() => confirmDeletion(User.id)}
                       style={{
                         padding: "10px 20px",
                         fontSize: "16px",
@@ -204,23 +208,24 @@ const PatientRegistration = () => {
           ))}
         </div>
       </div>
+      {/* Pop-ups de confirmação, edição e adição */}
       {popUpConfirm && (
         <PopUpConfirmation
-          message="Tem certeza que deseja deletar este paciente?"
+          message="Tem certeza que deseja deletar este usuário?"
           onConfirm={handleConfirmDelete}
           onCancel={handleCancel}
         />
       )}
-      {popUpEdit && editingPatient && (
-        <PopUpEditionPatient
-          patientId={editingPatient.id}
+      {popUpEdit && editingUser && (
+        <User_PopUpEdition
+          UserId={editingUser.id}
           onConfirm={handleSaveEdit}
           onCancel={handleCancel}
         />
       )}
-      {popUpAdd &&(
-        <PopUpAdd
-          onConfirm={handleAddPatient}
+      {userPopUpAdd && (
+        <User_PopUpAdd
+          onConfirm={handleAddUser}
           onCancel={handleCancel}
         />
       )}
@@ -228,4 +233,4 @@ const PatientRegistration = () => {
   );
 };
 
-export default PatientRegistration;
+export default UserRegistration;

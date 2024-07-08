@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
@@ -61,34 +61,61 @@ function Pacientes() {
     window.location.href = '/Dashboard_PsicoPedagogo';
   };
 
-  // Estado para armazenar o ID digitado para filtrar pacientes
-  const [idSelected, setIdSelected] = useState('');
+  // Estado para armazenar o cpf digitado para filtrar pacientes
+  const [cpfSelected, setCpfSelected] = useState('');
 
-  // Função para filtrar pacientes com base no ID digitado
+  // Função para filtrar pacientes pelo cpf
   const filtrar = (event) => {
-    setIdSelected(event.target.value);
+    setCpfSelected(event.target.value);
   };
 
-  // Estado para armazenar o ID do paciente selecionado
-  const [selectedId, setSelectedId] = useState(null);
-  const handleButtonClick = (id) => {
-    setSelectedId(selectedId === id ? null : id);
+  // PEGA O CPF SELECIONADO
+  const [selectedCpf, setSelectedCpf] = useState(null);
+  const handleButtonClick = (cpf) => {
+    setSelectedCpf(selectedCpf === cpf ? null : cpf);
   };
 
-  // Lista de pacientes (exemplo)
-  const pacientes = [
-    { id: 12345, name: 'Luiz Silva' },
-    { id: 14679, name: 'Pikachu Yellow' },
-    { id: 13456, name: 'Charmander Red' },
-    { id: 14567, name: 'Squirtle Blue' },
-    { id: 14678, name: 'Bulbasaur Orange' },
-    
-  ];
+  // Lista de Pacientes
+  const [pacientes, setPacientes] = useState([]);
 
-  // Filtra pacientes com base no ID digitado
+  // msg de alerta
+  const [alertMessage, setAlertMessage] = useState('');
+
+  // Função para buscar e salvar dados dos pacientes
+  async function fetchAndSaveUserData() {
+    try {
+      console.log('Fetching user data...');
+      const response = await fetch('http://localhost:3002/api/therapeutic-activity/patients', {
+        method: 'GET', 
+        headers: { 
+          'Content-Type': 'application/json',
+          'Origin': 'http://localhost:5173', 
+        }
+      });
+      //TRATAMENTO DE ERROS
+      if (!response.ok) {
+        throw new Error(`Erro: ${response.statusText}`);
+      }
+      //pega resposta
+      const data = await response.json();
+      setPacientes(data);
+
+      console.log('Pacientes:', data);
+    } catch (error) {
+      console.error('Erro ao buscar e salvar dados do usuário:', error);
+      setAlertMessage(error.message || 'Erro ao buscar Pacientes!');
+    }
+  }
+
+  // buscar os dados dos pacientes no componente
+  useEffect(() => {
+    fetchAndSaveUserData();
+  }, []);
+
+  // Filtra pacientes com base no cpf digitado
   const pacientesFiltrados = pacientes.filter(
     (paciente) =>
-      paciente.id.toString().toLowerCase().includes(idSelected.toLowerCase())
+      paciente.cpf.toString().toLowerCase().includes(cpfSelected.toLowerCase())
   );
 
   return (
@@ -107,14 +134,14 @@ function Pacientes() {
           <div className='bg-blue-400 w-full h-1 mb-5'></div>
           {/* Input de Busca */}
           <Search 
-            onChange={(e) => setIdSelected(e.target.value)}
-            value={idSelected} 
+            onChange={(e) => setCpfSelected(e.target.value)}
+            value={cpfSelected} 
           >
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Digite o ID do Paciente…"
+              placeholder="Digite o cpf do Paciente…"
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
@@ -123,15 +150,17 @@ function Pacientes() {
             <PacientesContainer>
               {pacientesFiltrados.map(paciente => (
                 <Paciente
-                  key={paciente.id}
-                  id={paciente.id}
+                  key={paciente.cpf}
+                  cpf={paciente.cpf}
                   name={paciente.name}
-                  selected={paciente.id === selectedId}
-                  onClick={handleButtonClick}
+                  selected={paciente.cpf === selectedCpf}
+                  onClick={() => handleButtonClick(paciente.cpf)}
                 />
               ))}
             </PacientesContainer>
           </div>
+          {/* Mensagem de alerta */}
+          {alertMessage && <div className="text-red-500">{alertMessage}</div>}
           {/* Botão de enviar */}
           <div className="text-center m-8">
             <GreenButton type="submit" />

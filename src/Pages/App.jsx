@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Login.jsx";
 import Dashboard_Pais from "./Dashboard_Pais.jsx";
+import NewUser from "./NewUser";
 import NewSenha from "./NewSenha";
 import Cadastro from "./Cadastro";
 import Pergunta_Comunicacao from "./Pergunta_Comunicacao.jsx";
@@ -12,6 +13,7 @@ import Dashboard_PsicoPedagogo from "./Dashboard_PsicoPedagogo.jsx";
 import Pacientes from "./Pacientes.jsx";
 import Tela_Geral from "./Visao_Geral.jsx";
 import PatientRegistration from "./RegistroPacientes.jsx";
+import UserRegistration from "./RegistroUser.jsx";
 
 function App() {
   return (
@@ -24,8 +26,10 @@ function App() {
           element={<Dashboard_PsicoPedagogo />}
         />
         <Route path="/NewSenha" element={<NewSenha />} />
+        <Route path="/NewUser" element={<NewUser />} />
         <Route path="/Pacientes" element={<Pacientes />} />
         <Route path="/RegistroPacientes" element={<PatientRegistration />} />
+        <Route path="/UserRegistration" element={<UserRegistration />} />
         <Route path="/Cadastro" element={<Cadastro />} />
         <Route
           path="/Pergunta_Comunicacao"
