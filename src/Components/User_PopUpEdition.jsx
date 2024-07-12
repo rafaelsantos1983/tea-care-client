@@ -45,7 +45,6 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
             fetchData();
         }
     }, [userId]);
-
     const handleSave = async () => {
         try {
             const response = await api.put(`/api/config/users/${userId}`, {
@@ -59,10 +58,13 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
             });
             console.log('Dados enviados com sucesso:', response.data);
             onConfirm();
-        } catch (error) {
+            } catch (error) {
             console.error('Erro ao enviar dados:', error);
+            // Adicione um feedback visual para o usuário, por exemplo:
+            alert('Erro ao salvar os dados. Por favor, tente novamente.');
         }
     };
+    
 
     const formatCPF = (value) => {
         if (!value) return '';
