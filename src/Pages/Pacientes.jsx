@@ -5,10 +5,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import Banner from '../Components/Banner';
 import Paciente from '../Components/Paciente';
 import GreenButton from '../Components/Button_Green';
+import { setItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
 
 // Estilos para o container da lista de pacientes
 const PacientesContainer = styled('div')({
-  maxHeight: '200px', 
+  maxHeight: '200px',
   overflowY: 'auto', // add scroll vertical quando necessário
 });
 
@@ -64,15 +65,11 @@ function Pacientes() {
   // Estado para armazenar o cpf digitado para filtrar pacientes
   const [cpfSelected, setCpfSelected] = useState('');
 
-  // Função para filtrar pacientes pelo cpf
-  const filtrar = (event) => {
-    setCpfSelected(event.target.value);
-  };
-
-  // PEGA O CPF SELECIONADO
+  // PEGA O CPF SELECIONADO e guarda ID no localStorage
   const [selectedCpf, setSelectedCpf] = useState(null);
-  const handleButtonClick = (cpf) => {
-    setSelectedCpf(selectedCpf === cpf ? null : cpf);
+  const handleButtonClick = (id) => {
+    setSelectedCpf(selectedCpf === id ? null : id);
+    setItemStorage('selectedPacienteId', id); // Salva o CPF no localStorage
   };
 
   // Lista de Pacientes
@@ -86,10 +83,10 @@ function Pacientes() {
     try {
       console.log('Fetching user data...');
       const response = await fetch('http://localhost:3002/api/therapeutic-activity/patients', {
-        method: 'GET', 
-        headers: { 
+        method: 'GET',
+        headers: {
           'Content-Type': 'application/json',
-          'Origin': 'http://localhost:5173', 
+          'Origin': 'http://localhost:5173',
         }
       });
       //TRATAMENTO DE ERROS
@@ -133,9 +130,9 @@ function Pacientes() {
           {/* Linha Azul */}
           <div className='bg-blue-400 w-full h-1 mb-5'></div>
           {/* Input de Busca */}
-          <Search 
+          <Search
             onChange={(e) => setCpfSelected(e.target.value)}
-            value={cpfSelected} 
+            value={cpfSelected}
           >
             <SearchIconWrapper>
               <SearchIcon />
@@ -153,8 +150,8 @@ function Pacientes() {
                   key={paciente.cpf}
                   cpf={paciente.cpf}
                   name={paciente.name}
-                  selected={paciente.cpf === selectedCpf}
-                  onClick={() => handleButtonClick(paciente.cpf)}
+                  selected={paciente.id === selectedCpf}
+                  onClick={() => handleButtonClick(paciente.id)}
                 />
               ))}
             </PacientesContainer>

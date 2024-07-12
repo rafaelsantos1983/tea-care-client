@@ -31,8 +31,8 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
                 const response = await api.get(`/api/config/users/${userId}`);
                 const { name, cpf, telefone, ocupation, email, type } = response.data;
                 setName(name);
-                setCpf(formatCPF(cpf));
-                setTelefone(formatTelefone(telefone));
+                setCpf(cpf);
+                setTelefone(telefone);
                 setOcupation(ocupation);
                 setEmail(email);
                 setInterno(type === 'I' ? 'I' : 'E');

@@ -10,17 +10,14 @@ import Radio from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { useNavigate } from 'react-router-dom';
 
-//esse componente do material ui é utilizado para fazermos a listagem das habilidades e escolhermos para o questionário
+//esse componente do material ui é utilizado para fazermos o controle de presença
 
-const habilidades = [
-    'Comunicação',
-    'Alimentação',
-    'Comportamento',
-    'Socialização(sem pag por enquanto)',
-    'Autonomia',
-    'Habilidades Sociais',
+const presenca = [
+  'Ausente',
+  'Presente'
   ];
 
+  // função do Dialogo
 function ConfirmationDialogRaw(props) {
   const navigate = useNavigate();
   const { onClose, value: valueProp, open, ...other } = props;
@@ -82,7 +79,7 @@ function ConfirmationDialogRaw(props) {
           value={value}
           onChange={handleChange}
         >
-          {habilidades.map((option) => (
+          {presenca.map((option) => (
             <FormControlLabel
               value={option}
               key={option}

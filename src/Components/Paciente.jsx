@@ -6,10 +6,13 @@ import InputAdornment from "@mui/material/InputAdornment";
 
 // Classe Criança com cpf e Nome
 class Kcpf {
-  constructor(cpf, name) {
+  constructor(id,cpf, name) {
+    this.id = id;
     this.name = name;
     this.cpf = cpf;
   }
+
+
 }
 
 // Cria o botão com as informações da criança
@@ -26,9 +29,9 @@ const KcpfField = styled(Button)(({ theme, selected }) => ({
   },
 }));
 
-export default function Paciente({ cpf, name, selected, onClick }) {
+export default function Paciente({id, cpf, name, selected, onClick }) {
   // Cria o obj criança
-  const paciente = new Kcpf(cpf, name);
+  const paciente = new Kcpf(id, cpf, name);
 
   return (
     <div>
