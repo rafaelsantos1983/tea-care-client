@@ -6,6 +6,9 @@ import Chart from 'chart.js/auto';
 import { useNavigate } from 'react-router-dom';
 import InfoPaciente from '../Components/InfoPaciente';
 import { getItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
+import Atendimento from '../Components/Atendimento';
+import { connectionAPIGet } from '../Shared/Functions/Connection/connectionsAPI';
+import ConnectionAPI from '../Shared/Functions/Connection/connectionsAPI';
 
 // Função para gerar dados aleatórios
 const generateRandomData = () => Array.from({ length: 6 }, () => Math.floor(Math.random() * 20) + 1);
@@ -26,8 +29,11 @@ function Dashboard_PsicoPedagogo() {
     }
   };
 
-  // Estado para armazenar os dados do paciente
+  // Estado para manipular os dados do paciente
   const [paciente, setPaciente] = useState(null);
+
+  // Estado para manipular dados de atendimento
+  const [atendimentoRegistrado, setAtendimentoRegistrado] = useState(null);
 
   // Estado para armazenar o nome do responsável
   const [nomeResponsavel, setNomeResponsavel] = useState('');
@@ -47,6 +53,27 @@ function Dashboard_PsicoPedagogo() {
         });
     }
   }, []);
+
+  // Buscar dados de atendimento ao carregar o componente
+  useEffect(() => {
+    connectionAPIGet('http://localhost:5174/atendimentos')
+      .then(response => {
+        console.log('Status da resposta:', response.status);
+        if (!response.ok) {
+          console.error('Erro na resposta da API:', response.statusText);
+          throw new Error('Erro ao buscar dados do atendimento.');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Dados recebidos:', data);
+        setAtendimentoRegistrado(data);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar dados do atendimento:', error);
+      });
+  }, []);
+  
 
   // Função para buscar o nome do responsável
   const getNameResponsavel = (responsibleId) => {
@@ -112,32 +139,60 @@ function Dashboard_PsicoPedagogo() {
             </div>
           ))}
         </div>
-        {/* Informações do Paciente */}
-        <div className="bg-white w-[560px] h-[350px] rounded-[50px] flex flex-col r ml-10">
-          <div className="bg-[#FFE01D] rounded-[30px] overflow-hidden h-[90px] flex items-center justify-center px-4 w-full">
-            <h1 className="text-2xl font-bold">Informações do Paciente</h1>
+        <div className="flex flex-col items-start ml-10">
+          {/* Informações do Paciente */}
+          <div className="bg-white w-[560px] h-[350px] rounded-[50px] flex-col r">
+            <div className="bg-[#FFE01D] rounded-[30px] overflow-hidden h-[90px] flex items-center justify-center px-4 w-full">
+              <h1 className="text-2xl font-bold">Informações do Paciente</h1>
+            </div>
+            <div className="h-full gap-5 flex items-center flex-col mt-10 ml-10">
+              <InfoPaciente
+                cpf={paciente.cpf}
+                name={paciente.name}
+                birthday={paciente.birthday}
+                nomeResponsavel={nomeResponsavel}
+              />
+              {/* Realizar Atendimento */}
+              <button
+                className="text-lg w-[250px] h-[60px] ml-24 bg-green-500 text-white font-semibold rounded-[30px] hover:bg-green-600 hover:transform hover:scale-105 transition-transform duration-300"
+                onClick={() => navigate('/realizar-atendimento')} // Adicionar navegação para realizar atendimento
+              >
+                Realizar Atendimento
+              </button>
+            </div>
           </div>
-          <div className="h-full gap-5 flex items-center flex-col mt-10 ml-10">
-            <InfoPaciente
-              cpf={paciente.cpf}
-              name={paciente.name}
-              birthday={paciente.birthday}
-              nomeResponsavel={nomeResponsavel}
-            />
-            {/* Realizar Atendimento */}
-            <button className="text-lg w-[250px] h-[60px] ml-24 bg-green-500 text-white font-semibold rounded-[30px] hover:bg-green-600 hover:transform hover:scale-105 transition-transform duration-300">
-              Realizar Atendimento
-            </button>
+
+          <ConfirmationDialogRaw
+            id="ringtone-menu"
+            keepMounted
+            open={open}
+            onClose={handleClose}
+            value={value}
+          />
+
+          {/* Histórico de Atendimento */}
+          <div className="bg-white w-[560px] h-[350px] rounded-[50px] flex-col mt-10">
+            <div className="bg-[#FFE01D] rounded-[30px] overflow-hidden h-[90px] flex items-center justify-center px-4 w-full">
+              <h1 className="text-2xl font-bold">Histórico de Atendimento</h1>
+            </div>
+            <div className="h-full gap-5 flex items-center flex-col mt-10 ml-10">
+              {atendimentoRegistrado ? (
+                atendimentoRegistrado.atendimentos.map((atendimento, id) => (
+                  <Atendimento
+                    key={atendimento.id}
+                    data={atendimento.data}
+                    hora={atendimento.hora}
+                    duration={atendimento.duration}
+                    realizado={atendimento.realizado}
+                    profissional={atendimento.profissional}
+                  />
+                ))
+              ) : (
+                <div>Carregando histórico de atendimento...</div>
+              )}
+            </div>
           </div>
         </div>
-
-        <ConfirmationDialogRaw
-          id="ringtone-menu"
-          keepMounted
-          open={open}
-          onClose={handleClose}
-          value={value}
-        />
       </div>
     </div>
   );

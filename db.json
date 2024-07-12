@@ -1,99 +1,27 @@
 {
-  "users": [
+  "atendimentos": [
     {
-      "id": "1",
-      "email": "test@example.com",
-      "password": "123",
-      "accessToken": "mocked_access_token"
+      "id":"1",
+      "data": "14-10-24",
+      "hora": "14:30",
+      "duration": "30m",
+      "realizado": "S",
+      "profissional": "Red"
+    },
+    { "id":"2",
+      "data": "04-02-24",
+      "hora": "13:30",
+      "duration": "50m",
+      "realizado": "S",
+      "profissional": "Blue"
     },
     {
-      "id": "89e4",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "66dc",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "6304",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "6ac9",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "579b",
-      "email": "test@example.com"
-    },
-    {
-      "id": "95ae",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "a3b9",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "93a5",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "1924",
-      "method": "POST",
-      "headers": {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
-      "body": "{\"email\":\"test@example.com\",\"password\":\"123\"}"
-    },
-    {
-      "id": "8f54",
-      "method": "POST",
-      "headers": {
-        "Content-Type": "application/json"
-      },
-      "body": "{\"email\":\"test@example.com\",\"password\":\"123\"}"
-    },
-    {
-      "id": "07fd",
-      "method": "POST",
-      "headers": {
-        "Content-Type": "application/json"
-      },
-      "body": "{\"email\":\"test@example.com\",\"password\":\"123\"}"
-    },
-    {
-      "id": "5a35",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "4a84",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "2822",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "fc1e",
-      "email": "test@example.com",
-      "password": "123"
-    },
-    {
-      "id": "e2bd",
-      "email": "test@example.com",
-      "password": "123"
+      "id":"3",
+      "data": "09-12-23",
+      "hora": "15:30",
+      "duration": "0",
+      "realizado": "N",
+      "profissional": "Green"
     }
   ]
 }
