@@ -12,8 +12,8 @@ const generateRandomData = () => Array.from({ length: 6 }, () => Math.floor(Math
 
 function Dashboard_PsicoPedagogo() {
   const navigate = useNavigate();
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState('Dione');
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('Dione');
 
   const handleClickStart = () => {
     setOpen(true);
@@ -29,18 +29,34 @@ function Dashboard_PsicoPedagogo() {
   // Estado para armazenar os dados do paciente
   const [paciente, setPaciente] = useState(null);
 
+  // Estado para armazenar o nome do responsável
+  const [nomeResponsavel, setNomeResponsavel] = useState('');
+
   // Buscar dados do paciente no local storage ao carregar o componente
   useEffect(() => {
     const id = getItemStorage('selectedPacienteId');
     if (id) {
       fetch(`http://localhost:3002/api/therapeutic-activity/patients/${id}`)
         .then(response => response.json())
-        .then(data => setPaciente(data))
+        .then(data => {
+          setPaciente(data);
+          getNameResponsavel(data.responsible);
+        })
         .catch(error => {
           console.error('Erro ao buscar dados do paciente:', error);
         });
     }
   }, []);
+
+  // Função para buscar o nome do responsável
+  const getNameResponsavel = (responsibleId) => {
+    fetch(`http://localhost:3001/api/config/users/${responsibleId}`)
+      .then(response => response.json())
+      .then(data => setNomeResponsavel(data.name))
+      .catch(error => {
+        console.error('Erro ao buscar nome do responsável:', error);
+      });
+  };
 
   // Define as habilidades
   const habilidades = [
@@ -106,10 +122,10 @@ function Dashboard_PsicoPedagogo() {
               cpf={paciente.cpf}
               name={paciente.name}
               birthday={paciente.birthday}
-              nomeResponsavel={paciente.nomeResponsavel}
+              nomeResponsavel={nomeResponsavel}
             />
             {/* Realizar Atendimento */}
-            <button className="text-lg w-[250px] h-[60px] ml-24 bg-green-500 text-white font-semibold rounded-[30px]  hover:bg-green-600 hover:transform hover:scale-105 transition-transform duration-300">
+            <button className="text-lg w-[250px] h-[60px] ml-24 bg-green-500 text-white font-semibold rounded-[30px] hover:bg-green-600 hover:transform hover:scale-105 transition-transform duration-300">
               Realizar Atendimento
             </button>
           </div>
