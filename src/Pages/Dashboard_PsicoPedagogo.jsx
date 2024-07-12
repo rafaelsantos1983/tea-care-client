@@ -7,8 +7,18 @@ import { useNavigate } from 'react-router-dom';
 import InfoPaciente from '../Components/InfoPaciente';
 import { getItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
 
-// Função para gerar dados aleatórios
-const generateRandomData = () => Array.from({ length: 6 }, () => Math.floor(Math.random() * 20) + 1);
+// Dados mockados com labels
+const mockedData = {
+  labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun'],
+  datasets: {
+    comunicacao: [3, 4, 5, 2, 3, 4],
+    alimentacao: [1, 2, 3, 4, 5, 1],
+    comportamento: [2, 3, 4, 5, 1, 2],
+    socializacao: [5, 4, 3, 2, 1, 5],
+    autonomia: [4, 5, 1, 2, 3, 4],
+    habilidadesAcademicas: [3, 2, 5, 4, 1, 3]
+  }
+};
 
 function Dashboard_PsicoPedagogo() {
   const navigate = useNavigate();
@@ -39,6 +49,7 @@ function Dashboard_PsicoPedagogo() {
       fetch(`http://localhost:3002/api/therapeutic-activity/patients/${id}`)
         .then(response => response.json())
         .then(data => {
+          console.log('Dados do paciente:', data); // Adicionado para depuração
           setPaciente(data);
           getNameResponsavel(data.responsible);
         })
@@ -80,11 +91,11 @@ function Dashboard_PsicoPedagogo() {
 
   // Info do gráfico
   const data = (habilidade) => ({
-    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun'],
+    labels: mockedData.labels,
     datasets: [
       {
         label: 'Progresso',
-        data: paciente ? paciente[habilidade] : generateRandomData(),
+        data: paciente ? paciente[habilidade] || mockedData.datasets[habilidade] : mockedData.datasets[habilidade],
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
@@ -113,11 +124,11 @@ function Dashboard_PsicoPedagogo() {
           ))}
         </div>
         {/* Informações do Paciente */}
-        <div className="bg-white w-[560px] h-[350px] rounded-[50px] flex flex-col r ml-10">
+        <div className="bg-white w-[560px] h-[350px] rounded-[50px] flex flex-col justify-center ml-10">
           <div className="bg-[#FFE01D] rounded-[30px] overflow-hidden h-[90px] flex items-center justify-center px-4 w-full">
             <h1 className="text-2xl font-bold">Informações do Paciente</h1>
           </div>
-          <div className="h-full gap-5 flex items-center flex-col mt-10 ml-10">
+          <div className="h-full w-full gap-5 flex just items-center flex-col mt-10">
             <InfoPaciente
               cpf={paciente.cpf}
               name={paciente.name}
@@ -125,7 +136,7 @@ function Dashboard_PsicoPedagogo() {
               nomeResponsavel={nomeResponsavel}
             />
             {/* Realizar Atendimento */}
-            <button className="text-lg w-[250px] h-[60px] ml-24 bg-green-500 text-white font-semibold rounded-[30px] hover:bg-green-600 hover:transform hover:scale-105 transition-transform duration-300">
+            <button onClick={()=> setOpen(true)} className="text-lg w-[250px] h-[60px] bg-green-500 text-white font-semibold rounded-[30px] hover:bg-green-600 hover:transform hover:scale-105 transition-transform duration-300">
               Realizar Atendimento
             </button>
           </div>
