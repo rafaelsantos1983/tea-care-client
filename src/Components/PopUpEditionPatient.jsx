@@ -34,6 +34,7 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
         const fetchData = async () => {
             try {
                 const response = await api.get(`/api/therapeutic-activity/patients/${patientId}`);
+                //aqui deve-se pegar o id do responsável ao invés do nome
                 const { name, cpf, birthday, nameResponsavel } = response.data; // Supondo que a API retorna nome, cpf e birthday
                 setName(name);
                 setCpf(formatCPF(cpf)); // Formata o CPF ao setar o estado
@@ -66,8 +67,7 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
                 name: name,
                 cpf: cpf,
                 birthday: birthday,
-                nameResponsavel: nameResponsavel,
-                // cpfResponsavel: cpfResponsavel
+                //enviar o id do responsável
             });
             console.log('Dados enviados com sucesso:', response.data);
             // Executa a função de confirmação

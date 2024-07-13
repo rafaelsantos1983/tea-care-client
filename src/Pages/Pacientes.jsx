@@ -59,8 +59,34 @@ function Pacientes() {
   // Ao clicar no botão, redireciona para o DashBoard
   const handleSubmit = (event) => {
     event.preventDefault();
-    window.location.href = '/Dashboard_PsicoPedagogo';
+  
+    // Função para decodificar o payload de um JWT
+    function parseJwt(token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    }
+  
+    // Recupera o token do localStorage
+    const token = localStorage.getItem('accessToken');
+  
+    if (token) {
+      const payload = parseJwt(token);
+  
+      // Verifica se o type é "E"
+      if (payload.user.type === "I") {
+        window.location.href = '/Dashboard_PsicoPedagogo';
+      } else {
+        window.location.href = '/Dashboard_Pais';
+      }
+    } else {
+      console.log('Token não encontrado no localStorage');
+    }
   };
+  
 
   // Estado para armazenar o cpf digitado para filtrar pacientes
   const [cpfSelected, setCpfSelected] = useState('');
