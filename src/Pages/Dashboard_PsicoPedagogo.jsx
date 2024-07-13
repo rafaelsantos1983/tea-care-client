@@ -151,11 +151,13 @@ function Dashboard_PsicoPedagogo() {
           ))}
         </div>
         {/* Informações do Paciente */}
-        <div className="bg-white w-[560px] h-[350px] rounded-[50px] flex flex-col r ml-10">
+        <div className="w-[560px] flex flex-col gap-5 justify-center items-center h-full">
+
+        <div className="bg-white w-[560px] h-[350px] rounded-[30px] flex flex-col">
           <div className="bg-[#FFE01D] rounded-[30px] overflow-hidden h-[90px] flex items-center justify-center px-4 w-full">
             <h1 className="text-2xl font-bold">Informações do Paciente</h1>
           </div>
-          <div className="h-full gap-5 flex items-center flex-col mt-10 ml-10">
+          <div className="h-full gap-5 flex items-center flex-col mt-10">
             <InfoPaciente
               cpf={paciente.cpf}
               name={paciente.name}
@@ -178,11 +180,11 @@ function Dashboard_PsicoPedagogo() {
           />
 
           {/* Histórico de Atendimento */}
-          <div className="bg-white w-[560px] h-[350px] rounded-[50px] flex-col mt-10">
+          <div className="flex bg-white w-[560px] h-[350px] rounded-[30px] flex-col mt-10">
             <div className="bg-[#FFE01D] rounded-[30px] overflow-hidden h-[90px] flex items-center justify-center px-4 w-full">
               <h1 className="text-2xl font-bold">Histórico de Atendimento</h1>
             </div>
-            <div className="h-full gap-5 flex items-center flex-col mt-10 ml-10">
+            <div className="h-full gap-5 flex items-center flex-col mt-10">
               {atendimentoRegistrado ? (
                 atendimentoRegistrado.atendimentos.map((atendimento, id) => (
                   <Atendimento
@@ -199,9 +201,11 @@ function Dashboard_PsicoPedagogo() {
               )}
             </div>
           </div>
+          
+        </div>
+        
         </div>
       </div>
-    </div>
   );
 }
 
