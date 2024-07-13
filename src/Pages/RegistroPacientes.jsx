@@ -3,7 +3,7 @@ import Banner from "../Components/Banner";
 import axios from "axios";
 import PopUpConfirmation from "../Components/PopUpConfirmation";
 import PopUpEditionPatient from "../Components/PopUpEditionPatient";
-import PopUpAdd from "../Components/PopUpAdd";
+import PopUpAddPatient from "../Components/PopUpAddPatient";
 
 const api = axios.create({
   baseURL: "http://localhost:3002",
@@ -12,7 +12,6 @@ const api = axios.create({
 
 const PatientRegistration = () => {
   const [patients, setPatients] = useState([]);
-  const [newPatientName, setNewPatientName] = useState("");
   const [editingPatient, setEditingPatient] = useState(null);
   const [popUpConfirm, setPopUpConfirm] = useState(false);
   const [popUpEdit, setPopUpEdit] = useState(false);
@@ -219,7 +218,7 @@ const PatientRegistration = () => {
         />
       )}
       {popUpAdd &&(
-        <PopUpAdd
+        <PopUpAddPatient
           onConfirm={handleAddPatient}
           onCancel={handleCancel}
         />

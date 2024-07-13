@@ -15,27 +15,34 @@ class InfosPaciente {
 }
 
 const InfoPacienteField = styled(Button)(({ theme }) => ({
-    alignContent: "center",
-    fontWeight:"bold",
-    width: "90%",
-    height: "100px",
-    borderRadius: "20px",
-    color: "#000",
-    fontSize: "14px",
-    border: "none",
-    backgroundColor: "#9DE0FD",
-    transition: "transform 0.3s ease-in-out",
-    "&:hover": {
-      backgroundColor: "#7DC3F2",
-      transform: "scale(1.1)",
-    },
-  }));
+  alignContent: "center",
+  fontWeight: "bold",
+  width: "90%",
+  height: "100px",
+  borderRadius: "20px",
+  color: "#000",
+  fontSize: "14px",
+  border: "none",
+  backgroundColor: "#9DE0FD",
+  transition: "transform 0.3s ease-in-out",
+  "&:hover": {
+    backgroundColor: "#7DC3F2",
+    transform: "scale(1.1)",
+  },
+}));
+
+const Container = styled("div")({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+
+});
 
 export default function InfoPaciente({ cpf, name, birthday, nomeResponsavel }) {
   const infos = new InfosPaciente(cpf, name, birthday, nomeResponsavel);
 
   return (
-    <div>
+    <Container>
       <InfoPacienteField>
         <InputAdornment position="start">
           <SentimentSatisfiedAltIcon />
@@ -46,6 +53,6 @@ export default function InfoPaciente({ cpf, name, birthday, nomeResponsavel }) {
           Responsável: {infos.nomeResponsavel}
         </span>
       </InfoPacienteField>
-    </div>
+    </Container>
   );
 }

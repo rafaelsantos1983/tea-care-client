@@ -8,7 +8,7 @@ import Dialog from '@mui/material/Dialog';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 
 //esse componente do material ui é utilizado para fazermos o controle de presença
 
@@ -19,7 +19,7 @@ const presenca = [
 
   // função do Dialogo
 function ConfirmationDialogRaw(props) {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const { onClose, value: valueProp, open, ...other } = props;
   const [value, setValue] = React.useState(valueProp);
   const radioGroupRef = React.useRef(null);
@@ -41,21 +41,20 @@ function ConfirmationDialogRaw(props) {
   };
 
   const handleOk = () => {
+    //Enviar para o back o value
+    console.log(value)
+    
+
+    const currentTime = new Date();
+      console.log('Horário do Atendimento: ', currentTime);
+      //Levar para a página de questionário(ainda sendo feita)
+      //Navigate('/Questionario');
+    
+
     onClose(value)
-    //existem algumas habilidades a mais, enviadas pela praxis, presentes no documento
-    if(value === "Comunicação"){
-        navigate('/Pergunta_Comunicacao');
-    } else if(value === "Alimentação"){
-        navigate('/Pergunta_Alimentacao');
-    } else if(value === "Comportamento"){
-        navigate('/Pergunta_Comportamento');
-    } else if(value === "Socialização"){
-        // navigate('/Pergunta_Socializacao');
-    } else if(value === "Autonomia"){
-        navigate('/Pergunta_Autonomia');
-    } else if(value === "Habilidades Sociais"){
-        navigate('/Pergunta_HabSocial');
-    }
+    
+    
+
   };
 
   const handleChange = (event) => {
@@ -70,7 +69,7 @@ function ConfirmationDialogRaw(props) {
       open={open}
       {...other}
     >
-      <DialogTitle>Escolha a habilidade</DialogTitle>
+      <DialogTitle>O paciente se encontra:</DialogTitle>
       <DialogContent dividers>
         <RadioGroup
           ref={radioGroupRef}
