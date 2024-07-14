@@ -1,115 +1,137 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Banner from '../Components/Banner';
 import Radar from '../Components/Radar';
-import BlueButton from '../Components/Button_Blue'
-import Grafico_linha from '../Components/Grafico_linha'
+
+const legendas = {
+  'Autonomia_1': 'A criança necessita de muita intervenção dos profissionais.',
+  'Autonomia_2': 'A criança está começando a desenvolver certa autonomia.',
+  'Autonomia_3': 'A criança já se desenvolve sozinha sem muita intervenção dos profissionais.',
+  'Autonomia_4': 'A criança é completamente autônoma em suas atividades.',
+  'Comportamento_3': 'A criança tem bom comportamento, mas às vezes precisa de orientação.',
+};
 
 function Dashboard_Pais() {
-  const [selectedSkill, setSelectedSkill] = useState('Geral');
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [selectedInfo, setSelectedInfo] = useState(null);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [childEvolution, setChildEvolution] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [patients, setPatients] = useState([]);
+  const [showPatientsList, setShowPatientsList] = useState(true); 
 
-  //Dados para gerar o gráfico
-  const skillData = {
-    'Comunicação': {
-      series: [
-        { name: "Desenvolvimento", data: [0, 5, 20, 35, 55, 65, 75, 85, 100] },
-        { name: "Expectativas", data: [0, 3, 18, 25, 40, 50, 60, 70, 80] }
-      ]
-    },
-    'Alimentação': {
-      series: [
-        { name: "Desenvolvimento", data: [0, 8, 22, 37, 53, 68, 83, 97, 110] },
-        { name: "Expectativas", data: [0, 4, 20, 30, 45, 55, 65, 75, 85] }
-      ]
-    },
-    'Comportamento': {
-      series: [
-        { name: "Desenvolvimento", data: [0, 10, 25, 40, 60, 75, 90, 105, 120] },
-        { name: "Expectativas", data: [0, 2, 15, 27, 38, 48, 58, 68, 78] }
-      ]
-    },
-    'Autonomia': {
-      series: [
-        { name: "Desenvolvimento", data: [0, 12, 28, 45, 63, 80, 97, 113, 130] },
-        { name: "Expectativas", data: [0, 1, 12, 22, 35, 45, 55, 65, 75] }
-      ]
-    },
-    'Socialização': {
-      series: [
-        { name: "Desenvolvimento", data: [0, 15, 30, 50, 70, 90, 110, 130, 150] },
-        { name: "Expectativas", data: [0, 5, 10, 20, 32, 40, 50, 60, 70] }
-      ]
-    },
-    'Hab. acadêmicas': {
-      series: [
-        { name: "Desenvolvimento", data: [0, 18, 35, 55, 75, 95, 115, 135, 155] },
-        { name: "Expectativas", data: [0, 6, 14, 26, 38, 50, 62, 74, 86] }
-      ]
-    },
-    'Geral': {
-      series: [
-        { name: "Desenvolvimento", data: [0, 15, 45, 45, 50, 75, 80, 95, 100] },
-        { name: "Expectativas", data: [0, 10, 35, 45, 60, 60, 70, 75, 85] }
-      ]
+  async function fetchPatientsData() {
+    try {
+      const response = await fetch('http://localhost:3002/api/therapeutic-activity/patients', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Origin': 'http://localhost:5173',
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Erro: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Erro ao buscar dados dos pacientes associados a este usuário', error);
+      return [];
     }
-  };
-  
+  }
 
-  //o título do gráfico muda conforme a opção selecionada
-  const skillTitles = {
-    'Comunicação': 'Evolução da Comunicação',
-    'Alimentação': 'Evolução da Alimentação',
-    'Comportamento': 'Evolução do Comportamento',
-    'Autonomia': 'Evolução da Autonomia',
-    'Socialização': 'Evolução da Socialização',
-    'Hab. acadêmicas': 'Evolução das Hab. Acadêmicas',
-    'Geral': 'Evolução Geral'
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const nameParam = params.get('name');
+    const descriptionParam = params.get('description');
+    const evolutionParam = params.get('evolution');
+
+    if (nameParam) setName(nameParam);
+    if (descriptionParam) setDescription(descriptionParam);
+
+    if (evolutionParam) {
+      const evolutionArray = evolutionParam.split(',').map(item => parseInt(item, 10));
+      setChildEvolution(evolutionArray);
+      setIsLoading(false); 
+    }
+
+    fetchPatientsData().then(data => {
+      setPatients(data);
+    });
+  }, []);
+
+  const handleCategoryClick = (category, level) => {
+    const key = `${category}_${level}`;
+    setSelectedInfo(legendas[key] || 'Informação não disponível.');
   };
 
+  const handlePatientClick = (patient) => {
+    setSelectedPatient(patient);
+    setShowPatientsList(false); 
+  };
+
+  const handleBackToListClick = () => {
+    setShowPatientsList(true);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-blue-500">
+        <Banner name="André Silva" description="pai de Luís" />
+        <div className="flex items-center justify-center min-h-screen">
+          <p>Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-blue-500">
-      <Banner name="André Silva" description="pai de Luís" />
+      <Banner name={name} description={description} />
 
-      <div className="flex flex-col items-center justify-center min-h-screen pt-8 pb-8">
-        
-      
-        <div className="bg-white w-[500px] rounded-[50px] flex flex-col items-center pt-6 mb-8 mr-8">
-          <h1 className="font-bold text-3xl mb-4">Habilidades</h1>
-          <Radar/>
-        </div>
-
-       
-        
-        <div className="flex flex-row w-[1300px] justify-center items-center mb-8">
-          <div className="bg-white w-[900px] h-[450px] rounded-[50px] flex flex-col items-center justify-center pt-6 pr-6 mb-8 ml-8">
-            <h1 className="font-bold text-3xl">{skillTitles[selectedSkill]}</h1>
-            <Grafico_linha data={skillData[selectedSkill]}/>
+      {/* Mostra a lista de pacientes */}
+      {showPatientsList && (
+        <div className="bg-white rounded-[50px] flex flex-col items-center pt-6 mt-8 mb-8 p-4">
+          <h1 className="font-bold text-2xl mb-2">Filhos</h1>
+          {/* Lista de Pacientes */}
+          <div className="flex flex-wrap justify-center">
+            {patients.map(patient => (
+              <div key={patient.cpf} className="bg-gray-200 rounded-lg p-3 mx-4 mb-3 max-w-[300px] flex flex-col justify-between items-center">
+                <div className='items-center justify-center'>
+                  <p className="font-semibold text-base">{patient.name}</p>
+                  <p className="text-sm py-3">Data de Nascimento: {patient.birthdate}</p>
+                </div>
+                <p></p>
+                <button onClick={() => handlePatientClick(patient)} className="bg-blue-500 text-white px-3 py-1 pt-2 rounded-lg">Ver Progresso</button>
+              </div>
+            ))}
           </div>
+        </div>
+      )}
 
-          <div className="flex-col w-[600px]">
-            <div className="flex gap-4 mb-8 justify-center">
-              <BlueButton text="Comunicação" onClick={() => setSelectedSkill('Comunicação')} />
-              <BlueButton text="Alimentação" onClick={() => setSelectedSkill('Alimentação')} />
+      {!showPatientsList && selectedPatient && (
+        <div className="flex flex-col items-center justify-center pt-8 pb-8">
+          <div className="flex justify-center w-full">
+            <div className="bg-white rounded-[50px] flex flex-col items-center pt-6 mb-8 mr-8 w-[500px]">
+              <h1 className="font-bold text-3xl mb-4">Habilidades</h1>
+              <Radar evolution={childEvolution} onCategoryClick={handleCategoryClick} />
             </div>
-            <div className="flex gap-4 mb-8 justify-center">
-              <BlueButton text="Comportamento" onClick={() => setSelectedSkill('Comportamento')} />
-              <BlueButton text="Autonomia" onClick={() => setSelectedSkill('Autonomia')} />
-            </div>
-            <div className="flex gap-4 mb-8 justify-center">
-              <BlueButton text="Socialização" onClick={() => setSelectedSkill('Socialização')} />
-              <BlueButton text="Hab. acadêmicas" onClick={() => setSelectedSkill('Hab. acadêmicas')} />
-            </div>
-            <div className="flex gap-4 mb-8 justify-center">
-              <BlueButton text="Geral" onClick={() => setSelectedSkill('Geral')} />
+            <div className="bg-white rounded-[50px] flex flex-col items-center pt-6 mb-8 ml-8 p-4 w-[500px]">
+              <h1 className="font-bold text-3xl mb-4">Detalhes</h1>
+              {selectedInfo ? (
+                <p>{selectedInfo}</p>
+              ) : (
+                <p>Clique em uma das competências para mais informações</p>
+              )}
             </div>
           </div>
-
+          <button onClick={handleBackToListClick} className="bg-blue-500 text-white px-3 py-1 rounded-lg mt-4">Voltar para Lista de Filhos</button>
         </div>
-        
-
-      </div>
+      )}
     </div>
-  );
+  );  
 }
 
 export default Dashboard_Pais;
