@@ -11,12 +11,14 @@ const legendas = {
 };
 
 function Dashboard_Pais() {
+  const [selectedPatient, setSelectedPatient] = useState(null);
   const [selectedInfo, setSelectedInfo] = useState(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [childEvolution, setChildEvolution] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
   const [patients, setPatients] = useState([]);
+  const [showPatientsList, setShowPatientsList] = useState(true); 
 
   async function fetchPatientsData() {
     try {
@@ -27,14 +29,15 @@ function Dashboard_Pais() {
           'Origin': 'http://localhost:5173',
         }
       });
-      //TRATAMENTO DE ERROS
+      
       if (!response.ok) {
         throw new Error(`Erro: ${response.statusText}`);
       }
+      
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Erro ao buscar dados dos pacientes associados a este usuario', error);
+      console.error('Erro ao buscar dados dos pacientes associados a este usuário', error);
       return [];
     }
   }
@@ -64,6 +67,15 @@ function Dashboard_Pais() {
     setSelectedInfo(legendas[key] || 'Informação não disponível.');
   };
 
+  const handlePatientClick = (patient) => {
+    setSelectedPatient(patient);
+    setShowPatientsList(false); 
+  };
+
+  const handleBackToListClick = () => {
+    setShowPatientsList(true);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-blue-500">
@@ -77,43 +89,48 @@ function Dashboard_Pais() {
 
   return (
     <div className="min-h-screen bg-blue-500">
-    <Banner name="André Silva" description="pai de Luís" />
-  
-    {/* Div dos Pacientes */}
-    <div className="bg-white rounded-[50px] flex flex-col items-center pt-6 mt-8 mb-8 p-4">
-      <h1 className="font-bold text-2xl mb-2">Pacientes</h1>
-      {/* Lista de Pacientes */}
-      <div className="flex flex-wrap justify-center">
-        {patients.map(patient => (
-          <div key={patient.cpf} className="bg-gray-200 rounded-lg p-3 mx-4 mb-3 max-w-[300px] flex flex-col justify-between items-center">
-            <div>
-              <p className="font-semibold text-base">{patient.name}</p>
-              <p className="text-sm">Data de Nascimento: {patient.birthdate}</p>
-            </div>
-            <button className="bg-blue-500 text-white px-3 py-1 pt-2 rounded-lg">Ver Detalhes</button>
+      <Banner name={name} description={description} />
+
+      {/* Mostra a lista de pacientes */}
+      {showPatientsList && (
+        <div className="bg-white rounded-[50px] flex flex-col items-center pt-6 mt-8 mb-8 p-4">
+          <h1 className="font-bold text-2xl mb-2">Filhos</h1>
+          {/* Lista de Pacientes */}
+          <div className="flex flex-wrap justify-center">
+            {patients.map(patient => (
+              <div key={patient.cpf} className="bg-gray-200 rounded-lg p-3 mx-4 mb-3 max-w-[300px] flex flex-col justify-between items-center">
+                <div className='items-center justify-center'>
+                  <p className="font-semibold text-base">{patient.name}</p>
+                  <p className="text-sm py-3">Data de Nascimento: {patient.birthdate}</p>
+                </div>
+                <p></p>
+                <button onClick={() => handlePatientClick(patient)} className="bg-blue-500 text-white px-3 py-1 pt-2 rounded-lg">Ver Progresso</button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </div>
-  
-    {/* Seções de Habilidades e Detalhes */}
-    <div className="flex flex-col items-center justify-center pt-8 pb-8">
-      <div className="flex">
-        <div className="bg-white w-[500px] rounded-[50px] flex flex-col items-center pt-6 mb-8 mr-8">
-          <h1 className="font-bold text-3xl mb-4">Habilidades</h1>
-          <Radar evolution={childEvolution} onCategoryClick={handleCategoryClick} />
         </div>
-        <div className="bg-white w-[500px] rounded-[50px] flex flex-col items-center pt-6 mb-8 ml-8 p-4">
-          <h1 className="font-bold text-3xl mb-4">Detalhes</h1>
-          {selectedInfo ? (
-            <p>{selectedInfo}</p>
-          ) : (
-            <p>Clique em uma das competências para mais informações</p>
-          )}
+      )}
+
+      {!showPatientsList && selectedPatient && (
+        <div className="flex flex-col items-center justify-center pt-8 pb-8">
+          <div className="flex justify-center w-full">
+            <div className="bg-white rounded-[50px] flex flex-col items-center pt-6 mb-8 mr-8 w-[500px]">
+              <h1 className="font-bold text-3xl mb-4">Habilidades</h1>
+              <Radar evolution={childEvolution} onCategoryClick={handleCategoryClick} />
+            </div>
+            <div className="bg-white rounded-[50px] flex flex-col items-center pt-6 mb-8 ml-8 p-4 w-[500px]">
+              <h1 className="font-bold text-3xl mb-4">Detalhes</h1>
+              {selectedInfo ? (
+                <p>{selectedInfo}</p>
+              ) : (
+                <p>Clique em uma das competências para mais informações</p>
+              )}
+            </div>
+          </div>
+          <button onClick={handleBackToListClick} className="bg-blue-500 text-white px-3 py-1 rounded-lg mt-4">Voltar para Lista de Filhos</button>
         </div>
-      </div>
+      )}
     </div>
-  </div>
   );  
 }
 
