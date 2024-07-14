@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-// npm install react-apexcharts
-
 class Radar extends React.Component {
   constructor(props) {
     super(props);
@@ -14,11 +12,18 @@ class Radar extends React.Component {
       }],
       options: {
         chart: {
-            toolbar: {
-                show: false, 
-              },
           height: 300,
           type: 'radar',
+          events: {
+            markerClick: (event, context, { seriesIndex, dataPointIndex }) => {
+              const category = this.state.options.xaxis.categories[dataPointIndex];
+              const level = this.state.series[seriesIndex].data[dataPointIndex];
+              this.props.onCategoryClick(category, level);
+            }
+          }
+        },
+        toolbar: {
+          show: false,
         },
         dataLabels: {
           enabled: true
