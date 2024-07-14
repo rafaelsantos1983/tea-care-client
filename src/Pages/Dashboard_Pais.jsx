@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Banner from '../Components/Banner';
 import Radar from '../Components/Radar';
 
@@ -12,23 +12,52 @@ const legendas = {
 
 function Dashboard_Pais() {
   const [selectedInfo, setSelectedInfo] = useState(null);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [childEvolution, setChildEvolution] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); 
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const nameParam = params.get('name');
+    const descriptionParam = params.get('description');
+    const evolutionParam = params.get('evolution');
+
+    if (nameParam) setName(nameParam);
+    if (descriptionParam) setDescription(descriptionParam);
+
+    if (evolutionParam) {
+      const evolutionArray = evolutionParam.split(',').map(item => parseInt(item, 10));
+      setChildEvolution(evolutionArray);
+      setIsLoading(false); 
+    }
+  }, []);
 
   const handleCategoryClick = (category, level) => {
     const key = `${category}_${level}`;
     setSelectedInfo(legendas[key] || 'Informação não disponível.');
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-blue-500">
+        <Banner name="André Silva" description="pai de Luís" />
+        <div className="flex items-center justify-center min-h-screen">
+          <p>Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-blue-500">
       <Banner name="André Silva" description="pai de Luís" />
-
       <div className="flex flex-col items-center justify-center min-h-screen pt-8 pb-8">
         <div className="flex">
           <div className="bg-white w-[500px] rounded-[50px] flex flex-col items-center pt-6 mb-8 mr-8">
             <h1 className="font-bold text-3xl mb-4">Habilidades</h1>
-            <Radar onCategoryClick={handleCategoryClick} />
+            <Radar evolution={childEvolution} onCategoryClick={handleCategoryClick} />
           </div>
-
           <div className="bg-white w-[500px] rounded-[50px] flex flex-col items-center pt-6 mb-8 ml-8 p-4">
             <h1 className="font-bold text-3xl mb-4">Detalhes</h1>
             {selectedInfo ? (

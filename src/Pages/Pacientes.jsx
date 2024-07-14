@@ -69,6 +69,10 @@ function Pacientes() {
       }).join(''));
       return JSON.parse(jsonPayload);
     }
+
+    const handleRedirectURL = (dashboard, userName, userDescription, relativeEvolution) => {
+      return `/${dashboard}?name=${encodeURIComponent(userName)}&description=${encodeURIComponent(userDescription)}&evolution=${encodeURIComponent(relativeEvolution)}`;
+    }
   
     // Recupera o token do localStorage
     const token = localStorage.getItem('accessToken');
@@ -78,9 +82,10 @@ function Pacientes() {
   
       // Verifica se o type é "E"
       if (payload.user.type === "I") {
-        window.location.href = '/Dashboard_PsicoPedagogo';
+        window.location.href = handleRedirectURL('Dashboard_PsicoPedagogo',~'Psiquiatra Caio','TCC integrativa', undefined);
       } else {
-        window.location.href = '/Dashboard_Pais';
+        let childEvolution = [3,2,5,4,5]
+        window.location.href = handleRedirectURL('Dashboard_Pais','Andre Farias','Pai de Lucas', childEvolution);
       }
     } else {
       console.log('Token não encontrado no localStorage');

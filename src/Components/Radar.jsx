@@ -8,7 +8,7 @@ class Radar extends React.Component {
     this.state = {
       series: [{
         name: 'Categoria',
-        data: [4, 3, 2, 5, 1, 3], // Valores correspondentes aos níveis: ruim, médio, bom, excelente
+        data: props.evolution, // Valores correspondentes aos níveis: ruim, médio, bom, excelente
       }],
       options: {
         chart: {
