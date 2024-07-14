@@ -27,7 +27,38 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
     const [birthday, setBirthday] = useState(null);
     const [nameResponsavel, setNameResponsavel] = useState('');
     const [cpfResponsavel, setCpfResponsavel] = useState('');
+    const [errors, setErrors] = useState({});
+    const [alertMessage, setAlertMessage] = useState('');
 
+    const handleSubmit = (event) => {
+        event.preventDefault(); // Evita que a página recarregue
+
+        const newErrors = {}; // Lista para guardar erros
+
+        // Verifica se os campos estão vazios
+        if (name.trim() === '') {
+            newErrors.name = 'Campo obrigatório';
+        }
+        if (cpf.trim() === '') {
+            newErrors.cpf = 'Campo obrigatório';
+        }
+        if (!birthday) {
+            newErrors.birthday = 'Campo obrigatório';
+        }
+        if (nameResponsavel.trim() === '') {
+            newErrors.nameResponsavel = 'Campo obrigatório';
+        }
+
+        // Verifica se a lista tem objetos
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            setAlertMessage('Preencha Campos Obrigatórios!');
+            return;
+        }
+
+        // Enviar os dados se não houver erros
+        handleRegister();
+    };
 
     // Função para enviar os dados para a API
     const handleRegister = async () => {
@@ -71,7 +102,7 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-[1000px] bg-white rounded-lg p-8 shadow-lg relative">
+            <form className="w-[1000px] bg-white rounded-lg p-8 shadow-lg relative" onSubmit={handleSubmit}>
                 <button
                     onClick={onCancel}
                     className="absolute top-0 right-0 mt-2 mr-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
@@ -93,12 +124,19 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
                             name="name"
                             placeholder="Insira o nome do paciente..."
                             variant="outlined"
-                            className="w-full bg-gray-200 rounded-[10px]"
+                            className={`w-full rounded-[10px] ${errors.name ? 'bg-red-100' : 'bg-gray-200'}`}
                             InputProps={{
                                 style: { borderRadius: '10px' }
                             }}
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            error={!!errors.name}
+                            helperText={errors.name}
+                            onChange={(e) => {
+                                setName(e.target.value);
+                                if (errors.name) {
+                                    setErrors((prev) => ({ ...prev, name: '' }));
+                                }
+                            }}
                         />
                     </div>
 
@@ -111,12 +149,19 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
                             name="cpf"
                             placeholder="Insira o CPF do paciente..."
                             variant="outlined"
-                            className="w-full bg-gray-200 rounded-[10px]"
+                            className={`w-full rounded-[10px] ${errors.cpf ? 'bg-red-100' : 'bg-gray-200'}`}
                             InputProps={{
                                 style: { borderRadius: '10px' }
                             }}
                             value={cpf}
-                            onChange={(e) => handleCpfChange(e, setCpf)}
+                            error={!!errors.cpf}
+                            helperText={errors.cpf}
+                            onChange={(e) => {
+                                handleCpfChange(e, setCpf);
+                                if (errors.cpf) {
+                                    setErrors((prev) => ({ ...prev, cpf: '' }));
+                                }
+                            }}
                         />
                     </div>
 
@@ -132,37 +177,50 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
                         >
                             <DatePicker
                                 value={birthday}
-                                onChange={(newDate) => setBirthday(newDate)}
+                                onChange={(newDate) => {
+                                    setBirthday(newDate);
+                                    if (errors.birthday) {
+                                        setErrors((prev) => ({ ...prev, birthday: '' }));
+                                    }
+                                }}
                                 format="DD/MM/YYYY"
-                                className="bg-gray-200"
+                                className={`w-full rounded-[10px] ${errors.birthday ? 'bg-red-100' : 'bg-gray-200'}`}
                                 textField={(props) => (
                                     <TextField
                                         {...props}
                                         id="date-picker"
                                         variant="outlined"
-                                        className="w-full bg-gray-200 rounded-[10px]"
+                                        error={!!errors.birthday}
+                                        helperText={errors.birthday}
                                         sx={{ input: { height: '100%' } }}
                                     />
                                 )}
                             />
-
+                            {errors.nameResponsavel && (
+                                <p className="text-red-500 text-xs mt-1">{errors.nameResponsavel}</p>
+                            )}
                         </LocalizationProvider>
                     </div>
                 </div>
 
                 <hr className="border-t border-gray-300"/>
-                <p className="text-gray-700 text-sm mb-4">Responsável</p>
+                <p className="text-gray-700 text-sm mb-4 font-bold">Responsável</p>
 
                 <div className="flex gap-6 justify-between items-center mb-10">
                     <div className="flex-1">
                         <InputLabel htmlFor="responsavel-select">
-                            <p className="font-bold text-gray-950 text-sm">Nome</p>
+                            
                         </InputLabel>
-                        <FormControl variant="outlined" className="w-full bg-gray-200">
+                        <FormControl variant="outlined" className={`w-full ${errors.birthday ? 'bg-red-100' : 'bg-gray-200'}`}>
                             <Select
                                 id="responsavel-select"
                                 value={nameResponsavel}
-                                onChange={(e) => setNameResponsavel(e.target.value)}
+                                onChange={(e) => {
+                                    setNameResponsavel(e.target.value);
+                                    if (errors.nameResponsavel) {
+                                        setErrors((prev) => ({ ...prev, nameResponsavel: '' }));
+                                    }
+                                }}
                                 displayEmpty
                                 disablePortal
                                 inputProps={{
@@ -171,27 +229,37 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
                                 MenuProps={{
                                     disableScrollLock: true
                                 }}
+                                error={!!errors.nameResponsavel}
                             >
                                 <MenuItem value="">
                                     <em>Selecione o responsável...</em>
                                 </MenuItem>
                                 {/* colocar os responsaveis depois*/}
                             </Select>
+                            {errors.nameResponsavel && (
+                                <p className="text-red-500 text-xs mt-1">{errors.nameResponsavel}</p>
+                            )}
                         </FormControl>
                     </div>
                 </div>
 
                 <hr className="border-t border-gray-300"/>
 
+                {alertMessage && (
+                    <div className="text-red-500 text-center mb-4">
+                        {alertMessage}
+                    </div>
+                )}
+
                 <div className="flex justify-end space-x-4 mt-4">
                     <button
                         onClick={handleRegister}
                         className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                     >
-                        Registrar
+                        Confirmar
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     );
 };

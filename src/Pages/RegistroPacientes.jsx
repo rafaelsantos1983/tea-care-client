@@ -116,7 +116,7 @@ const PatientRegistration = () => {
           }}
         >
           <h1 className="font-bold text-center text-3xl mb-5">
-            Registro de Pacientes
+            Pacientes
           </h1>
           <div style={{ marginBottom: "20px", textAlign: "center" }}>
             <button
@@ -131,7 +131,7 @@ const PatientRegistration = () => {
                 cursor: "pointer",
               }}
             >
-              Registrar Paciente
+              Adicionar
             </button>
           </div>
           {patients.map((patient) => (
