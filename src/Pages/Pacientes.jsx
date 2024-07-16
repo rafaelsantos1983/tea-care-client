@@ -55,6 +55,30 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+// const [patients, setPatients] = useState([]);
+
+// async function fetchPatientsData() {
+//   try {
+//     const response = await fetch('http://localhost:3002/api/therapeutic-activity/patients', {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Origin': 'http://localhost:5173',
+//       }
+//     });
+    
+//     if (!response.ok) {
+//       throw new Error(`Erro: ${response.statusText}`);
+//     }
+    
+//     const data = await response.json();
+//     return data;
+//   } catch (error) {
+//     console.error('Erro ao buscar dados dos pacientes associados a este usuário', error);
+//     return [];
+//   }
+// }
+
 function Pacientes() {
   // Ao clicar no botão, redireciona para o DashBoard
   const handleSubmit = (event) => {
@@ -82,7 +106,7 @@ function Pacientes() {
   
       // Verifica se o type é "E"
       if (payload.user.type === "I") {
-        window.location.href = handleRedirectURL('Dashboard_PsicoPedagogo',~'Psiquiatra Caio','TCC integrativa', undefined);
+        window.location.href = handleRedirectURL('Dashboard_PsicoPedagogo','Psiquiatra Caio','TCC integrativa', undefined);
       } else {
         let childEvolution = [3,2,5,4,5]
         window.location.href = handleRedirectURL('Dashboard_Pais','Andre Farias','Pai de Lucas', childEvolution);
