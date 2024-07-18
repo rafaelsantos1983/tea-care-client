@@ -25,52 +25,76 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
     const [name, setName] = useState('');
     const [cpf, setCpf] = useState('');
     const [birthday, setBirthday] = useState(null);
-    const [nameResponsavel, setNameResponsavel] = useState('');
-    const [cpfResponsavel, setCpfResponsavel] = useState('');
+    const [idResponsavel, setIdResponsavel] = useState('');
     const [responsaveis, setResponsaveis] = useState([]);
+    const [errors, setErrors] = useState({});
+    const [alertMessage, setAlertMessage] = useState('');
 
     // Função para buscar dados do paciente pelo ID
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await api.get(`/api/therapeutic-activity/patients/${patientId}`);
-                //aqui deve-se pegar o id do responsável ao invés do nome
-                const { name, cpf, birthday, nameResponsavel } = response.data; // Supondo que a API retorna nome, cpf e birthday
+                const { name, cpf, birthday, responsible } = response.data; 
                 setName(name);
-                setCpf(formatCPF(cpf)); // Formata o CPF ao setar o estado
-                setBirthday(dayjs(birthday)); // Convertendo a data para o formato do DatePicker
-                setNameResponsavel(nameResponsavel);
+                setCpf(formatCPF(cpf)); 
+                setBirthday(dayjs(birthday)); 
+                setIdResponsavel(responsible);
             } catch (error) {
                 console.error('Erro ao buscar dados do paciente:', error);
             }
         };
 
+        fetchData();
+    }, [patientId]);
+
+    // Função para buscar os responsáveis
+    useEffect(() => {
         const fetchResponsaveis = async () => {
             try {
-                const response = await api.get('/api/responsaveis'); // Substitua pela URL correta da sua API
+                const response = await axios.get('http://localhost:3001/api/users');
                 setResponsaveis(response.data);
             } catch (error) {
                 console.error('Erro ao buscar responsáveis:', error);
             }
         };
 
-        if (patientId) {
-            fetchData();
-            fetchResponsaveis();
-        }
-    }, [patientId]);
+        fetchResponsaveis();
+    }, []);
 
     // Função para enviar os dados para a API
     const handleSave = async () => {
+        const newErrors = {}; // Lista para guardar erros
+        
+        // Verifica se os campos estão vazios
+        if (name === '') {
+            newErrors.name = "Campo obrigatório";
+        }
+        if (cpf === '') {
+            newErrors.cpf = "Campo obrigatório";
+        }
+        if (!birthday) {
+            newErrors.birthday = "Campo obrigatório";
+        }
+        if (idResponsavel === '') {
+            newErrors.idResponsavel = "Campo obrigatório";
+        }
+        
+        // Verifica se a lista tem objetos
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            setAlertMessage("Preencha Todos os Campos!");
+            return;
+        }
+
         try {
             const response = await api.post(`/api/therapeutic-activity/patients/${patientId}`, {
                 name: name,
                 cpf: cpf,
                 birthday: birthday,
-                //enviar o id do responsável
+                responsibleId: idResponsavel
             });
             console.log('Dados enviados com sucesso:', response.data);
-            // Executa a função de confirmação
             onConfirm();
         } catch (error) {
             console.error('Erro ao enviar dados:', error);
@@ -91,11 +115,9 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
     // Função para manipular a mudança no campo CPF
     const handleCpfChange = (event, setCpfValue) => {
         let { value } = event.target;
-        // Limita o tamanho do CPF para no máximo 14 caracteres (com formatação)
         value = value.slice(0, 14);
-        // Remove caracteres não numéricos
         const numericValue = value.replace(/\D/g, "");
-        setCpfValue(formatCPF(numericValue)); // Formata o CPF ao digitar
+        setCpfValue(formatCPF(numericValue));
     };
 
     return (
@@ -107,7 +129,7 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
                 >
                     <ClearIcon />
                 </button>
-                <h1 className="font-bold text-center text-3xl mb-5">Atualizar dados</h1>
+                <h1 className="font-bold text-center text-3xl mb-5">Editar Paciente</h1>
                 
                 <hr className="border-t border-gray-300"/>
                 <p className="text-gray-700 text-sm mb-4">Paciente</p>
@@ -122,12 +144,18 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
                             name="name"
                             placeholder="Insira o nome do paciente..."
                             variant="outlined"
-                            className="w-full bg-gray-200 rounded-[10px]"
+                            className={`w-full rounded-[10px] ${errors.name ? 'bg-red-200' : 'bg-gray-200'}`}
                             InputProps={{
                                 style: { borderRadius: '10px' }
                             }}
+                            error={!!errors.name}
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={(e) => {
+                                setName(e.target.value);
+                                if (errors.name) {
+                                    setErrors((prev) => ({ ...prev, name: '' }));
+                                }
+                            }}
                         />
                     </div>
 
@@ -140,12 +168,18 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
                             name="cpf"
                             placeholder="Insira o CPF do paciente..."
                             variant="outlined"
-                            className="w-full bg-gray-200 rounded-[10px]"
+                            className={`w-full rounded-[10px] ${errors.cpf ? 'bg-red-200' : 'bg-gray-200'}`}
                             InputProps={{
                                 style: { borderRadius: '10px' }
                             }}
+                            error={!!errors.cpf}
                             value={cpf}
-                            onChange={(e) => handleCpfChange(e, setCpf)}
+                            onChange={(e) => {
+                                handleCpfChange(e, setCpf);
+                                if (errors.cpf) {
+                                    setErrors((prev) => ({ ...prev, cpf: '' }));
+                                }
+                            }}
                         />
                     </div>
 
@@ -161,15 +195,22 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
                         >
                             <DatePicker
                                 value={birthday}
-                                onChange={(newDate) => setBirthday(newDate)}
+                                onChange={(newDate) => {
+                                    setBirthday(newDate);
+                                    if (errors.birthday) {
+                                        setErrors((prev) => ({ ...prev, birthday: '' }));
+                                    }
+                                }}
                                 format="DD/MM/YYYY"
-                                className="bg-gray-200"
+                                className={`bg-gray-200 ${errors.birthday ? 'bg-red-200' : 'bg-gray-200'}`}
                                 textField={(props) => (
                                     <TextField
                                         {...props}
                                         id="date-picker"
                                         variant="outlined"
-                                        className="w-full bg-gray-200 rounded-[10px]"
+                                        className={`w-full rounded-[10px] ${errors.birthday ? 'bg-red-200' : 'bg-gray-200'}`}
+                                        error={!!errors.birthday}
+                                        helperText={errors.birthday}
                                         sx={{ input: { height: '100%' } }}
                                     />
                                 )}
@@ -179,35 +220,51 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
                 </div>
 
                 <hr className="border-t border-gray-300"/>
-                <p className="text-gray-700 text-sm mb-4">Responsável</p>
+                <br />
 
                 <div className="flex gap-6 justify-between items-center mb-10">
                     <div className="flex-1">
                         <InputLabel htmlFor="responsavel-select">
-                            <p className="font-bold text-gray-950 text-sm">Nome</p>
+                            <p className="font-bold text-gray-950 text-sm">Responsável</p>
                         </InputLabel>
-                        <FormControl variant="outlined" className="w-full bg-gray-200">
-                            <Select
-                                id="responsavel-select"
-                                value={nameResponsavel}
-                                onChange={(e) => setNameResponsavel(e.target.value)}
-                                displayEmpty
-                                disablePortal
-                                inputProps={{
-                                    style: { borderRadius: '10px' }
-                                }}
-                                MenuProps={{
-                                    disableScrollLock: true
-                                }}
-                            >
-                                <MenuItem value="">
-                                    <em>Selecione o responsável...</em>
+                        <FormControl variant="outlined" className={`w-full ${errors.idResponsavel ? 'bg-red-200' : 'bg-gray-200'}`}>
+                        <Select
+                            id="responsavel-select"
+                            value={idResponsavel}
+                            onChange={(e) => {
+                                setIdResponsavel(e.target.value);
+                                if (errors.idResponsavel) {
+                                    setErrors((prev) => ({ ...prev, idResponsavel: '' }));
+                                }
+                            }}
+                            displayEmpty
+                            disablePortal
+                            inputProps={{
+                                style: { borderRadius: '10px' }
+                            }}
+                            MenuProps={{
+                                disableScrollLock: true
+                            }}
+                            error={!!errors.idResponsavel}
+                        >
+                            <MenuItem value="" disabled>
+                                Selecione o responsável
+                            </MenuItem>
+                            {responsaveis.map((responsavel) => (
+                                <MenuItem key={responsavel._id} value={responsavel._id}>
+                                    {responsavel.name} (CPF: {responsavel.cpf ? formatCPF(responsavel.cpf) : "Não disponível"})
                                 </MenuItem>
-                                {/* colocar os responsaveis depois*/}
-                            </Select>
-                        </FormControl>
+                            ))}
+                        </Select>
+                    </FormControl>
                     </div>
                 </div>
+
+                {alertMessage && (
+                    <div className="text-red-500 mb-4">
+                        {alertMessage}
+                    </div>
+                )}
 
                 <hr className="border-t border-gray-300"/>
 
@@ -231,4 +288,3 @@ PopUpEditionPatient.propTypes = {
 };
 
 export default PopUpEditionPatient;
-

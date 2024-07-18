@@ -118,13 +118,13 @@ const PatientRegistration = () => {
           <h1 className="font-bold text-center text-3xl mb-5">
             Pacientes
           </h1>
-          <div style={{ marginBottom: "20px", textAlign: "center" }}>
+          <div style={{ marginBottom: "20px", textAlign: "end" }}>
             <button
               onClick={() => {setPopUpAdd(true);}}
+              className="w-[181px] bg-green-500 hover:bg-green-600"
               style={{
                 padding: "10px 20px",
                 fontSize: "16px",
-                backgroundColor: "#4CAF50",
                 color: "#fff",
                 border: "none",
                 borderRadius: "5px",
@@ -169,11 +169,11 @@ const PatientRegistration = () => {
                   <div>
                     <button
                       onClick={() => handleEditPatient(patient.id)}
+                      className="bg-blue-500 hover:bg-blue-600"
                       style={{
                         marginRight: "10px",
                         padding: "10px 20px",
                         fontSize: "16px",
-                        backgroundColor: "#2196F3",
                         color: "#fff",
                         border: "none",
                         borderRadius: "5px",
@@ -184,10 +184,10 @@ const PatientRegistration = () => {
                     </button>
                     <button
                       onClick={() => confirmDeletion(patient.id)}
+                      className="bg-red-500 hover:bg-red-800"
                       style={{
                         padding: "10px 20px",
                         fontSize: "16px",
-                        backgroundColor: "#f44336",
                         color: "#fff",
                         border: "none",
                         borderRadius: "5px",

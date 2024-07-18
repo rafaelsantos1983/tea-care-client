@@ -21,61 +21,66 @@ const api = axios.create({
     timeout: 1000,
 });
 
-const PopUpEdition = ({ onConfirm, onCancel }) => {
+const PopUpAddPatient = ({ onConfirm, onCancel }) => {
     const [name, setName] = useState('');
     const [cpf, setCpf] = useState('');
     const [birthday, setBirthday] = useState(null);
-    const [nameResponsavel, setNameResponsavel] = useState('');
-    const [cpfResponsavel, setCpfResponsavel] = useState('');
+    const [idResponsavel, setIdResponsavel] = useState('');
+    const [responsaveis, setResponsaveis] = useState([]);
     const [errors, setErrors] = useState({});
     const [alertMessage, setAlertMessage] = useState('');
 
-    const handleSubmit = (event) => {
-        event.preventDefault(); // Evita que a página recarregue
+    // Função para buscar os responsáveis
+    useEffect(() => {
+        const fetchResponsaveis = async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/api/users');
+                setResponsaveis(response.data);
+            } catch (error) {
+                console.error('Erro ao buscar responsáveis:', error);
+            }
+        };
 
+        fetchResponsaveis();
+    }, []);
+
+    // Função para enviar os dados para a API
+    const handleSave = async () => {
         const newErrors = {}; // Lista para guardar erros
-
+        
         // Verifica se os campos estão vazios
-        if (name.trim() === '') {
-            newErrors.name = 'Campo obrigatório';
+        if (name === '') {
+            newErrors.name = "Campo obrigatório";
         }
-        if (cpf.trim() === '') {
-            newErrors.cpf = 'Campo obrigatório';
+        if (cpf === '') {
+            newErrors.cpf = "Campo obrigatório";
         }
         if (!birthday) {
-            newErrors.birthday = 'Campo obrigatório';
+            newErrors.birthday = "Campo obrigatório";
         }
-        if (nameResponsavel.trim() === '') {
-            newErrors.nameResponsavel = 'Campo obrigatório';
+        if (idResponsavel === '') {
+            newErrors.idResponsavel = "Campo obrigatório";
         }
-
+        
         // Verifica se a lista tem objetos
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-            setAlertMessage('Preencha Campos Obrigatórios!');
+            setAlertMessage("Preencha Todos os Campos!");
             return;
         }
 
-        // Enviar os dados se não houver erros
-        handleRegister();
-    };
-
-    // Função para enviar os dados para a API
-    const handleRegister = async () => {
         try {
-            const response = await api.post(`/api/therapeutic-activity/patients`, {
+            const response = await api.put(`/api/therapeutic-activity/patients`, {
                 name: name,
                 cpf: cpf,
-                birthday: birthday
-                //faltam adicionar os campos no back:
-                // nameResponsavel: nameResponsavel,
-                // cpfResponsavel: cpfResponsavel
+                birthday: birthday,
+                responsibleId: idResponsavel
             });
             console.log('Dados enviados com sucesso:', response.data);
-            // Executa a função de confirmação
             onConfirm();
         } catch (error) {
             console.error('Erro ao enviar dados:', error);
+            setAlertMessage('Erro ao enviar dados!');
         }
     };
 
@@ -93,23 +98,21 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
     // Função para manipular a mudança no campo CPF
     const handleCpfChange = (event, setCpfValue) => {
         let { value } = event.target;
-        // Limita o tamanho do CPF para no máximo 14 caracteres (com formatação)
         value = value.slice(0, 14);
-        // Remove caracteres não numéricos
         const numericValue = value.replace(/\D/g, "");
-        setCpfValue(formatCPF(numericValue)); // Formata o CPF ao digitar
+        setCpfValue(formatCPF(numericValue));
     };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <form className="w-[1000px] bg-white rounded-lg p-8 shadow-lg relative" onSubmit={handleSubmit}>
+            <div className="w-[1000px] bg-white rounded-lg p-8 shadow-lg relative">
                 <button
                     onClick={onCancel}
                     className="absolute top-0 right-0 mt-2 mr-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
                 >
                     <ClearIcon />
                 </button>
-                <h1 className="font-bold text-center text-3xl mb-5">Novo paciente</h1>
+                <h1 className="font-bold text-center text-3xl mb-5">Registrar Paciente</h1>
                 
                 <hr className="border-t border-gray-300"/>
                 <p className="text-gray-700 text-sm mb-4">Paciente</p>
@@ -124,13 +127,12 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
                             name="name"
                             placeholder="Insira o nome do paciente..."
                             variant="outlined"
-                            className={`w-full rounded-[10px] ${errors.name ? 'bg-red-100' : 'bg-gray-200'}`}
+                            className={`w-full rounded-[10px] ${errors.name ? 'bg-red-200' : 'bg-gray-200'}`}
                             InputProps={{
                                 style: { borderRadius: '10px' }
                             }}
-                            value={name}
                             error={!!errors.name}
-                            helperText={errors.name}
+                            value={name}
                             onChange={(e) => {
                                 setName(e.target.value);
                                 if (errors.name) {
@@ -149,13 +151,12 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
                             name="cpf"
                             placeholder="Insira o CPF do paciente..."
                             variant="outlined"
-                            className={`w-full rounded-[10px] ${errors.cpf ? 'bg-red-100' : 'bg-gray-200'}`}
+                            className={`w-full rounded-[10px] ${errors.cpf ? 'bg-red-200' : 'bg-gray-200'}`}
                             InputProps={{
                                 style: { borderRadius: '10px' }
                             }}
-                            value={cpf}
                             error={!!errors.cpf}
-                            helperText={errors.cpf}
+                            value={cpf}
                             onChange={(e) => {
                                 handleCpfChange(e, setCpf);
                                 if (errors.cpf) {
@@ -184,90 +185,89 @@ const PopUpEdition = ({ onConfirm, onCancel }) => {
                                     }
                                 }}
                                 format="DD/MM/YYYY"
-                                className={`w-full rounded-[10px] ${errors.birthday ? 'bg-red-100' : 'bg-gray-200'}`}
+                                className={`bg-gray-200 ${errors.birthday ? 'bg-red-200' : 'bg-gray-200'}`}
                                 textField={(props) => (
                                     <TextField
                                         {...props}
                                         id="date-picker"
                                         variant="outlined"
+                                        className={`w-full rounded-[10px] ${errors.birthday ? 'bg-red-200' : 'bg-gray-200'}`}
                                         error={!!errors.birthday}
                                         helperText={errors.birthday}
                                         sx={{ input: { height: '100%' } }}
                                     />
                                 )}
                             />
-                            {errors.nameResponsavel && (
-                                <p className="text-red-500 text-xs mt-1">{errors.nameResponsavel}</p>
-                            )}
                         </LocalizationProvider>
                     </div>
                 </div>
 
                 <hr className="border-t border-gray-300"/>
-                <p className="text-gray-700 text-sm mb-4 font-bold">Responsável</p>
+                <br />
 
                 <div className="flex gap-6 justify-between items-center mb-10">
-                    <div className="flex-1">
-                        <InputLabel htmlFor="responsavel-select">
-                            
-                        </InputLabel>
-                        <FormControl variant="outlined" className={`w-full ${errors.birthday ? 'bg-red-100' : 'bg-gray-200'}`}>
-                            <Select
-                                id="responsavel-select"
-                                value={nameResponsavel}
-                                onChange={(e) => {
-                                    setNameResponsavel(e.target.value);
-                                    if (errors.nameResponsavel) {
-                                        setErrors((prev) => ({ ...prev, nameResponsavel: '' }));
-                                    }
-                                }}
-                                displayEmpty
-                                disablePortal
-                                inputProps={{
-                                    style: { borderRadius: '10px' }
-                                }}
-                                MenuProps={{
-                                    disableScrollLock: true
-                                }}
-                                error={!!errors.nameResponsavel}
-                            >
-                                <MenuItem value="">
-                                    <em>Selecione o responsável...</em>
+                <div className="flex-1">
+                    <InputLabel htmlFor="responsavel-select">
+                        <p className="font-bold text-gray-950 text-sm">Responsável</p>
+                    </InputLabel>
+                    <FormControl variant="outlined" className={`w-full ${errors.idResponsavel ? 'bg-red-200' : 'bg-gray-200'}`}>
+                        <Select
+                            id="responsavel-select"
+                            value={idResponsavel}
+                            onChange={(e) => {
+                                setIdResponsavel(e.target.value);
+                                if (errors.idResponsavel) {
+                                    setErrors((prev) => ({ ...prev, idResponsavel: '' }));
+                                }
+                            }}
+                            displayEmpty
+                            disablePortal
+                            inputProps={{
+                                style: { borderRadius: '10px' }
+                            }}
+                            MenuProps={{
+                                disableScrollLock: true
+                            }}
+                            error={!!errors.idResponsavel}
+                        >
+                            <MenuItem value="" disabled>
+                                Selecione o responsável
+                            </MenuItem>
+                            {responsaveis.map((responsavel) => (
+                                <MenuItem key={responsavel._id} value={responsavel._id}>
+                                    {responsavel.name} (CPF: {responsavel.cpf ? formatCPF(responsavel.cpf) : "Não disponível"})
                                 </MenuItem>
-                                {/* colocar os responsaveis depois*/}
-                            </Select>
-                            {errors.nameResponsavel && (
-                                <p className="text-red-500 text-xs mt-1">{errors.nameResponsavel}</p>
-                            )}
-                        </FormControl>
-                    </div>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </div>
 
-                <hr className="border-t border-gray-300"/>
+                </div>
 
                 {alertMessage && (
-                    <div className="text-red-500 text-center mb-4">
+                    <div className="text-red-500 mb-4">
                         {alertMessage}
                     </div>
                 )}
 
+                <hr className="border-t border-gray-300"/>
+
                 <div className="flex justify-end space-x-4 mt-4">
                     <button
-                        onClick={handleRegister}
-                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                        onClick={handleSave}
+                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
                     >
                         Confirmar
                     </button>
                 </div>
-            </form>
+            </div>
         </div>
     );
 };
 
-PopUpEdition.propTypes = {
-    patientId: PropTypes.string.isRequired,
+PopUpAddPatient.propTypes = {
     onConfirm: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
 };
 
-export default PopUpEdition;
+export default PopUpAddPatient;
