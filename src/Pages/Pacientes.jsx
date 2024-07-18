@@ -55,29 +55,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-// const [patients, setPatients] = useState([]);
-
-// async function fetchPatientsData() {
-//   try {
-//     const response = await fetch('http://localhost:3002/api/therapeutic-activity/patients', {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Origin': 'http://localhost:5173',
-//       }
-//     });
-    
-//     if (!response.ok) {
-//       throw new Error(`Erro: ${response.statusText}`);
-//     }
-    
-//     const data = await response.json();
-//     return data;
-//   } catch (error) {
-//     console.error('Erro ao buscar dados dos pacientes associados a este usuário', error);
-//     return [];
-//   }
-// }
 
 function Pacientes() {
   // Ao clicar no botão, redireciona para o DashBoard
@@ -177,10 +154,10 @@ function Pacientes() {
 
       <div className="flex justify-center items-center min-h-[calc(100vh-50px)]">
         {/* Fundo Branco */}
-        <form className="bg-white w-[500px] h-[500px] rounded-[50px] p-10" onSubmit={handleSubmit}>
+        <form className="bg-white w-[40vw] h-[35vw] rounded-[50px] p-10" onSubmit={handleSubmit}>
           {/* Título */}
-          <h1 className='font-bold text-start text-3xl mb-2'>
-            Busca de Pacientes
+          <h1 className='font-bold text-center text-4xl mb-2'>
+            Pacientes
           </h1>
           {/* Linha Azul */}
           <div className='bg-blue-400 w-full h-1 mb-5'></div>

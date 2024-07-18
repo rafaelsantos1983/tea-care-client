@@ -1,5 +1,4 @@
 import React from "react";
-import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/system";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -37,7 +36,7 @@ export default function Paciente({id, cpf, name, selected, onClick }) {
     <div>
       <KcpfField selected={selected} onClick={() => onClick(cpf)}>
         <InputAdornment position="start">
-          <SentimentSatisfiedAltIcon />
+        {/*ESPAÇO PARA IMAGEM*/}
         </InputAdornment>
         <span>
           cpf: {paciente.cpf} | Nome: {paciente.name}
