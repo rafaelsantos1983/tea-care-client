@@ -12,7 +12,7 @@ import Checkbox from '@mui/material/Checkbox';
 
 // Cria uma instância do axios para chamadas à API
 const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: 'http://localhost:3001/api/config/users',
   timeout: 1000,
 });
 
@@ -24,9 +24,38 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
   const [type, setType] = useState('');
   const [ocupation, setOcupation] = useState('');
   const [email, setEmail] = useState('');
+  // Para mensagens de erros
+  const [errors, setErrors] = useState({});
+  const [alertMessage, setAlertMessage] = useState('');
 
   // Função para enviar os dados para a API
   const handleRegister = async () => {
+    const newErrors = {}; // Lista para guardar erros
+
+    // Verifica se os campos estão vazios
+    if (name === '') {
+      newErrors.name = "Campo obrigatório";
+    }
+    if (email === '') {
+      newErrors.email = "Campo obrigatório";
+    }
+    if (cpf === '') {
+      newErrors.cpf = "Campo obrigatório";
+    }
+    if (telefone === '') {
+      newErrors.telefone = "Campo obrigatório";
+    }
+    if (type === 'I' && ocupation === '') {
+      newErrors.ocupation = "Campo obrigatório";
+    }
+
+    // Verifica se a lista tem objetos
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setAlertMessage("Preencha Campos Obrigatórios!");
+      return;
+    }
+
     const userData = {
       name: name,
       email: email,
@@ -40,7 +69,7 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
     console.log('Enviando dados:', userData); // Log dos dados a serem enviados
 
     try {
-      const response = await api.put('/api/config/users', userData);
+      const response = await api.post('', userData);
       console.log('Dados enviados com sucesso:', response.data);
       onConfirm(); // Executa a função de confirmação
     } catch (error) {
@@ -57,42 +86,18 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
     }
   };
 
-  // Função para formatar o CPF
-  const formatCPF = (value) => {
-    if (!value) return '';
-    const numericValue = value.replace(/\D/g, '');
-    const match = numericValue.match(/^(\d{3})(\d{3})(\d{3})(\d{2})$/);
-    if (match) {
-      return `${match[1]}.${match[2]}.${match[3]}-${match[4]}`;
-    }
-    return value;
-  };
-
-  // Função para formatar o telefone
-  const formatTelefone = (value) => {
-    if (!value) return '';
-    const numericValue = value.replace(/\D/g, '');
-    const match = numericValue.match(/^(\d{2})(\d{5})(\d{4})$/);
-    if (match) {
-      return `(${match[1]}) ${match[2]}-${match[3]}`;
-    }
-    return value;
-  };
-
   // Função para manipular a mudança no campo CPF
   const handleCpfChange = (event) => {
     let { value } = event.target;
     value = value.slice(0, 14);
-    const numericValue = value.replace(/\D/g, '');
-    setCpf(formatCPF(numericValue));
+    setCpf(value);
   };
 
   // Função para manipular a mudança no campo telefone
   const handleTelefoneChange = (event) => {
     let { value } = event.target;
     value = value.slice(0, 15);
-    const numericValue = value.replace(/\D/g, '');
-    setTelefone(formatTelefone(numericValue));
+    setTelefone(value);
   };
 
   // Função para manipular a mudança no tipo (interno ou externo)
@@ -138,10 +143,17 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
               name="name"
               placeholder="Insira o nome do usuário..."
               variant="outlined"
-              className="w-full bg-gray-200 rounded-[10px]"
+              className={`w-full bg-gray-200 rounded-[10px] ${errors.name ? 'bg-red-200' : 'bg-gray-200'}`}
               InputProps={{ style: { borderRadius: '10px' } }}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              error={!!errors.name}
+              helperText={errors.name}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (errors.name) {
+                  setErrors((prev) => ({ ...prev, name: '' }));
+                }
+              }}
             />
           </div>
           {/* CAMPO DE EMAIL */}
@@ -154,10 +166,17 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
               name="email"
               placeholder="Insira o email do usuário..."
               variant="outlined"
-              className="w-full bg-gray-200 rounded-[10px]"
+              className={`w-full bg-gray-200 rounded-[10px] ${errors.email ? 'bg-red-200' : 'bg-gray-200'}`}
               InputProps={{ style: { borderRadius: '10px' } }}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              error={!!errors.email}
+              helperText={errors.email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errors.email) {
+                  setErrors((prev) => ({ ...prev, email: '' }));
+                }
+              }}
             />
           </div>
           {/* CAMPO DE CPF */}
@@ -168,12 +187,19 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
             <TextField
               id="cpf-input"
               name="cpf"
-              placeholder="Insira o CPF do usuário..."
+              placeholder="Insira o cpf do usuário..."
               variant="outlined"
-              className="w-full bg-gray-200 rounded-[10px]"
+              className={`w-full bg-gray-200 rounded-[10px] ${errors.cpf ? 'bg-red-200' : 'bg-gray-200'}`}
               InputProps={{ style: { borderRadius: '10px' } }}
               value={cpf}
-              onChange={(e) => handleCpfChange(e)}
+              error={!!errors.cpf}
+              helperText={errors.cpf}
+              onChange={(e) => {
+                handleCpfChange(e);
+                if (errors.cpf) {
+                  setErrors((prev) => ({ ...prev, cpf: '' }));
+                }
+              }}
             />
           </div>
           {/* CAMPO DE TELEFONE */}
@@ -186,10 +212,17 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
               name="telefone"
               placeholder="Insira o telefone do usuário..."
               variant="outlined"
-              className="w-full bg-gray-200 rounded-[10px]"
+              className={`w-full bg-gray-200 rounded-[10px] ${errors.telefone ? 'bg-red-200' : 'bg-gray-200'}`}
               InputProps={{ style: { borderRadius: '10px' } }}
               value={telefone}
-              onChange={(e) => handleTelefoneChange(e)}
+              error={!!errors.telefone}
+              helperText={errors.telefone}
+              onChange={(e) => {
+                handleTelefoneChange(e);
+                if (errors.telefone) {
+                  setErrors((prev) => ({ ...prev, telefone: '' }));
+                }
+              }}
             />
           </div>
         </div>
@@ -207,38 +240,60 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
           />
         </div>
 
-        {/* CAMPOS PARA PROFISSIONAL DE SAÚDE */}
+        {/* Mostrar o campo de ocupação apenas se for interno */}
+        {type === 'I' && (
+          <>
+            <hr className="border-t border-gray-300" />
+            <p className="text-gray-700 text-sm mb-4">Profissional</p>
+            <div className="flex gap-6 justify-between items-center mb-10">
+              <div className="flex-1">
+                <InputLabel htmlFor="ocupation-select">
+                  <p className="font-bold text-gray-950 text-sm">Ocupação</p>
+                </InputLabel>
+                <FormControl
+                  variant="outlined"
+                  className={`w-full bg-gray-200 ${errors.ocupation ? 'bg-red-200' : 'bg-gray-200'}`}
+                >
+                  <Select
+                    id="ocupation-select"
+                    value={ocupation}
+                    error={!!errors.ocupation}
+                    onChange={(e) => {
+                      handleOccupationChange(e);
+                      if (errors.ocupation) {
+                        setErrors((prev) => ({ ...prev, ocupation: '' }));
+                      }
+                    }}
+                    displayEmpty
+                    inputProps={{
+                      style: { borderRadius: '10px' },
+                    }}
+                    MenuProps={{
+                      disableScrollLock: true,
+                    }}
+                  >
+                    <MenuItem value=""><em>Selecione a ocupação...</em></MenuItem>
+                    <MenuItem value="TO">Terapeuta Ocupacional</MenuItem>
+                    <MenuItem value="FONO">Fonoaudiólogo</MenuItem>
+                    <MenuItem value="PP">Psicopedagogo</MenuItem>
+                    <MenuItem value="PSI">Psicologo(a)</MenuItem>
+                    <MenuItem value="ESC">Escola</MenuItem>
+                    <MenuItem value="PSM">Psicomotricidade</MenuItem>
+                    <MenuItem value="NUTRI">Nutrição</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+            </div>
+          </>
+        )}
+
         <hr className="border-t border-gray-300" />
-        <p className="text-gray-700 text-sm mb-4">Profissional</p>
-        <div className="flex gap-6 justify-between items-center mb-10">
-          <div className="flex-1">
-            <InputLabel htmlFor="ocupation-select">
-              <p className="font-bold text-gray-950 text-sm">Ocupação</p>
-            </InputLabel>
-            <FormControl variant="outlined" className="w-full bg-gray-200">
-              <Select
-                id="ocupation-select"
-                value={ocupation}
-                onChange={handleOccupationChange}
-                displayEmpty
-                inputProps={{
-                  style: { borderRadius: '10px' },
-                }}
-                MenuProps={{
-                  disableScrollLock: true,
-                }}
-              >
-                <MenuItem value=""><em>Selecione a ocupação...</em></MenuItem>
-                <MenuItem value="TO">Terapeuta Ocupacional</MenuItem>
-                <MenuItem value="FONO">Fonoaudiólogo</MenuItem>
-                <MenuItem value="PP">Psicopedagogo</MenuItem>
-              </Select>
-            </FormControl>
+        {/* MENSAGEM VERMELHA DE ERRO!!!! */}
+        {alertMessage && (
+          <div className="text-red-500 text-center mb-4">
+            {alertMessage}
           </div>
-        </div>
-
-        <hr className="border-t border-gray-300" />
-
+        )}
         <div className="flex justify-end space-x-4 mt-4">
           <button
             onClick={handleRegister}
