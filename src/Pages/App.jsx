@@ -14,6 +14,7 @@ import Pacientes from "./Pacientes.jsx";
 import Tela_Geral from "./Visao_Geral.jsx";
 import PatientRegistration from "./RegistroPacientes.jsx";
 import UserRegistration from "./RegistroUser.jsx";
+import Questions from "./Questions.jsx";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           element={<Pergunta_AutonomiaAutorregulacao />}
         />
         <Route path="/visao_geral" element={<Tela_Geral />} />
+        <Route path="/Questions" element={<Questions />} />
       </Routes>
     </Router>
   );
