@@ -23,10 +23,12 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
   const [telefone, setTelefone] = useState('');
   const [type, setType] = useState('');
   const [ocupation, setOcupation] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(''); 
+  const [perfilIds, setPerfilIds] = useState([]);
   // Para mensagens de erros
   const [errors, setErrors] = useState({});
   const [alertMessage, setAlertMessage] = useState('');
+
 
   // Função para enviar os dados para a API
   const handleRegister = async () => {
@@ -48,6 +50,9 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
     if (type === 'I' && ocupation === '') {
       newErrors.ocupation = "Campo obrigatório";
     }
+    if(perfilIds.length === 0){
+      newErrors.perfilIds = "Campo obrigatório";
+    }
 
     // Verifica se a lista tem objetos
     if (Object.keys(newErrors).length > 0) {
@@ -63,13 +68,14 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
       phone: telefone,
       occupation: ocupation,
       birthday: '2004-02-04', // Data default 
-      type: type, // Converte interno para 'I' ou 'E'
+      type: type, 
+      profileIds: perfilIds,
     };
 
     console.log('Enviando dados:', userData); // Log dos dados a serem enviados
 
     try {
-      const response = await api.post('', userData);
+      const response = await api.put('', userData);
       console.log('Dados enviados com sucesso:', response.data);
       onConfirm(); // Executa a função de confirmação
     } catch (error) {
@@ -89,14 +95,14 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
   // Função para manipular a mudança no campo CPF
   const handleCpfChange = (event) => {
     let { value } = event.target;
-    value = value.slice(0, 14);
+    value = value.slice(0, 11);
     setCpf(value);
   };
 
   // Função para manipular a mudança no campo telefone
   const handleTelefoneChange = (event) => {
     let { value } = event.target;
-    value = value.slice(0, 15);
+    value = value.slice(0, 11);
     setTelefone(value);
   };
 
@@ -112,6 +118,18 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
     let { value } = event.target;
     setOcupation(value);
   };
+
+  const handlePerfilChange = (event) => {
+    const { value, checked } = event.target;
+    setPerfilIds((prev) => {
+      if (checked) {
+        return [...prev, value];
+      } else {
+        return prev.filter((id) => id !== value);
+      }
+    });
+  };
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -277,17 +295,62 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
                     <MenuItem value="FONO">Fonoaudiólogo</MenuItem>
                     <MenuItem value="PP">Psicopedagogo</MenuItem>
                     <MenuItem value="PSI">Psicologo(a)</MenuItem>
-                    <MenuItem value="ESC">Escola</MenuItem>
-                    <MenuItem value="PSM">Psicomotricidade</MenuItem>
+                    <MenuItem value="AT_ESC">Escola</MenuItem>
+                    <MenuItem value="PSICO">Psicomotricidade</MenuItem>
                     <MenuItem value="NUTRI">Nutrição</MenuItem>
+                    <MenuItem value="ADM">Administração</MenuItem>
                   </Select>
                 </FormControl>
               </div>
             </div>
           </>
         )}
-
         <hr className="border-t border-gray-300" />
+        <p className="text-gray-700 text-sm mb-4">Perfil</p>
+          {/* SELEÇÃO DE PERFIL */}
+        <InputLabel>
+          <p className="font-bold text-gray-950 text-sm">Perfil</p>
+        </InputLabel>
+        <FormControl className={`w-full bg-gray-200 rounded-[10px] ${errors.perfilIds ? 'bg-red-200' : 'bg-gray-200'}`}>
+          <div className="w-full">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={perfilIds.includes('66889115e01fda923b864da6')}
+                  onChange={handlePerfilChange}
+                  value="66889115e01fda923b864da6"
+                  color="primary"
+                />
+              }
+              label="Administrador"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={perfilIds.includes('66889115e01fda923b864da7')}
+                  onChange={handlePerfilChange}
+                  value="66889115e01fda923b864da7"
+                  color="primary"
+                />
+              }
+              label="Profissional de Saúde"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={perfilIds.includes('66889115e01fda923b864da8')}
+                  onChange={handlePerfilChange}
+                  value="66889115e01fda923b864da8"
+                  color="primary"
+                />
+              }
+              label="Responsável"
+            />
+          </div>
+        </FormControl>
+
+
+
         {/* MENSAGEM VERMELHA DE ERRO!!!! */}
         {alertMessage && (
           <div className="text-red-500 text-center mb-4">

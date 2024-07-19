@@ -26,6 +26,7 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
     const [interno, setInterno] = useState('');
     const [ocupation, setOcupation] = useState('');
     const [email, setEmail] = useState('');
+    const [perfilIds, setPerfilIds] = useState([]);
     // Para mensagens de erros
     const [errors, setErrors] = useState({});
     const [alertMessage, setAlertMessage] = useState('');
@@ -42,6 +43,7 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
                 setOcupation(ocupation);
                 setEmail(email);
                 setInterno(type === 'I' ? 'I' : 'E');
+                setPerfil(perfilId)
             } catch (error) {
                 console.error('Erro ao buscar dados do usuário:', error);
             }
@@ -72,6 +74,9 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
         if (interno === 'I' && ocupation === '') {
             newErrors.ocupation = "Campo obrigatório";
         }
+        if(perfilIds.length === 0){
+            newErrors.perfilIds = "Campo obrigatório";
+          }
 
         // Verifica se a lista tem objetos
         if (Object.keys(newErrors).length > 0) {
@@ -81,7 +86,7 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
         }
 
         try {
-            const response = await api.put(`/api/config/users/${userId}`, {
+            const response = await api.post(`/api/config/users/${userId}`, {
                 name: name,
                 email: email,
                 cpf: cpf,
@@ -89,6 +94,7 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
                 occupation: ocupation,
                 birthday: '2004-02-04', // Data default
                 type: interno,
+                profileIds: perfilIds,
             });
             console.log('Dados enviados com sucesso:', response.data);
             onConfirm();
@@ -125,6 +131,18 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
         let { value } = event.target;
         setOcupation(value);
     };
+
+    const handlePerfilChange = (event) => {
+        const { value, checked } = event.target;
+        setPerfilIds((prev) => {
+          if (checked) {
+            return [...prev, value];
+          } else {
+            return prev.filter((id) => id !== value);
+          }
+        });
+      };
+      
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -193,7 +211,6 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
                             <p className="font-bold text-gray-950 text-sm">CPF</p>
                         </InputLabel>
                         <InputMask
-                            mask="999.999.999-99"
                             value={cpf}
                             onChange={(e) => {
                                 setCpf(e.target.value);
@@ -223,7 +240,6 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
                             <p className="font-bold text-gray-950 text-sm">Telefone</p>
                         </InputLabel>
                         <InputMask
-                            mask="(99) 99999-9999"
                             value={telefone}
                             onChange={(e) => {
                                 setTelefone(e.target.value);
@@ -297,15 +313,62 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
                                         <MenuItem value="FONO">Fonoaudiólogo</MenuItem>
                                         <MenuItem value="PP">Psicopedagogo</MenuItem>
                                         <MenuItem value="PSI">Psicologo(a)</MenuItem>
-                                        <MenuItem value="ESC">Escola</MenuItem>
-                                        <MenuItem value="PSM">Psicomotricidade</MenuItem>
+                                        <MenuItem value="AT_ESC">Escola</MenuItem>
+                                        <MenuItem value="PSICO">Psicomotricidade</MenuItem>
                                         <MenuItem value="NUTRI">Nutrição</MenuItem>
+                                        <MenuItem value="ADM">Administração</MenuItem>
                                     </Select>
                                 </FormControl>
                             </div>
                         </div>
                     </>
                 )}
+                
+
+                <hr className="border-t border-gray-300" />
+                <p className="text-gray-700 text-sm mb-4">Perfil</p>
+          {/* SELEÇÃO DE PERFIL */}
+          <InputLabel>
+          <p className="font-bold text-gray-950 text-sm">Perfil</p>
+        </InputLabel>
+        <FormControl className={`w-full bg-gray-200 rounded-[10px] ${errors.perfilIds ? 'bg-red-200' : 'bg-gray-200'}`}>
+          <div className="w-full">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={perfilIds.includes('66889115e01fda923b864da6')}
+                  onChange={handlePerfilChange}
+                  value="66889115e01fda923b864da6"
+                  color="primary"
+                />
+              }
+              label="Administrador"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={perfilIds.includes('66889115e01fda923b864da7')}
+                  onChange={handlePerfilChange}
+                  value="66889115e01fda923b864da7"
+                  color="primary"
+                />
+              }
+              label="Profissional de Saúde"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={perfilIds.includes('66889115e01fda923b864da8')}
+                  onChange={handlePerfilChange}
+                  value="66889115e01fda923b864da8"
+                  color="primary"
+                />
+              }
+              label="Responsável"
+            />
+          </div>
+        </FormControl>
+
                 {/* MENSAGEM VERMELHA DE ERRO!!!! */}
                 {alertMessage && (
                     <div className="text-red-500 text-center mb-4">
