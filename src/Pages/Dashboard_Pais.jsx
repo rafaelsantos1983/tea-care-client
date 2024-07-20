@@ -84,7 +84,7 @@ const Dashboard_Pais = () => {
 
   return (
     <div className="min-h-screen bg-blue-500">
-      <Banner name={name} description={description} />
+      <Banner name="André Silva" description="pai de Luís" />
       <div className="flex flex-col items-center justify-center pt-8 pb-8">
         <div className="flex justify-center w-full">
           <div className="bg-white rounded-[50px] flex flex-col items-center pt-6 mb-8 mr-8 w-[500px]">
