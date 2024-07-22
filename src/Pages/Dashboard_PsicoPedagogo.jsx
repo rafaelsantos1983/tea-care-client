@@ -7,8 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import InfoPaciente from '../Components/InfoPaciente';
 import { getItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
 import Atendimento from '../Components/Atendimento';
-import { connectionAPIGet } from '../Shared/Functions/Connection/connectionsAPI';
-import ConnectionAPI from '../Shared/Functions/Connection/connectionsAPI';
 
 // Dados mockados com labels
 const mockedData = {
@@ -67,24 +65,26 @@ function Dashboard_PsicoPedagogo() {
 
   // Buscar dados de atendimento ao carregar o componente
   useEffect(() => {
-    connectionAPIGet('http://localhost:5174/atendimentos')
-      .then(response => {
-        console.log('Status da resposta:', response.status);
-        if (!response.ok) {
-          console.error('Erro na resposta da API:', response.statusText);
-          throw new Error('Erro ao buscar dados do atendimento.');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Dados recebidos:', data);
-        setAtendimentoRegistrado(data);
-      })
-      .catch(error => {
-        console.error('Erro ao buscar dados do atendimento:', error);
-      });
+    const id = getItemStorage('selectedPacienteId');
+    if (id) {
+      fetch(`http://localhost:3002/api/therapeutic-activity/cares/patient/${id}`)
+        .then(response => {
+          console.log('Status da resposta:', response.status);
+          if (!response.ok) {
+            console.error('Erro na resposta da API:', response.statusText);
+            throw new Error('Erro ao buscar dados do atendimento.');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Dados recebidos:', data);
+          setAtendimentoRegistrado(data);
+        })
+        .catch(error => {
+          console.error('Erro ao buscar dados do atendimento:', error);
+        });
+    }
   }, []);
-  
 
   // Função para buscar o nome do responsável
   const getNameResponsavel = (responsibleId) => {
@@ -152,24 +152,23 @@ function Dashboard_PsicoPedagogo() {
         </div>
         {/* Informações do Paciente */}
         <div className="w-[560px] flex flex-col gap-5 justify-center items-center h-full">
-
-        <div className="bg-white w-[560px] h-[350px] rounded-[30px] flex flex-col">
-          <div className="bg-[#FFE01D] rounded-[30px] overflow-hidden h-[90px] flex items-center justify-center px-4 w-full">
-            <h1 className="text-2xl font-bold">Informações do Paciente</h1>
+          <div className="bg-white w-[560px] h-[350px] rounded-[30px] flex flex-col">
+            <div className="bg-[#FFE01D] rounded-[30px] overflow-hidden h-[90px] flex items-center justify-center px-4 w-full">
+              <h1 className="text-2xl font-bold">Informações do Paciente</h1>
+            </div>
+            <div className="h-full gap-5 flex items-center flex-col mt-10">
+              <InfoPaciente
+                cpf={paciente.cpf}
+                name={paciente.name}
+                birthday={paciente.birthday}
+                nomeResponsavel={nomeResponsavel}
+              />
+              {/* Realizar Atendimento */}
+              <button onClick={handleClickStart} className="text-lg w-[250px] h-[60px] bg-green-500 text-white font-semibold rounded-[30px] hover:bg-green-600 hover:transform hover:scale-105 transition-transform duration-300">
+                Realizar Atendimento
+              </button>
+            </div>
           </div>
-          <div className="h-full gap-5 flex items-center flex-col mt-10">
-            <InfoPaciente
-              cpf={paciente.cpf}
-              name={paciente.name}
-              birthday={paciente.birthday}
-              nomeResponsavel={nomeResponsavel}
-            />
-            {/* Realizar Atendimento */}
-            <button onClick={()=> setOpen(true)} className="text-lg w-[250px] h-[60px] bg-green-500 text-white font-semibold rounded-[30px] hover:bg-green-600 hover:transform hover:scale-105 transition-transform duration-300">
-              Realizar Atendimento
-            </button>
-          </div>
-        </div>
 
           <ConfirmationDialogRaw
             id="ringtone-menu"
@@ -184,16 +183,16 @@ function Dashboard_PsicoPedagogo() {
             <div className="bg-[#FFE01D] rounded-[30px] overflow-hidden h-[90px] flex items-center justify-center px-4 w-full">
               <h1 className="text-2xl font-bold">Histórico de Atendimento</h1>
             </div>
-            <div className="h-full gap-5 flex items-center flex-col mt-10">
+            <div className="h-full gap-5 flex items-center flex-col mt-10 overflow-auto">
               {atendimentoRegistrado ? (
-                atendimentoRegistrado.atendimentos.map((atendimento, id) => (
+                atendimentoRegistrado.map((atendimento) => (
                   <Atendimento
                     key={atendimento.id}
-                    data={atendimento.data}
-                    hora={atendimento.hora}
-                    duration={atendimento.duration}
-                    realizado={atendimento.realizado}
-                    profissional={atendimento.profissional}
+                    id={atendimento.id}
+                    initialDate={new Date(atendimento.initialDate)}
+                    finalDate={new Date(atendimento.finalDate)}
+                    absent={atendimento.absent}
+                    professional={atendimento.professional}
                   />
                 ))
               ) : (
@@ -201,11 +200,9 @@ function Dashboard_PsicoPedagogo() {
               )}
             </div>
           </div>
-          
-        </div>
-        
         </div>
       </div>
+    </div>
   );
 }
 
