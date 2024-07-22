@@ -18,7 +18,7 @@ import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import GroupIcon from '@mui/icons-material/Group';
-// import DashboardIcon from '@mui/icons-material/Dashboard';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
@@ -27,9 +27,9 @@ import Logo from "../Imagens/LOGO_TEACARE.png";
 
 // Deixando todas as opções no drawer inicialmente, mas irá ter verificação de permissão por funcionalidade
 const options = [
-  { text: "Início", icon: <GroupIcon /> },
-  // { text: "Dashboard Interno", icon: <DashboardIcon /> },
-  // { text: "Dashboard Externo", icon: <DashboardIcon /> },
+  { text: "Pacientes", icon: <GroupIcon /> },
+  { text: "Dashboard Interno", icon: <DashboardIcon /> },
+  { text: "Dashboard Externo", icon: <DashboardIcon /> },
   { text: "Configurações de Usuários", icon: <ManageAccountsIcon /> },
   { text: "Configurações de Pacientes", icon: <ManageAccountsIcon /> },
   { text: "Logout", icon: <ExitToAppIcon /> }
@@ -52,12 +52,12 @@ function Banner({ name, description}) {
   // Redireciona dependendo do botão clicado
   const handleOptionClick = (option) => {
     handleDrawerClose();
-    if (option === "Início") {
+    if (option === "Pacientes") {
       navigate("/pacientes");
-    // } else if (option === "Dashboard Interno") {
-    //   navigate("/Dashboard_PsicoPedagogo");
-    // } else if (option === "Dashboard Externo") {
-    //   navigate("/Dashboard_Pais")
+    } else if (option === "Dashboard Interno") {
+      navigate("/Dashboard_PsicoPedagogo");
+    } else if (option === "Dashboard Externo") {
+      navigate("/Dashboard_Pais")
     } else if (option === "Configurações de Usuários"){
       navigate("/UserRegistration")
     } else if (option === "Configurações de Pacientes"){
