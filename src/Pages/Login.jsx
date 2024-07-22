@@ -61,7 +61,6 @@ function Login() {
         if (response.ok && data.token) {
             // Se a resposta for OK
             setItemStorage('accessToken', data.token);
-            alert('Bem-Vindo, ' + email + "!");
             window.location.href = '/Pacientes';
         } else {
             // Dados inválidos
@@ -173,10 +172,6 @@ function Login() {
         {/*bOTÃO DE ENVIAR*/}
         <div className="text-center">
           <GreenButton type="submit" />
-        </div>
-        {/*lEMBR DE MIM*/}
-        <div className='text-center'>
-          <FormControlLabel control={<Checkbox />} label="Lembre de mim" />
         </div>
       </form>
     </div>
