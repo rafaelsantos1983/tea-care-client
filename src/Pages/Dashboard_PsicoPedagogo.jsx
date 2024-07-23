@@ -192,7 +192,7 @@ function Dashboard_PsicoPedagogo() {
                     initialDate={new Date(atendimento.initialDate)}
                     finalDate={new Date(atendimento.finalDate)}
                     absent={atendimento.absent}
-                    professional={atendimento.professional}
+                    professional={atendimento.professional.name} // Passando apenas o nome do profissional
                   />
                 ))
               ) : (
