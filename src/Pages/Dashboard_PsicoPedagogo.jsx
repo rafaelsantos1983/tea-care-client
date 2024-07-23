@@ -8,24 +8,10 @@ import InfoPaciente from '../Components/InfoPaciente';
 import { getItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
 import Atendimento from '../Components/Atendimento';
 
-// Dados mockados com labels
-const mockedData = {
-  labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun'],
-  datasets: {
-    comunicacao: [3, 4, 5, 2, 3, 4],
-    alimentacao: [1, 2, 3, 4, 5, 1],
-    comportamento: [2, 3, 4, 5, 1, 2],
-    socializacao: [5, 4, 3, 2, 1, 5],
-    autonomia: [4, 5, 1, 2, 3, 4],
-    habilidadesAcademicas: [3, 2, 5, 4, 1, 3]
-  }
-};
-
 function Dashboard_PsicoPedagogo() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('Dione');
-
 
   const handleClickStart = () => {
     setOpen(true);
@@ -97,33 +83,68 @@ function Dashboard_PsicoPedagogo() {
       });
   };
 
-  // Define as habilidades
-  const habilidades = [
-    'comunicacao',
-    'alimentacao',
-    'comportamento',
-    'socializacao',
-    'autonomia',
-    'habilidadesAcademicas',
-  ];
+  // Estado para armazenar os dados do gráfico
+  const [chartData, setChartData] = useState(null);
 
-  // Nomeia as habilidades
-  const habilidadeTitles = {
-    comunicacao: 'Comunicação',
-    alimentacao: 'Alimentação',
-    comportamento: 'Comportamento',
-    socializacao: 'Socialização',
-    autonomia: 'Autonomia',
-    habilidadesAcademicas: 'Habilidades Acadêmicas',
+  // Buscar dados do gráfico ao carregar o componente
+  useEffect(() => {
+    const id = getItemStorage('selectedPacienteId');
+    if (id) {
+      fetch(`http://localhost:3003/api/dashboard/internal/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('Dados do gráfico:', data); // Adicionado para depuração
+          const formattedData = formatChartData(data);
+          console.log('Dados formatados do gráfico:', formattedData); // Adicionado para depuração
+          setChartData(formattedData);
+        })
+        .catch(error => {
+          console.error('Erro ao buscar dados do gráfico:', error);
+        });
+    }
+  }, []);
+
+  // Função para formatar os dados do gráfico
+  const formatChartData = (data) => {
+    const labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const habilidades = ['AL', 'HS', 'CO', 'CP', 'HA', 'HM', 'AA'];
+    const datasets = {};
+
+    habilidades.forEach(habilidade => {
+      datasets[habilidade] = new Array(12).fill(0);
+    });
+
+    data.rating.forEach(rating => {
+      const { qualificationType, periods } = rating;
+      periods.forEach(period => {
+        const { months } = period;
+        months.forEach(monthData => {
+          datasets[qualificationType][monthData.month - 1] = monthData.value;
+        });
+      });
+    });
+
+    return { labels, datasets };
+  };
+
+  // Define as habilidades e suas traduções
+  const habilidades = {
+    AL: 'Alimentação',
+    HS: 'Habilidades Sociais',
+    CO: 'Comunicação',
+    CP: 'Comportamento',
+    HA: 'Habilidades Acadêmicas',
+    HM: 'Habilidades Motoras',
+    AA: 'Autonomia E Autoregulação'
   };
 
   // Info do gráfico
   const data = (habilidade) => ({
-    labels: mockedData.labels,
+    labels: chartData ? chartData.labels : [],
     datasets: [
       {
         label: 'Progresso',
-        data: paciente ? paciente[habilidade] || mockedData.datasets[habilidade] : mockedData.datasets[habilidade],
+        data: chartData ? chartData.datasets[habilidade] : [],
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
@@ -131,7 +152,7 @@ function Dashboard_PsicoPedagogo() {
     ],
   });
 
-  if (!paciente) {
+  if (!paciente || !chartData) {
     return <div>Loading...</div>; // Você pode substituir por um componente de carregamento
   }
 
@@ -144,9 +165,9 @@ function Dashboard_PsicoPedagogo() {
       <div className="flex p-10 justify-center">
         {/* Gráficos */}
         <div className="flex-wrap grid grid-cols-2 gap-5 w-1/2 mr-10">
-          {habilidades.map((habilidade, index) => (
+          {Object.keys(habilidades).map((habilidade, index) => (
             <div key={index} className="p-4 bg-white rounded-lg text-center">
-              <h3 style={{ marginBottom: '10px', fontSize: '18px', fontWeight: 'bold' }}>{habilidadeTitles[habilidade]}</h3>
+              <h3 style={{ marginBottom: '10px', fontSize: '18px', fontWeight: 'bold' }}>{habilidades[habilidade]}</h3>
               <Bar data={data(habilidade)} />
             </div>
           ))}
@@ -185,11 +206,10 @@ function Dashboard_PsicoPedagogo() {
               <h1 className="text-2xl font-bold">Histórico de Atendimento</h1>
             </div>
             <div className="h-full gap-5 flex items-center flex-col mt-10 overflow-auto">
-            {atendimentoRegistrado ? (
+              {atendimentoRegistrado ? (
                 atendimentoRegistrado.map((atendimento) => {
-                  // Definir absentValue dentro do mapeamento
-                  const professionalName = atendimento.professional ? atendimento.professional.name : 'Paciente Ausente'; // verifica se nome de profissional eh nulo
-                  const absentValue = atendimento.absent ? atendimento.absent : null; // verifica se houve atendimento
+                  const professionalName = atendimento.professional ? atendimento.professional.name : 'Paciente Ausente';
+                  const absentValue = atendimento.absent ? atendimento.absent : null;
 
                   return (
                     <Atendimento
@@ -198,7 +218,7 @@ function Dashboard_PsicoPedagogo() {
                       initialDate={new Date(atendimento.initialDate)}
                       finalDate={new Date(atendimento.finalDate)}
                       absent={absentValue}
-                      professional={professionalName} // Passando apenas o nome do profissional
+                      professional={professionalName}
                     />
                   );
                 })
