@@ -1,29 +1,26 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Dialog from '@mui/material/Dialog';
-import RadioGroup from '@mui/material/RadioGroup';
-import Radio from '@mui/material/Radio';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import axios from 'axios';
+import * as React from "react";
+import PropTypes from "prop-types";
+import Button from "@mui/material/Button";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Dialog from "@mui/material/Dialog";
+import RadioGroup from "@mui/material/RadioGroup";
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import axios from "axios";
 //import { useNavigate } from 'react-router-dom';
 
 //esse componente do material ui é utilizado para fazermos o controle de presença
 
-const presenca = [
-  'Ausente',
-  'Presente'
-  ];
+const presenca = ["Ausente", "Presente"];
 
 const api = axios.create({
-    baseURL: "http://localhost:3002",
-    timeout: 1000,
+  baseURL: "http://localhost:3002",
+  timeout: 1000,
 });
 
-  // função do Dialogo
+// função do Dialogo
 function ConfirmationDialogRaw(props) {
   //const navigate = useNavigate();
   const { onClose, value: valueProp, open, ...other } = props;
@@ -31,19 +28,23 @@ function ConfirmationDialogRaw(props) {
   const radioGroupRef = React.useRef(null);
 
   function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
     return JSON.parse(jsonPayload);
   }
 
-  const idPaciente = localStorage.getItem('selectedPacienteId');
-  const token = localStorage.getItem('accessToken');
+  const idPaciente = localStorage.getItem("selectedPacienteId");
+  const token = localStorage.getItem("accessToken");
   const payload = parseJwt(token);
-  const idProfissional = payload.user.id
-
+  const idProfissional = payload.user.id;
 
   React.useEffect(() => {
     if (!open) {
@@ -63,31 +64,46 @@ function ConfirmationDialogRaw(props) {
 
   const handleOk = async () => {
     //Enviar para o back o value
-    console.log(value)
-    
+    console.log(value);
 
     const currentTime = new Date();
-      console.log('Horário do Atendimento: ', currentTime);
-      //Levar para a página de questionário(ainda sendo feita)
-      //Navigate('/Questionario');
+    console.log("Horário do Atendimento: ", currentTime);
+    //Levar para a página de questionário(ainda sendo feita)
+    //Navigate('/Questionario');
 
-    if(value === "Ausente"){
+    if (value === "Ausente") {
       try {
-        const response = await api.put(`/api/therapeutic-activity/cares/absent`, {
+        const response = await api.put(
+          `/api/therapeutic-activity/cares/absent`,
+          {
             patientId: idPaciente,
-            professionalId: idProfissional
+            professionalId: idProfissional,
+          }
+        );
+        console.log("Dados enviados com sucesso:", response.data);
+      } catch (error) {
+        console.error("Erro ao enviar dados:", error);
+      }
+    } else if (value === "Presente") {
+      try {
+        const response = await api.put(`/api/therapeutic-activity/cares`, {
+          patientId: idPaciente,
+          professionalId: idProfissional,
         });
-        console.log('Dados enviados com sucesso:', response.data);
-    } catch (error) {
-        console.error('Erro ao enviar dados:', error);
-    }
-    }
-    
+        console.log("Dados enviados com sucesso:", response.data);
 
-    onClose(value)
-    
-    
+        // Acessando o id específico da resposta
+        const id = response.data.id; // Ajuste isso de acordo com a estrutura da resposta
+        console.log("ID do atendimento:", id);
 
+        // Retorne o id se necessário
+        return id;
+      } catch (error) {
+        console.error("Erro ao enviar dados:", error);
+      }
+    }
+
+    onClose(value);
   };
 
   const handleChange = (event) => {
@@ -96,7 +112,7 @@ function ConfirmationDialogRaw(props) {
 
   return (
     <Dialog
-      sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
+      sx={{ "& .MuiDialog-paper": { width: "80%", maxHeight: 435 } }}
       maxWidth="xs"
       TransitionProps={{ onEntering: handleEntering }}
       open={open}
