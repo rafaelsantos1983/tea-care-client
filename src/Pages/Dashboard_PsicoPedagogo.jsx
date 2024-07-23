@@ -100,6 +100,8 @@ function Dashboard_PsicoPedagogo() {
         })
         .catch(error => {
           console.error('Erro ao buscar dados do gráfico:', error);
+          const emptyData = createEmptyChartData();
+          setChartData(emptyData);
         });
     }
   }, []);
@@ -122,6 +124,19 @@ function Dashboard_PsicoPedagogo() {
           datasets[qualificationType][monthData.month - 1] = monthData.value;
         });
       });
+    });
+
+    return { labels, datasets };
+  };
+
+  // Função para criar dados do gráfico vazios
+  const createEmptyChartData = () => {
+    const labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const habilidades = ['AL', 'HS', 'CO', 'CP', 'HA', 'HM', 'AA'];
+    const datasets = {};
+
+    habilidades.forEach(habilidade => {
+      datasets[habilidade] = new Array(12).fill(0);
     });
 
     return { labels, datasets };
