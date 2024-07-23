@@ -9,6 +9,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import axios from "axios";
+import { setItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
 //import { useNavigate } from 'react-router-dom';
 
 //esse componente do material ui é utilizado para fazermos o controle de presença
@@ -96,8 +97,8 @@ function ConfirmationDialogRaw(props) {
         const id = response.data.id; // Ajuste isso de acordo com a estrutura da resposta
         console.log("ID do atendimento:", id);
 
-        // Retorne o id se necessário
-        return id;
+        setItemStorage('idAtendimento', id);
+        window.location.href = '/Questions';
       } catch (error) {
         console.error("Erro ao enviar dados:", error);
       }
