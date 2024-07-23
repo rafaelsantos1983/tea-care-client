@@ -57,6 +57,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 function Pacientes() {
+  const [alertMessage, setAlertMessage] = useState('');
+  const [childEvolution, setChildEvolution] = useState([]);
+
   // Ao clicar no botão, redireciona para o DashBoard
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -85,7 +88,7 @@ function Pacientes() {
       if (payload.user.type === "I") {
         window.location.href = handleRedirectURL('Dashboard_PsicoPedagogo','Psiquiatra Caio','TCC integrativa', undefined);
       } else {
-        let childEvolution = [3,2,5,4,5]
+        let childEvolution = childEvolution;
         window.location.href = handleRedirectURL('Dashboard_Pais','Andre Farias','Pai de Lucas', childEvolution);
       }
     } else {
@@ -134,11 +137,50 @@ function Pacientes() {
       console.error('Erro ao buscar e salvar dados do usuário:', error);
       setAlertMessage(error.message || 'Erro ao buscar Pacientes!');
     }
-  }
 
   // buscar os dados dos pacientes no componente
   useEffect(() => {
     fetchAndSaveUserData();
+  }, []);
+
+   async function fetchChildData() {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        throw new Error('Token não encontrado no localStorage');
+      }
+      const payload = parseJwt(token);
+
+      let url = '';
+      if (payload.user.type === 'E') {
+        url = `https://localhost:4003/api/dashboard/external/${payload.user.externalReferenceCode}`;
+      }
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar dados: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      const values = data.rating.map(item => item.value);
+      setChildEvolution(values);
+
+    } catch (error) {
+      console.error('Erro ao buscar dados do paciente:', error);
+      setAlertMessage(error.message || 'Erro ao buscar dados do paciente');
+    }
+  }
+
+  useEffect(() => {
+    fetchChildData();
   }, []);
 
   // Filtra pacientes com base no cpf digitado
