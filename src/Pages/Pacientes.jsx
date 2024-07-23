@@ -150,7 +150,7 @@ function Pacientes() {
   return (
     <div className="min-h-screen bg-blue-500">
       {/* Banner Amarelo */}
-      <Banner name="Erick Saraiva" description="Psicopedagogo" />
+      <Banner />
 
       <div className="flex justify-center items-center min-h-[calc(100vh-50px)]">
         {/* Fundo Branco */}
