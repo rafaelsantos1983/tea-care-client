@@ -9,10 +9,8 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import axios from "axios";
-import { setItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
-//import { useNavigate } from 'react-router-dom';
-
-//esse componente do material ui é utilizado para fazermos o controle de presença
+import { setItemStorage } from "../Shared/Functions/Connection/localStorageProxy";
+import { useNavigate } from "react-router-dom";
 
 const presenca = ["Ausente", "Presente"];
 
@@ -21,12 +19,11 @@ const api = axios.create({
   timeout: 1000,
 });
 
-// função do Dialogo
 function ConfirmationDialogRaw(props) {
-  //const navigate = useNavigate();
   const { onClose, value: valueProp, open, ...other } = props;
   const [value, setValue] = React.useState(valueProp);
   const radioGroupRef = React.useRef(null);
+  const navigate = useNavigate(); // useNavigate deve ser chamado aqui
 
   function parseJwt(token) {
     const base64Url = token.split(".")[1];
@@ -34,9 +31,7 @@ function ConfirmationDialogRaw(props) {
     const jsonPayload = decodeURIComponent(
       atob(base64)
         .split("")
-        .map(function (c) {
-          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-        })
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
         .join("")
     );
     return JSON.parse(jsonPayload);
@@ -60,17 +55,14 @@ function ConfirmationDialogRaw(props) {
   };
 
   const handleCancel = () => {
-    onClose();
+    onClose(); // Chama a função onClose com o estado atual do value
   };
 
   const handleOk = async () => {
-    //Enviar para o back o value
     console.log(value);
 
     const currentTime = new Date();
     console.log("Horário do Atendimento: ", currentTime);
-    //Levar para a página de questionário(ainda sendo feita)
-    //Navigate('/Questionario');
 
     if (value === "Ausente") {
       try {
@@ -97,14 +89,14 @@ function ConfirmationDialogRaw(props) {
         const id = response.data.id; // Ajuste isso de acordo com a estrutura da resposta
         console.log("ID do atendimento:", id);
 
-        setItemStorage('idAtendimento', id);
-        window.location.href = '/Questions';
+        setItemStorage("idAtendimento", id);
+        navigate("/Questions", { state: { atendimento: id } });
       } catch (error) {
         console.error("Erro ao enviar dados:", error);
       }
     }
 
-    onClose(value);
+    onClose(value); // Passa o valor atual para a função onClose
   };
 
   const handleChange = (event) => {

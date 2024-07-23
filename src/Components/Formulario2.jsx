@@ -9,10 +9,12 @@ const api = axios.create({
   timeout: 1000,
 });
 
+// https://localhost:4002/api/therapeutic-activity/cares/669da2b37feec75b9e851457
+
 const postTherapeuticActivity = async (atendimentoID, data) => {
   try {
     const response = await api.post(
-      `/therapeutic-activity/cares/${atendimentoID}`,
+      `api/therapeutic-activity/cares/${atendimentoID}`,
       data
     );
     console.log("Response:", response.data);
@@ -64,6 +66,7 @@ const Formulario2 = ({ questions, atendimentoID }) => {
       answers: [null, null, null],
     },
   ]);
+  console.log(atendimentoID);
 
   const handleChange = (categoriaIndex, itemIndex, value) => {
     setResponses((prevResponses) => {
