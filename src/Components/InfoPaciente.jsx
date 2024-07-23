@@ -45,7 +45,6 @@ export default function InfoPaciente({ cpf, name, birthday, nomeResponsavel }) {
     <Container>
       <InfoPacienteField>
         <InputAdornment position="start">
-          <SentimentSatisfiedAltIcon />
         </InputAdornment>
         <span>
           CPF: {infos.cpf} | Nome: {infos.name} | 
