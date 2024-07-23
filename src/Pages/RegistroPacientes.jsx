@@ -30,18 +30,16 @@ const PatientRegistration = () => {
     fetchData();
   }, []);
 
-
   const handleAddPatient = async () => {
-
     setPopUpAdd(false);
 
     //carregando os pacientes atualizados após a edição
     try {
       const response = await api.get("/api/therapeutic-activity/patients");
       setPatients(response.data);
-  } catch (error) {
+    } catch (error) {
       console.error("Erro ao carregar pacientes:", error);
-  }
+    }
   };
 
   const handleEditPatient = (id) => {
@@ -50,20 +48,18 @@ const PatientRegistration = () => {
     setPopUpEdit(true);
   };
 
-  
   const handleSaveEdit = async () => {
     setEditingPatient(null);
     setPopUpEdit(false);
 
     //carregando os pacientes atualizados após a edição
     try {
-        const response = await api.get("/api/therapeutic-activity/patients");
-        setPatients(response.data);
+      const response = await api.get("/api/therapeutic-activity/patients");
+      setPatients(response.data);
     } catch (error) {
-        console.error("Erro ao carregar pacientes:", error);
+      console.error("Erro ao carregar pacientes:", error);
     }
-};
-
+  };
 
   const handleDeletePatient = async (id) => {
     try {
@@ -115,12 +111,12 @@ const PatientRegistration = () => {
             maxWidth: "800px",
           }}
         >
-          <h1 className="font-bold text-center text-3xl mb-5">
-            Pacientes
-          </h1>
+          <h1 className="font-bold text-center text-3xl mb-5">Pacientes</h1>
           <div style={{ marginBottom: "20px", textAlign: "end" }}>
             <button
-              onClick={() => {setPopUpAdd(true);}}
+              onClick={() => {
+                setPopUpAdd(true);
+              }}
               className="w-[181px] bg-green-500 hover:bg-green-600"
               style={{
                 padding: "10px 20px",
@@ -217,11 +213,8 @@ const PatientRegistration = () => {
           onCancel={handleCancel}
         />
       )}
-      {popUpAdd &&(
-        <PopUpAddPatient
-          onConfirm={handleAddPatient}
-          onCancel={handleCancel}
-        />
+      {popUpAdd && (
+        <PopUpAddPatient onConfirm={handleAddPatient} onCancel={handleCancel} />
       )}
     </div>
   );

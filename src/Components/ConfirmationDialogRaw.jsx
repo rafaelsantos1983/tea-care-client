@@ -90,7 +90,9 @@ function ConfirmationDialogRaw(props) {
         console.log("ID do atendimento:", id);
 
         setItemStorage("atendimentoId", id);
-        window.location.href = "/Questions";
+        setTimeout(() => {
+          window.location.href = "/Questions";
+        }, 3000);
       } catch (error) {
         console.error("Erro ao enviar dados:", error);
       }
