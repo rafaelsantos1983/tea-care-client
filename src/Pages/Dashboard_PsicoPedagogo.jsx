@@ -26,6 +26,7 @@ function Dashboard_PsicoPedagogo() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('Dione');
 
+
   const handleClickStart = () => {
     setOpen(true);
   };
@@ -184,17 +185,23 @@ function Dashboard_PsicoPedagogo() {
               <h1 className="text-2xl font-bold">Histórico de Atendimento</h1>
             </div>
             <div className="h-full gap-5 flex items-center flex-col mt-10 overflow-auto">
-              {atendimentoRegistrado ? (
-                atendimentoRegistrado.map((atendimento) => (
-                  <Atendimento
-                    key={atendimento.id}
-                    id={atendimento.id}
-                    initialDate={new Date(atendimento.initialDate)}
-                    finalDate={new Date(atendimento.finalDate)}
-                    absent={atendimento.absent}
-                    professional={atendimento.professional.name} // Passando apenas o nome do profissional
-                  />
-                ))
+            {atendimentoRegistrado ? (
+                atendimentoRegistrado.map((atendimento) => {
+                  // Definir absentValue dentro do mapeamento
+                  const professionalName = atendimento.professional ? atendimento.professional.name : 'Paciente Ausente'; // verifica se nome de profissional eh nulo
+                  const absentValue = atendimento.absent ? atendimento.absent : null; // verifica se houve atendimento
+
+                  return (
+                    <Atendimento
+                      key={atendimento.id}
+                      id={atendimento.id}
+                      initialDate={new Date(atendimento.initialDate)}
+                      finalDate={new Date(atendimento.finalDate)}
+                      absent={absentValue}
+                      professional={professionalName} // Passando apenas o nome do profissional
+                    />
+                  );
+                })
               ) : (
                 <div>Carregando histórico de atendimento...</div>
               )}
