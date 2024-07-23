@@ -1,6 +1,6 @@
 import { questions } from "../../public/questions";
 import Banner from "../Components/Banner";
-import Formulario2 from "../Components/Formulario2";
+import Formulario from "../Components/Formulario";
 import { getItemStorage } from "../Shared/Functions/Connection/localStorageProxy";
 
 export default function Questions() {
@@ -9,7 +9,7 @@ export default function Questions() {
   return (
     <div className="bg-blue-500 h-full">
       <Banner name="teste" description={"teste"} skill={"QUESTIONÁRIO"} />
-      <Formulario2 questions={questions} atendimentoID={atendimentoID} />
+      <Formulario questions={questions} atendimentoID={atendimentoID} />
     </div>
   );
 }
