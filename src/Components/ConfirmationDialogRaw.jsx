@@ -89,8 +89,8 @@ function ConfirmationDialogRaw(props) {
         const id = response.data.id; // Ajuste isso de acordo com a estrutura da resposta
         console.log("ID do atendimento:", id);
 
-        setItemStorage("idAtendimento", id);
-        navigate("/Questions", { state: { atendimento: id } });
+        setItemStorage("atendimentoId", id);
+        window.location.href = "/Questions";
       } catch (error) {
         console.error("Erro ao enviar dados:", error);
       }
