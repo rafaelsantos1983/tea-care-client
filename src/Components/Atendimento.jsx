@@ -28,6 +28,7 @@ const AtendimentoInfosField = styled(Button)(({ selected }) => ({
   border: selected ? "2px solid black" : "none",
   "&:hover": {
     backgroundColor: "#9DE0FD",
+    transform: "scale(1.1)",
   },
 }));
 
@@ -46,12 +47,9 @@ export default function Atendimento({
     <div>
       <AtendimentoInfosField>
         <InputAdornment position="start">
-          <SentimentSatisfiedAltIcon />
         </InputAdornment>
         <span>
-          data: {atendimento.data} | 
-          initialDate: {atendimento.initialDate.toLocaleString()} |
-          duration: {atendimento.duration.toFixed(2)} horas |
+          data: {atendimento.data} |          
           absent: {atendimento.absent ? "Sim" : "Não"} |
           profissional: {atendimento.professional} |
         </span>
