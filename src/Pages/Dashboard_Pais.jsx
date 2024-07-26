@@ -96,6 +96,23 @@ const legendas = {
   }
 };
 
+function getLegenda(categoriaSigla, valor) {
+  const valorNumerico = parseFloat(valor);
+  const subChaves = Object.keys(legendas[categoriaSigla]).map(parseFloat);
+  let maisProxima = subChaves[0];
+  let menorDiferenca = Math.abs(valorNumerico - maisProxima);
+
+  for (let i = 1; i < subChaves.length; i++) {
+    const diferenca = Math.abs(valorNumerico - subChaves[i]);
+    if (diferenca < menorDiferenca) {
+      menorDiferenca = diferenca;
+      maisProxima = subChaves[i];
+    }
+  }
+
+  return legendas[categoriaSigla][maisProxima];
+}
+
 
 const Dashboard_Pais = () => {
   const [selectedInfo, setSelectedInfo] = useState(null);
@@ -123,10 +140,7 @@ const Dashboard_Pais = () => {
 
   const handleCategoryClick = (category, level) => {
 
-    const key = `${category} ${level}`;
-    const result = key.toLowerCase().replace(/ /g, '_');
-
-    setSelectedInfo(legendas[result] || 'Informação não disponível.');
+    setSelectedInfo(getLegenda(category, level) || 'Informação não disponível.');
   };
 
   const handleBackToListClick = () => {
