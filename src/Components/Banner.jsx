@@ -36,7 +36,7 @@ function Banner() {
 
   // Exibição condicional do tipo de usuário
   const userType = decoded.user?.type;
-  const displayType = userType === 'I' ? 'Funcionário PRAXIS' : userType || 'Responsável';
+  const displayType = userType === 'I' ? 'Funcionário PRAXIS' || userType=== 'E' : 'Responsável';
 
   const navigate = useNavigate();
   const [openDrawer, setOpenDrawer] = React.useState(false);

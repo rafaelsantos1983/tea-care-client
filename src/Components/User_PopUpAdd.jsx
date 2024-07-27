@@ -75,7 +75,7 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
     console.log('Enviando dados:', userData); // Log dos dados a serem enviados
 
     try {
-      const response = await api.put('', userData);
+      const response = await api.put('http://localhost:3001/api/config/users', userData);
       console.log('Dados enviados com sucesso:', response.data);
       onConfirm(); // Executa a função de confirmação
     } catch (error) {
@@ -92,11 +92,22 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
     }
   };
 
+  const formatCPF = (value) => {
+    if (!value) return '';
+    const numericValue = value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    const match = numericValue.match(/^(\d{3})(\d{3})(\d{3})(\d{2})$/);
+    if (match) {
+      return `${match[1]}.${match[2]}.${match[3]}-${match[4]}`;
+    }
+    return value;
+  };
+  // Função para manipular a mudança no campo CPF
   // Função para manipular a mudança no campo CPF
   const handleCpfChange = (event) => {
     let { value } = event.target;
-    value = value.slice(0, 11);
-    setCpf(value);
+    value = value.slice(0, 14);
+    const formattedValue = formatCPF(value);
+    setCpf(formattedValue);
   };
 
   // Função para manipular a mudança no campo telefone
