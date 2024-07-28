@@ -54,7 +54,15 @@ class Radar extends React.Component {
           }
         },
         xaxis: {
-          categories: ['Alimentação', 'Comportamento', 'Autonomia', 'Habilidades Acadêmicas', 'Socialização', 'Comunicação'],
+          categories: [
+            "Comunicação",
+            "Alimentação",
+            "Habilidades Sociais",
+            "Comportamento",
+            "Autonomia E Autoregulação",
+            "Habilidades Motoras E Práxicas",
+            "Habilidades Acadêmicas"
+          ],
         },
         yaxis: {
           min: 0,
@@ -62,13 +70,15 @@ class Radar extends React.Component {
           tickAmount: 6,
           labels: {
             formatter: function(val) {
-              if (val === 1) {
+              if (val >= 0 && val < 1) {
+                return 'Muito Ruim';
+              } else if (val >= 1 && val < 2) {
                 return 'Ruim';
-              } else if (val === 2) {
+              } else if (val >= 2 && val < 3) {
                 return 'Médio';
-              } else if (val === 3) {
+              } else if (val >= 3 && val < 4) {
                 return 'Bom';
-              } else if (val === 4) {
+              } else if (val >= 4 && val <= 5) {
                 return 'Excelente';
               } else {
                 return '';
