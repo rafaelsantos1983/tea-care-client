@@ -6,6 +6,7 @@ import Banner from '../Components/Banner';
 import Paciente from '../Components/Paciente';
 import GreenButton from '../Components/Button_Green';
 import { setItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
+import ReportGmailerrorredTwoToneIcon from '@mui/icons-material/ReportGmailerrorredTwoTone';
 
 // Estilos para o container da lista de pacientes
 const PacientesContainer = styled('div')({
@@ -70,12 +71,20 @@ export default function Pacientes() {
   const [unmountedToken, setUnmountedToken] = useState(localStorage.getItem('accessToken'));
   const [cpfSelected, setCpfSelected] = useState('');
   const [idSelected, setIdSelected] = useState(null); // Default to null
-
+  const [payloadUserType,setPayloadUserType] = useState(null);
   const [selectedCpf, setSelectedCpf] = useState(null);
   const handleButtonClick = (id) => {
     setSelectedCpf(selectedCpf === id ? null : id);
     setIdSelected(id);
     setItemStorage('selectedPacienteId', id); // Save the ID in localStorage
+    if (unmountedToken) {
+      const payload = parseJwt(unmountedToken);
+      
+  
+      if (payload.user.type === "E") {
+        setPayloadUserType(payload.user.type);
+      }
+    }
   };
 
   const [pacientes, setPacientes] = useState([]);
@@ -90,6 +99,7 @@ export default function Pacientes() {
 
     if (unmountedToken) {
       const payload = parseJwt(unmountedToken);
+      
   
       if (payload.user.type === "I") {
         window.location.href = handleRedirectURL('Dashboard_PsicoPedagogo','Psiquiatra Caio','TCC integrativa', undefined);
@@ -109,6 +119,7 @@ export default function Pacientes() {
         headers: {
           'Content-Type': 'application/json',
           'Origin': 'http://localhost:5173',
+          'Authorization': `Bearer ${unmountedToken}`
         }
       });
       if (!response.ok) {
@@ -132,21 +143,23 @@ export default function Pacientes() {
       if (idSelected && unmountedToken) { // Check for valid idSelected
         const payload = parseJwt(unmountedToken);
         let url = '';
+        let response = null;
 
         if (payload.user.type === 'E') {
           url = `http://localhost:3003/api/dashboard/external/${idSelected}`;
+          console.log('Fetching child data from:', url);
+
+         response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Origin': 'http://localhost:5173',
+              'Authorization': `Bearer ${unmountedToken}`
+            },
+          });
         }
-        console.log('Fetching child data from:', url);
 
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Origin': 'http://localhost:5173',
-          },
-        });
-
-        if (!response.ok) {
+        if (!response || !response.ok) {
           throw new Error(`Erro ao buscar dados: ${response.statusText}`);
         }
 
@@ -155,10 +168,12 @@ export default function Pacientes() {
         const values = await data.rating.map(item => item.qualificationType+'_'+item.value);
 
         setChildEvolution(values);
+        setAlertMessage(undefined);
+
       }
     } catch (error) {
-      console.error('Erro ao buscar dados do paciente:', error);
-      setAlertMessage(error.message || 'Erro ao buscar dados do paciente');
+      console.error('DEBUG ERROR:', error);
+      setAlertMessage('Erro ao buscar dados do paciente');
     }
   }
 
@@ -208,9 +223,9 @@ export default function Pacientes() {
               ))}
             </PacientesContainer>
           </div>
-          {alertMessage && <div className="text-red-500">{alertMessage}</div>}
+          {payloadUserType && alertMessage && <div className="ml-40 text-red-500"> <ReportGmailerrorredTwoToneIcon /> {alertMessage}</div>}
           <div className="text-center m-8">
-            <GreenButton type="submit" />
+            <GreenButton type="submit"  disabled={!!payloadUserType && !!alertMessage}/>
           </div>
         </form>
       </div>
