@@ -71,12 +71,20 @@ export default function Pacientes() {
   const [unmountedToken, setUnmountedToken] = useState(localStorage.getItem('accessToken'));
   const [cpfSelected, setCpfSelected] = useState('');
   const [idSelected, setIdSelected] = useState(null); // Default to null
-
+  const [payloadUserType,setPayloadUserType] = useState(null);
   const [selectedCpf, setSelectedCpf] = useState(null);
   const handleButtonClick = (id) => {
     setSelectedCpf(selectedCpf === id ? null : id);
     setIdSelected(id);
     setItemStorage('selectedPacienteId', id); // Save the ID in localStorage
+    if (unmountedToken) {
+      const payload = parseJwt(unmountedToken);
+      
+  
+      if (payload.user.type === "E") {
+        setPayloadUserType(payload.user.type);
+      }
+    }
   };
 
   const [pacientes, setPacientes] = useState([]);
@@ -91,6 +99,7 @@ export default function Pacientes() {
 
     if (unmountedToken) {
       const payload = parseJwt(unmountedToken);
+      
   
       if (payload.user.type === "I") {
         window.location.href = handleRedirectURL('Dashboard_PsicoPedagogo','Psiquiatra Caio','TCC integrativa', undefined);
@@ -214,9 +223,9 @@ export default function Pacientes() {
               ))}
             </PacientesContainer>
           </div>
-          {alertMessage && <div className="ml-40 text-red-500"> <ReportGmailerrorredTwoToneIcon /> {alertMessage}</div>}
+          {payloadUserType && alertMessage && <div className="ml-40 text-red-500"> <ReportGmailerrorredTwoToneIcon /> {alertMessage}</div>}
           <div className="text-center m-8">
-            <GreenButton type="submit"  disabled={!!alertMessage}/>
+            <GreenButton type="submit"  disabled={!!payloadUserType && !!alertMessage}/>
           </div>
         </form>
       </div>
