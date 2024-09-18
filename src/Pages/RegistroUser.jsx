@@ -5,6 +5,8 @@ import PopUpConfirmation from "../Components/PopUpConfirmation";
 import User_PopUpEdition from "../Components/User_PopUpEdition";
 import User_PopUpAdd from "../Components/User_PopUpAdd";
 
+
+// JA TEM REQUEST DE TOKEN FOI CONFIG DE AXIOS GLOBAL
 // Configuração do Axios para a API
 const api = axios.create({
   baseURL: "http://localhost:3001", // Trocar para a porta correta do serviço de usuários

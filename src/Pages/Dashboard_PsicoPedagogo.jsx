@@ -8,6 +8,8 @@ import InfoPaciente from '../Components/InfoPaciente';
 import { getItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
 import Atendimento from '../Components/Atendimento';
 
+
+
 function Dashboard_PsicoPedagogo() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -32,9 +34,15 @@ function Dashboard_PsicoPedagogo() {
 
   // Estado para armazenar o nome do responsável
   const [nomeResponsavel, setNomeResponsavel] = useState('');
-
+  const token = getItemStorage('accessToken');
   // Buscar dados do paciente no local storage ao carregar o componente
   useEffect(() => {
+    
+    if (!token) {
+      navigate('/'); // Redireciona para a página de login se não tiver token
+      return;
+    }
+
     const id = getItemStorage('selectedPacienteId');
     if (id) {
       fetch(`http://localhost:3002/api/therapeutic-activity/patients/${id}`)
@@ -48,34 +56,57 @@ function Dashboard_PsicoPedagogo() {
           console.error('Erro ao buscar dados do paciente:', error);
         });
     }
-  }, []);
+  }, [navigate]);
 
   // Buscar dados de atendimento ao carregar o componente
   useEffect(() => {
-    const id = getItemStorage('selectedPacienteId');
-    if (id) {
-      fetch(`http://localhost:3002/api/therapeutic-activity/cares/patient/${id}`)
-        .then(response => {
+    if (!token) {
+      navigate('/'); // Redireciona para a página de login se não tiver token
+      return;
+    }
+
+    const fetchAtendimentoData = async () => {
+      const id = getItemStorage('selectedPacienteId');
+      if (id) {
+        try {
+          const response = await fetch(`http://localhost:3002/api/therapeutic-activity/cares/patient/${id}`, {
+            headers: {
+              'Authorization': `Bearer ${getItemStorage('accessToken')}`, // Inclua o token se necessário
+              'Content-Type': 'application/json',
+            },
+          });
+
           console.log('Status da resposta:', response.status);
           if (!response.ok) {
-            console.error('Erro na resposta da API:', response.statusText);
-            throw new Error('Erro ao buscar dados do atendimento.');
+            throw new Error(`Erro na resposta da API: ${response.statusText}`);
           }
-          return response.json();
-        })
-        .then(data => {
+
+          const data = await response.json();
           console.log('Dados recebidos:', data);
           setAtendimentoRegistrado(data);
-        })
-        .catch(error => {
+        } catch (error) {
           console.error('Erro ao buscar dados do atendimento:', error);
-        });
-    }
-  }, []);
+          setError(error.message);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAtendimentoData();
+  }, [navigate]);
 
   // Função para buscar o nome do responsável
   const getNameResponsavel = (responsibleId) => {
-    fetch(`http://localhost:3001/api/config/users/${responsibleId}`)
+    fetch(`http://localhost:3001/api/config/users/${responsibleId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`, // Inclui o token no cabeçalho
+        'Content-Type': 'application/json',
+      }
+    })
       .then(response => response.json())
       .then(data => setNomeResponsavel(data.name))
       .catch(error => {
@@ -90,7 +121,13 @@ function Dashboard_PsicoPedagogo() {
   useEffect(() => {
     const id = getItemStorage('selectedPacienteId');
     if (id) {
-      fetch(`http://localhost:3003/api/dashboard/internal/${id}`)
+      fetch(`http://localhost:3003/api/dashboard/internal/${id}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`, // Inclui o token no cabeçalho
+          'Content-Type': 'application/json',
+        }
+      })
         .then(response => response.json())
         .then(data => {
           console.log('Dados do gráfico:', data); // Adicionado para depuração

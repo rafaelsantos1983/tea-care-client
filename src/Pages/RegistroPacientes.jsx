@@ -5,6 +5,7 @@ import PopUpConfirmation from "../Components/PopUpConfirmation";
 import PopUpEditionPatient from "../Components/PopUpEditionPatient";
 import PopUpAddPatient from "../Components/PopUpAddPatient";
 
+// JA TEM REQUEST DE TOKEN FOI CONFIG DE AXIOS GLOBAL
 const api = axios.create({
   baseURL: "http://localhost:3002",
   timeout: 1000,

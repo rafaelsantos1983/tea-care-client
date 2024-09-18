@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Logo from '../Imagens/LOGO_TEACARE.png';
 import Fieldbase from './Base/Fieldbase';
-
+import { getItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
 import GreenButton from '../Components/Button_Green';
 
 function NewUser() {
@@ -15,7 +15,7 @@ function NewUser() {
   const [occupation, setOccupation] = useState('');
   const [errors, setErrors] = useState({});
   const [alertMessage, setAlertMessage] = useState('');
-
+  const token = getItemStorage('accessToken');
   // Função que tem evento ao enviar
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -44,6 +44,7 @@ function NewUser() {
         const response = await fetch('http://localhost:3005/api/config/users', { // ROTA PARA CRIAR USER!!!!!
           method: 'POST',
           headers: {
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
             'Origin': 'http://localhost:5173',
           },

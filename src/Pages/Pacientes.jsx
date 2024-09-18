@@ -5,7 +5,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import Banner from '../Components/Banner';
 import Paciente from '../Components/Paciente';
 import GreenButton from '../Components/Button_Green';
-import { setItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
+import { setItemStorage, getItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
+import axios from 'axios';
+
 
 // Estilos para o container da lista de pacientes
 const PacientesContainer = styled('div')({
@@ -76,7 +78,7 @@ function Pacientes() {
     }
   
     // Recupera o token do localStorage
-    const token = localStorage.getItem('accessToken');
+    const token = getItemStorage('accessToken');
   
     if (token) {
       const payload = parseJwt(token);
@@ -114,29 +116,18 @@ function Pacientes() {
   async function fetchAndSaveUserData() {
     try {
       console.log('Fetching user data...');
-      const response = await fetch('http://localhost:3002/api/therapeutic-activity/patients', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Origin': 'http://localhost:5173',
-        }
-      });
-      //TRATAMENTO DE ERROS
-      if (!response.ok) {
-        throw new Error(`Erro: ${response.statusText}`);
-      }
-      //pega resposta
-      const data = await response.json();
-      setPacientes(data);
-
-      console.log('Pacientes:', data);
+  
+      const response = await axios.get('http://localhost:3002/api/therapeutic-activity/patients');
+      setPacientes(response.data);
+  
+      console.log('Pacientes:', response.data);
     } catch (error) {
       console.error('Erro ao buscar e salvar dados do usuário:', error);
       setAlertMessage(error.message || 'Erro ao buscar Pacientes!');
     }
   }
-
-  // buscar os dados dos pacientes no componente
+  
+  // Buscar os dados dos pacientes no componente
   useEffect(() => {
     fetchAndSaveUserData();
   }, []);

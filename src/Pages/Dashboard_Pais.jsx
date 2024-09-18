@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Banner from '../Components/Banner';
 import Radar from '../Components/Radar';
+import { getItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
+import { useNavigate } from 'react-router-dom';
+
 
 const legendas = {
   'alimentação_1': 'A criança necessita de muita ajuda para se alimentar e tem uma dieta muito restrita.',
@@ -41,8 +44,15 @@ const Dashboard_Pais = () => {
   const [description, setDescription] = useState('');
   const [childEvolution, setChildEvolution] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate(); // Hook para navegação
 
   useEffect(() => {
+    const token = getItemStorage('accessToken');
+    if (!token) {
+      navigate('/'); // Redireciona para a página de login se não tiver token
+      return;
+    }
+
     const params = new URLSearchParams(window.location.search);
     const nameParam = params.get('name');
     const descriptionParam = params.get('description');
@@ -57,7 +67,7 @@ const Dashboard_Pais = () => {
     }
     
     setIsLoading(false);
-  }, []);
+  }, [navigate]);// Add `navigate` como dependência
 
   const handleCategoryClick = (category, level) => {
 

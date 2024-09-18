@@ -3,13 +3,14 @@ import Logo from '../Imagens/LOGO_TEACARE.png';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import GreenButton from '../Components/Button_Green';
+import { getItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
 
 function NewSenha() {
   // Variáveis de Estado
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState({});
   const [alertMessage, setAlertMessage] = useState('');
-
+  const token = getItemStorage('accessToken');
   // Função que tem evento ao enviar
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -26,6 +27,7 @@ function NewSenha() {
         const response = await fetch('http://localhost:3005/api/recover-password', { // ROTA PARA RECUPERAR SENHA!!!!!
           method: 'POST',
           headers: {
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
             'Origin': 'http://localhost:5173',
           },
