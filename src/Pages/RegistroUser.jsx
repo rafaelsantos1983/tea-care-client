@@ -122,37 +122,27 @@ const UserRegistration = () => {
           }}
         >
           {/* Título */}
-          <h1 className="font-bold text-center text-3xl mb-5">
-           Usuários
-          </h1>
+          <h1 className="font-bold text-center text-xl md:text-3xl mb-5">Usuários</h1>
           {/* Botão de Registrar */}
           <div style={{ marginBottom: "20px", textAlign: "end" }}>
-            <button
-              onClick={() => setUserPopUpAdd(true)}
-              style={{
-                padding: "10px 20px",
-                fontSize: "20px",
-                backgroundColor: "#4CAF50",
-                color: "#fff",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                width: "190px",
+          <button
+              onClick={() => {
+                setUserPopUpAdd(true);
               }}
+              className="text-sm text-center text-white justify-center w-full md:w-[168px] md:justify-end h-8 m-1 bg-green-500 hover:bg-green-600 cursor-pointer rounded-[5px]"
             >
               Adicionar
             </button>
           </div>
           {/* Lista de usuários */}
           {Users.map((User) => (
-            <div
-              key={User.id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
+            <div className="md:flex md:justify-between justify-center"
+            key={User.id}
+            style={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "10px",
+            }}
             >
               {editingUser && editingUser.id === User.id ? (
                 <button
@@ -171,36 +161,19 @@ const UserRegistration = () => {
                 </button>
               ) : (
                 <>
-                  <span>
+                  <div className="text-sm md:text-base justify-center text-center ">
                     {User.name} (CPF: {User.cpf})
-                  </span>
-                  <div>
+                  </div>
+                  <div className="text-center justify-between gap-2">
                     <button
                       onClick={() => handleEditUser(User.id)}
-                      style={{
-                        marginRight: "10px",
-                        padding: "10px 20px",
-                        fontSize: "16px",
-                        backgroundColor: "#2196F3",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
+                      className="text-sm text-white justify-center bg-blue-500 hover:bg-blue-600 rounded-[5px] m-1 cursor-pointer w-20 h-8"
                     >
                       Editar
                     </button>
                     <button
                       onClick={() => confirmDeletion(User.id)}
-                      style={{
-                        padding: "10px 20px",
-                        fontSize: "16px",
-                        backgroundColor: "#f44336",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
+                      className="text-sm text-white justify-center text-center bg-red-500 hover:bg-red-800 m-1 rounded-[5px] cursor-pointer w-20 h-8"
                     >
                       Remover
                     </button>

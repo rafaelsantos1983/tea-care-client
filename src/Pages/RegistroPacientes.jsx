@@ -112,30 +112,21 @@ const PatientRegistration = () => {
             maxWidth: "800px",
           }}
         >
-          <h1 className="font-bold text-center text-3xl mb-5">Pacientes</h1>
-          <div style={{ marginBottom: "20px", textAlign: "end" }}>
+          <h1 className="font-bold text-center text-xl md:text-3xl mb-5">Pacientes</h1>
+          <div className="mb-5 text-center md:text-end">
             <button
               onClick={() => {
                 setPopUpAdd(true);
               }}
-              className="w-[181px] bg-green-500 hover:bg-green-600"
-              style={{
-                padding: "10px 20px",
-                fontSize: "16px",
-                color: "#fff",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
+              className="text-sm text-center text-white justify-center w-full md:w-[168px] md:justify-end h-8 m-1 bg-green-500 hover:bg-green-600 cursor-pointer rounded-[5px]"
             >
               Adicionar
             </button>
           </div>
           {patients.map((patient) => (
-            <div
+            <div className="md:flex md:justify-between justify-center"
               key={patient.id}
               style={{
-                display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginBottom: "10px",
@@ -143,56 +134,26 @@ const PatientRegistration = () => {
             >
               {editingPatient && editingPatient.id === patient.id ? (
                 <>
-                  <button
-                    onClick={handleSaveEdit}
-                    style={{
-                      padding: "10px 20px",
-                      fontSize: "16px",
-                      backgroundColor: "#4CAF50",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Salvar
-                  </button>
                 </>
               ) : (
                 <>
-                  <span>
+                  <div className="text-sm md:text-base justify-center text-center ">
                     {patient.name} (CPF: {patient.cpf})
-                  </span>
-                  <div>
+                  </div>
+                  <div className="text-center justify-between gap-2">
                     <button
                       onClick={() => handleEditPatient(patient.id)}
-                      className="bg-blue-500 hover:bg-blue-600"
-                      style={{
-                        marginRight: "10px",
-                        padding: "10px 20px",
-                        fontSize: "16px",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
+                      className="text-sm text-white justify-center bg-blue-500 hover:bg-blue-600 rounded-[5px] m-1 cursor-pointer w-20 h-8"
                     >
                       Editar
                     </button>
                     <button
                       onClick={() => confirmDeletion(patient.id)}
-                      className="bg-red-500 hover:bg-red-800"
-                      style={{
-                        padding: "10px 20px",
-                        fontSize: "16px",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
+                      className="text-sm text-white justify-center text-center bg-red-500 hover:bg-red-800 m-1 rounded-[5px] cursor-pointer w-20 h-8"
                     >
                       Deletar
                     </button>
+                    <br />
                   </div>
                 </>
               )}

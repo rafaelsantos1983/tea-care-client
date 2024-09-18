@@ -5,16 +5,17 @@ import PopUpConfirmation from "./PopUpConfirmation";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:4002",
+  baseURL: "http://localhost:3002",
   timeout: 1000,
 });
 
 // https://localhost:4002/api/therapeutic-activity/cares/669da2b37feec75b9e851457
 
-const postTherapeuticActivity = async (atendimentoID, data) => {
+const postTherapeuticActivity = async (data) => {
   try {
+    const id = localStorage.getItem('idAtendimento');
     const response = await api.post(
-      `api/therapeutic-activity/cares/${atendimentoID}`,
+      `api/therapeutic-activity/cares/${id}`,
       data
     );
     console.log("Response:", response.data);
@@ -29,7 +30,7 @@ const formatResponses = (responses) => {
   return {
     survey: responses.map((categoria) => ({
       qualificationType: categoria.qualificationType,
-      answers: categoria.answers.map(String), // Converte os valores para strings, se necessário
+      answers: categoria.answers.map(Number), // Converte os valores para strings, se necessário
     })),
   };
 };
@@ -195,7 +196,7 @@ Formulario2.propTypes = {
       ).isRequired,
     })
   ).isRequired,
-  atendimentoID: PropTypes.string.isRequired, // Adicione a prop atendimentoID
+// Adicione a prop atendimentoID
 };
 
 export default Formulario2;

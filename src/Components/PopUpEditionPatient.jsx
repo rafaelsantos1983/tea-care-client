@@ -125,19 +125,19 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
             <div className="w-[1000px] bg-white rounded-lg p-8 shadow-lg relative">
                 <button
                     onClick={onCancel}
-                    className="absolute top-0 right-0 mt-2 mr-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
+                    className="absolute top-0 right-0 md:mt-2 md:mr-2 mt-7 mr-5 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
                 >
                     <ClearIcon />
                 </button>
-                <h1 className="font-bold text-center text-3xl mb-5">Editar Paciente</h1>
+                <h1 className="font-bold text-center text-xl md:text-3xl mb-5">Editar Paciente</h1>
                 
                 <hr className="border-t border-gray-300"/>
                 <p className="text-gray-700 text-sm mb-4">Paciente</p>
 
-                <div className="flex gap-6 justify-between items-center mb-10">
-                    <div className="flex-1">
+                <div className="md:flex md:gap-6 md:justify-between items-center mb-10">
+                    <div className="md:flex-1 md:mb-0 mb-5">
                         <InputLabel htmlFor="name-input">
-                            <p className="font-bold text-gray-950 text-sm">Nome</p>
+                            <p className="font-bold text-gray-950 text-xs md:text-sm">Nome</p>
                         </InputLabel>
                         <TextField
                             id="name-input"
@@ -159,9 +159,9 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
                         />
                     </div>
 
-                    <div className="flex-1">
+                    <div className="md:flex-1 md:mb-0 mb-5">
                         <InputLabel htmlFor="cpf-input">
-                            <p className="font-bold text-gray-950 text-sm">CPF</p>
+                            <p className="font-bold text-gray-950 text-xs md:text-sm">CPF</p>
                         </InputLabel>
                         <TextField
                             id="cpf-input"
@@ -183,9 +183,9 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
                         />
                     </div>
 
-                    <div className="flex-1">
+                    <div className="md:flex-1 md:mb-0 mb-5">
                         <InputLabel htmlFor="date-picker">
-                            <p className="font-bold text-gray-950 text-sm">Data de Nascimento</p>
+                            <p className="font-bold text-gray-950 text-xs md:text-sm">Data de Nascimento</p>
                         </InputLabel>
                         <LocalizationProvider 
                             dateAdapter={AdapterDayjs}
@@ -225,7 +225,7 @@ const PopUpEditionPatient = ({ patientId, onConfirm, onCancel }) => {
                 <div className="flex gap-6 justify-between items-center mb-10">
                     <div className="flex-1">
                         <InputLabel htmlFor="responsavel-select">
-                            <p className="font-bold text-gray-950 text-sm">Responsável</p>
+                            <p className="font-bold text-gray-950 text-xs md:text-sm">Responsável</p>
                         </InputLabel>
                         <FormControl variant="outlined" className={`w-full ${errors.idResponsavel ? 'bg-red-200' : 'bg-gray-200'}`}>
                         <Select

@@ -72,7 +72,7 @@ function Banner() {
   };
 
   return (
-    <div className="bg-[#FFE01D] rounded-b-[30px] h-[90px] flex items-center justify-between px-4">
+    <div className="bg-[#FFE01D] rounded-b-[30px] h-[90px] flex items-center justify-between px-2">
       <div className="flex items-center">
         <Box sx={{ flexGrow: 0 }}>
           <Tooltip>
@@ -108,7 +108,7 @@ function Banner() {
           </Drawer>
         </Box>
         <div className="flex flex-col ml-5">
-          <div className="text-black text-xl font-bold">
+          <div className="text-black text-md sm:text-xl font-bold">
             {decoded.user.name || 'Nome do Usuário'}
           </div>
           <div className="text-black text-sm">
@@ -117,7 +117,7 @@ function Banner() {
         </div>
       </div>
       <div className="flex items-center mb-4">
-        <img src={Logo} className="w-[140px] h-[140px]" alt="Logo" />
+        <img src={Logo} className="w-[100px] h-[100px]" alt="Logo" />
       </div>
       <Dialog
         open={openDialog}
