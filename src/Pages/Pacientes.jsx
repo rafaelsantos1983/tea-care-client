@@ -6,8 +6,8 @@ import Banner from '../Components/Banner';
 import Paciente from '../Components/Paciente';
 import GreenButton from '../Components/Button_Green';
 import { setItemStorage, getItemStorage } from '../Shared/Functions/Connection/localStorageProxy';
+import ReportGmailerrorredTwoToneIcon from '@mui/icons-material/ReportGmailerrorredTwoTone';
 import axios from 'axios';
-
 
 // Estilos para o container da lista de pacientes
 const PacientesContainer = styled('div')({
@@ -57,21 +57,42 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+// Função para decodificar o payload de um JWT
+function parseJwt(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+  return JSON.parse(jsonPayload);
+}
 
-function Pacientes() {
-  // Ao clicar no botão, redireciona para o DashBoard
+export default function Pacientes() {
+  const [childEvolution, setChildEvolution] = useState([]);
+  const [unmountedToken, setUnmountedToken] = useState(localStorage.getItem('accessToken'));
+  const [cpfSelected, setCpfSelected] = useState('');
+  const [idSelected, setIdSelected] = useState(null); // Default to null
+  const [payloadUserType,setPayloadUserType] = useState(null);
+  const [selectedCpf, setSelectedCpf] = useState(null);
+  const handleButtonClick = (id) => {
+    setSelectedCpf(selectedCpf === id ? null : id);
+    setIdSelected(id);
+    setItemStorage('selectedPacienteId', id); // Save the ID in localStorage
+    if (unmountedToken) {
+      const payload = parseJwt(unmountedToken);
+      
+  
+      if (payload.user.type === "E") {
+        setPayloadUserType(payload.user.type);
+      }
+    }
+  };
+
+  const [pacientes, setPacientes] = useState([]);
+  const [alertMessage, setAlertMessage] = useState('');
+
   const handleSubmit = (event) => {
     event.preventDefault();
-  
-    // Função para decodificar o payload de um JWT
-    function parseJwt(token) {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
-    }
 
     const handleRedirectURL = (dashboard, userName, userDescription, relativeEvolution) => {
       return `/${dashboard}?name=${encodeURIComponent(userName)}&description=${encodeURIComponent(userDescription)}&evolution=${encodeURIComponent(relativeEvolution)}`;
@@ -83,36 +104,16 @@ function Pacientes() {
     if (token) {
       const payload = parseJwt(token);
   
-      // Verifica se o type é "E"
       if (payload.user.type === "I") {
         window.location.href = handleRedirectURL('Dashboard_PsicoPedagogo','Psiquiatra Caio','TCC integrativa', undefined);
       } else {
-        let childEvolution = [3,2,5,4,5]
         window.location.href = handleRedirectURL('Dashboard_Pais','Andre Farias','Pai de Lucas', childEvolution);
       }
     } else {
       console.log('Token não encontrado no localStorage');
     }
   };
-  
 
-  // Estado para armazenar o cpf digitado para filtrar pacientes
-  const [cpfSelected, setCpfSelected] = useState('');
-
-  // PEGA O CPF SELECIONADO e guarda ID no localStorage
-  const [selectedCpf, setSelectedCpf] = useState(null);
-  const handleButtonClick = (id) => {
-    setSelectedCpf(selectedCpf === id ? null : id);
-    setItemStorage('selectedPacienteId', id); // Salva o CPF no localStorage
-  };
-
-  // Lista de Pacientes
-  const [pacientes, setPacientes] = useState([]);
-
-  // msg de alerta
-  const [alertMessage, setAlertMessage] = useState('');
-
-  // Função para buscar e salvar dados dos pacientes
   async function fetchAndSaveUserData() {
     try {
       console.log('Fetching user data...');
@@ -132,7 +133,51 @@ function Pacientes() {
     fetchAndSaveUserData();
   }, []);
 
-  // Filtra pacientes com base no cpf digitado
+  async function fetchChildData() {
+    try {
+      if (idSelected && unmountedToken) { // Check for valid idSelected
+        const payload = parseJwt(unmountedToken);
+        let url = '';
+        let response = null;
+
+        if (payload.user.type === 'E') {
+          url = `http://localhost:3003/api/dashboard/external/${idSelected}`;
+          console.log('Fetching child data from:', url);
+
+         response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Origin': 'http://localhost:5173',
+              'Authorization': `Bearer ${unmountedToken}`
+            },
+          });
+        }
+
+        if (!response || !response.ok) {
+          throw new Error(`Erro ao buscar dados: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        const values = await data.rating.map(item => item.qualificationType+'_'+item.value);
+
+        setChildEvolution(values);
+        setAlertMessage(undefined);
+
+      }
+    } catch (error) {
+      console.error('DEBUG ERROR:', error);
+      setAlertMessage('Erro ao buscar dados do paciente');
+    }
+  }
+
+  useEffect(() => {
+    if (idSelected) {
+      fetchChildData();
+    }
+  }, [idSelected]);
+
   const pacientesFiltrados = pacientes.filter(
     (paciente) =>
       paciente.cpf.toString().toLowerCase().includes(cpfSelected.toLowerCase())
@@ -140,19 +185,14 @@ function Pacientes() {
 
   return (
     <div className="min-h-screen bg-blue-500">
-      {/* Banner Amarelo */}
       <Banner />
 
       <div className="flex justify-center items-center min-h-[calc(100vh-50px)]">
-        {/* Fundo Branco */}
         <form className="bg-white w-[40vw] h-[35vw] rounded-[50px] p-10" onSubmit={handleSubmit}>
-          {/* Título */}
           <h1 className='font-bold text-center text-4xl mb-2'>
             Pacientes
           </h1>
-          {/* Linha Azul */}
           <div className='bg-blue-400 w-full h-1 mb-5'></div>
-          {/* Input de Busca */}
           <Search
             onChange={(e) => setCpfSelected(e.target.value)}
             value={cpfSelected}
@@ -166,7 +206,6 @@ function Pacientes() {
             />
           </Search>
           <div className='bg-gray-200 w-full h-[220px] mt-5 p-5 rounded-[30px]'>
-            {/* Lista de Pacientes com scroll */}
             <PacientesContainer>
               {pacientesFiltrados.map(paciente => (
                 <Paciente
@@ -179,16 +218,12 @@ function Pacientes() {
               ))}
             </PacientesContainer>
           </div>
-          {/* Mensagem de alerta */}
-          {alertMessage && <div className="text-red-500">{alertMessage}</div>}
-          {/* Botão de enviar */}
+          {payloadUserType && alertMessage && <div className="ml-40 text-red-500"> <ReportGmailerrorredTwoToneIcon /> {alertMessage}</div>}
           <div className="text-center m-8">
-            <GreenButton type="submit" />
+            <GreenButton type="submit"  disabled={!!payloadUserType && !!alertMessage}/>
           </div>
         </form>
       </div>
     </div>
   );
 }
-
-export default Pacientes;
