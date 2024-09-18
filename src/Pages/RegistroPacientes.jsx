@@ -151,7 +151,7 @@ const PatientRegistration = () => {
                       onClick={() => confirmDeletion(patient.id)}
                       className="text-sm text-white justify-center text-center bg-red-500 hover:bg-red-800 m-1 rounded-[5px] cursor-pointer w-20 h-8"
                     >
-                      Deletar
+                      Remover
                     </button>
                     <br />
                   </div>

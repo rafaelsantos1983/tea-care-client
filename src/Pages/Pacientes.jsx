@@ -187,15 +187,30 @@ export default function Pacientes() {
     <div className="min-h-screen bg-blue-500">
       <Banner />
 
-      <div className="flex justify-center items-center min-h-[calc(100vh-50px)]">
-        <form className="bg-white w-[40vw] h-[35vw] rounded-[50px] p-10" onSubmit={handleSubmit}>
-          <h1 className='font-bold text-center text-4xl mb-2'>
+      <div className="flex justify-center items-center" 
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "20px",
+        }}>
+        <form className="bg-white " 
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: "50px",
+            padding: "10px",
+            width: "100%",
+            maxWidth: "450px",
+          }} onSubmit={handleSubmit}>
+          <h1 className='font-bold text-center text-xl md:text-3xl mb-2'>
             Pacientes
           </h1>
           <div className='bg-blue-400 w-full h-1 mb-5'></div>
           <Search
             onChange={(e) => setCpfSelected(e.target.value)}
             value={cpfSelected}
+            className='w-full'
           >
             <SearchIconWrapper>
               <SearchIcon />
@@ -205,8 +220,8 @@ export default function Pacientes() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
-          <div className='bg-gray-200 w-full h-[220px] mt-5 p-5 rounded-[30px]'>
-            <PacientesContainer>
+          <div className='bg-gray-200 w-full h-3/5 mt-5 p-5 rounded-[30px]'>
+            <PacientesContainer className='h-full'>
               {pacientesFiltrados.map(paciente => (
                 <Paciente
                   key={paciente.cpf}
@@ -220,7 +235,8 @@ export default function Pacientes() {
           </div>
           {payloadUserType && alertMessage && <div className="ml-40 text-red-500"> <ReportGmailerrorredTwoToneIcon /> {alertMessage}</div>}
           <div className="text-center m-8">
-            <GreenButton type="submit"  disabled={!!payloadUserType && !!alertMessage}/>
+            <button className='w-1/2 h-10 rounded-md bg-green-600 text-sm text-white' type='submit' disabled={!!payloadUserType && !!alertMessage}>Enviar</button>
+            
           </div>
         </form>
       </div>

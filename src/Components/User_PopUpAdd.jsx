@@ -149,23 +149,23 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
         {/* BOTÃO DE FECHAR */}
         <button
           onClick={onCancel}
-          className="absolute top-0 right-0 mt-2 mr-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
-        >
+          className="absolute top-0 right-0 md:mt-2 md:mr-2 mt-8 mr-5 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
+                >
           <ClearIcon />
         </button>
         {/* TÍTULO */}
-        <h1 className="font-bold text-center text-3xl mb-5">Novo Usuário</h1>
+        <h1 className="font-bold text-center text-xl md:text-3xl mb-5">Novo Usuário</h1>
 
         <hr className="border-t border-gray-300" />
         {/* USER INFOS */}
         <p className="text-gray-700 text-sm mb-4">Usuário</p>
 
         {/* CAMPOS DE USUÁRIO */}
-        <div className="flex gap-6 justify-between items-center mb-5">
+        <div className="md:flex gap-6 justify-between items-center md:mb-5">
           {/* CAMPO DE NOME */}
-          <div className="flex-1">
+          <div className="md:flex-1">
             <InputLabel htmlFor="name-input">
-              <p className="font-bold text-gray-950 text-sm">Nome</p>
+              <p className="font-bold text-gray-950 text-xs md:text-sm">Nome</p>
             </InputLabel>
             <TextField
               id="name-input"
@@ -186,9 +186,9 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
             />
           </div>
           {/* CAMPO DE EMAIL */}
-          <div className="flex-1">
+          <div className="md:flex-1">
             <InputLabel htmlFor="email-input">
-              <p className="font-bold text-gray-950 text-sm">Email</p>
+              <p className="font-bold text-gray-950 text-xs md:text-sm">Email</p>
             </InputLabel>
             <TextField
               id="email-input"
@@ -209,9 +209,9 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
             />
           </div>
           {/* CAMPO DE CPF */}
-          <div className="flex-1">
+          <div className="md:flex-1">
             <InputLabel htmlFor="cpf-input">
-              <p className="font-bold text-gray-950 text-sm">CPF</p>
+              <p className="font-bold text-gray-950 text-xs md:text-sm">CPF</p>
             </InputLabel>
             <TextField
               id="cpf-input"
@@ -232,9 +232,9 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
             />
           </div>
           {/* CAMPO DE TELEFONE */}
-          <div className="flex-1">
+          <div className="md:flex-1">
             <InputLabel htmlFor="telefone-input">
-              <p className="font-bold text-gray-950 text-sm">Telefone</p>
+              <p className="font-bold text-gray-950 text-xs md:text-sm">Telefone</p>
             </InputLabel>
             <TextField
               id="telefone-input"
@@ -273,11 +273,11 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
         {type === 'I' && (
           <>
             <hr className="border-t border-gray-300" />
-            <p className="text-gray-700 text-sm mb-4">Profissional</p>
+            <p className="text-gray-700 text-xs md:text-sm mb-4">Profissional</p>
             <div className="flex gap-6 justify-between items-center mb-10">
               <div className="flex-1">
                 <InputLabel htmlFor="ocupation-select">
-                  <p className="font-bold text-gray-950 text-sm">Ocupação</p>
+                  <p className="font-bold text-gray-950 text-xs md:text-sm">Ocupação</p>
                 </InputLabel>
                 <FormControl
                   variant="outlined"
@@ -317,10 +317,8 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
           </>
         )}
         <hr className="border-t border-gray-300" />
-        <p className="text-gray-700 text-sm mb-4">Perfil</p>
-          {/* SELEÇÃO DE PERFIL */}
         <InputLabel>
-          <p className="font-bold text-gray-950 text-sm">Perfil</p>
+          <p className="font-bold text-gray-950 text-xs md:text-sm">Perfil</p>
         </InputLabel>
         <FormControl className={`w-full bg-gray-200 rounded-[10px] ${errors.perfilIds ? 'bg-red-200' : 'bg-gray-200'}`}>
           <div className="w-full">
@@ -331,8 +329,10 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
                   onChange={handlePerfilChange}
                   value="66889115e01fda923b864da6"
                   color="primary"
+                  className='text-xs md:text-sm'
                 />
               }
+              className='text-xs md:text-sm'
               label="Administrador"
             />
             <FormControlLabel
@@ -342,8 +342,10 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
                   onChange={handlePerfilChange}
                   value="66889115e01fda923b864da7"
                   color="primary"
+                  className='text-xs md:text-sm'
                 />
               }
+              className='text-xs md:text-sm'
               label="Profissional de Saúde"
             />
             <FormControlLabel
@@ -353,8 +355,10 @@ const User_PopUpAdd = ({ onConfirm, onCancel }) => {
                   onChange={handlePerfilChange}
                   value="66889115e01fda923b864da8"
                   color="primary"
+                  className='text-xs md:text-sm'
                 />
               }
+              className='text-xs md:text-sm'
               label="Responsável"
             />
           </div>

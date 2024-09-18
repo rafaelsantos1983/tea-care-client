@@ -21,7 +21,7 @@ const KcpfField = styled(Button)(({ theme, selected }) => ({
   height: "50px",
   borderRadius: "10px",
   color: "#000000",
-  fontSize: "14px",
+
   border: selected ? "2px solcpf black" : "none",
   "&:hover": {
     backgroundColor: "#9DE0FD",
@@ -34,11 +34,11 @@ export default function Paciente({id, cpf, name, selected, onClick }) {
 
   return (
     <div>
-      <KcpfField selected={selected} onClick={() => onClick(cpf)}>
+      <KcpfField className="text-xs md:text-sm" selected={selected} onClick={() => onClick(cpf)}>
         <InputAdornment position="start">
         {/*ESPAÇO PARA IMAGEM*/}
         </InputAdornment>
-        <span>
+        <span className="text-xs md:text-sm">
           cpf: {paciente.cpf} | Nome: {paciente.name}
         </span>
         <span></span>

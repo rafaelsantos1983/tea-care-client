@@ -150,7 +150,7 @@ const User_PopUpEdition = ({ userId, onConfirm, onCancel }) => {
                 {/* BOTÃO DE FECHAR */}
                 <button
                     onClick={onCancel}
-                    className="absolute top-0 right-0 mt-2 mr-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
+                    className="absolute top-0 right-0 md:mt-2 md:mr-2 mt-7 mr-5 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
                 >
                     <ClearIcon />
                 </button>
